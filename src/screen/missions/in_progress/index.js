@@ -7,7 +7,13 @@ import {
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import {useDispatch, useSelector} from 'react-redux';
-import {Block, Button, ImageComponent, Text} from '../../../components';
+import {
+  Block,
+  Button,
+  CustomButton,
+  ImageComponent,
+  Text,
+} from '../../../components';
 import EmptyFile from '../../../components/emptyFile';
 import {t1, t2, w3, w5} from '../../../components/theme/fontsize';
 import {getMissionsRequest} from '../../../redux/action';
@@ -50,18 +56,18 @@ const InProgress = () => {
         {divider()}
         {renderAgentDetails(item)}
         {renderRequestReview(item)}
-        <Block row space={'around'} flex={false} center>
-          <Button
-            onPress={() =>
-              navigation.navigate('MissionDetails', {
-                item: item,
-              })
-            }
-            style={{width: wp(80)}}
-            color="secondary">
-            Mission details
-          </Button>
+        <Block flex={false} padding={[0, w3]}>
+          <Button color="secondary">Finish mission</Button>
         </Block>
+        <CustomButton
+          onPress={() =>
+            navigation.navigate('MissionDetails', {
+              item: item,
+            })
+          }
+          center>
+          <Text size={14}>Mission Details</Text>
+        </CustomButton>
       </Block>
     );
   };
