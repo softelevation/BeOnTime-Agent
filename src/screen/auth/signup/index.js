@@ -23,12 +23,14 @@ import {
   Button,
 } from '../../../components';
 import Header from '../../../components/common/header';
-import {t1, t2, t4, w1, w3, w4} from '../../../components/theme/fontsize';
+import {t1, t2, t4, w1, w2, w3, w4} from '../../../components/theme/fontsize';
 import * as yup from 'yup';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {loginRequest, registerRequest} from '../../../redux/action';
 import AlertCompnent from '../../../components/AlertCompnent';
+import AgentType from './agent-type';
+import {Modalize} from 'react-native-modalize';
 
 const Signup = () => {
   const navigation = useNavigation();
@@ -36,7 +38,9 @@ const Signup = () => {
   const loading = useSelector((state) => state.user.register.loading);
   const isLoad = useSelector((state) => state.user.login.loading);
   const isSuccess = useSelector((state) => state.user.register.isSuccess);
+  const modalizeRef = useRef();
   const dispatch = useDispatch();
+  const [action, setAction] = useState('');
   const [modal, setmodal] = useState(false);
   const [userProfileDetails, setUserDetails] = useState({
     profileImage: '',
@@ -151,6 +155,64 @@ const Signup = () => {
 
     dispatch(registerRequest(data));
   };
+
+  const onOpen = (type) => {
+    modalizeRef.current?.open();
+    setAction(type);
+  };
+  const onClose = (type) => {
+    modalizeRef.current?.close();
+    setAction('');
+  };
+
+  const renderType = (label, description, onPress, value) => {
+    return (
+      <CustomButton
+        onPress={onPress}
+        margin={[t1, 0]}
+        borderWidth={1}
+        borderColor={'#F5F7FA'}
+        flex={false}
+        space={'between'}
+        padding={[t1]}
+        center
+        row>
+        <Block flex={false}>
+          <Text color="#8A8E99" caption>
+            {label}
+          </Text>
+          <Text bold color="#8A8E99" margin={[t1, 0, 0, 0]} size={16}>
+            {value || description}
+          </Text>
+        </Block>
+        <ImageComponent name="down_arrow_icon" height="8" width="14" />
+      </CustomButton>
+    );
+  };
+  const renderFiles = (label, description, onPress, value) => {
+    return (
+      <CustomButton
+        onPress={onPress}
+        margin={[t1, 0]}
+        borderWidth={1}
+        borderColor={'#F5F7FA'}
+        flex={false}
+        space={'between'}
+        padding={[t1]}
+        center
+        row>
+        <Block flex={false}>
+          <Text color="#8A8E99" caption>
+            {label}
+          </Text>
+          <Text bold color="#8A8E99" margin={[t1, 0, 0, 0]} size={16}>
+            {value || description}
+          </Text>
+        </Block>
+        <ImageComponent name="document_icon" height="16" width="14" />
+      </CustomButton>
+    );
+  };
   return (
     <Block primary>
       <Header centerText="Get Started" />
@@ -159,62 +221,68 @@ const Signup = () => {
           ALL FIELDS ARE MANDATORY
         </Text>
       </Block>
-      <KeyboardAwareScrollView contentContainerStyle={{paddingBottom: t4}}>
-        {renderProfileImage()}
-        <Formik
-          innerRef={formikRef}
-          initialValues={{
-            firstName: '',
-            lastName: '',
-            email: '',
-            phone: '',
-            password: '',
-            confirm_password: '',
-            address: '',
-            company: '',
-            type: 'individual',
-            privacy: false,
-            terms: false,
-          }}
-          onSubmit={onSubmit}
-          validationSchema={yup.object().shape({
-            firstName: yup.string().min(1).required(),
-            lastName: yup.string().min(1).required(),
-            email: yup.string().email().required(),
-            phone: yup.string().min(10).required(),
-            password: yup.string().min(8).required(),
-            address: yup.string().min(3).required(),
-            terms: yup
-              .bool()
-              .oneOf([true], 'Accept Terms & Conditions is required'),
-            privacy: yup
-              .bool()
-              .oneOf([true], 'Accept Privacy Policy is required'),
-            confirm_password: yup
-              .string()
-              .when('password', {
-                is: (val) => (val && val.length > 0 ? true : false),
-                then: yup
-                  .string()
-                  .oneOf(
-                    [yup.ref('password')],
-                    'Both password need to be the same',
-                  ),
-              })
-              .required(),
-          })}>
-          {({
-            values,
-            handleChange,
-            errors,
-            setFieldTouched,
-            touched,
-            setFieldValue,
-            handleSubmit,
-            dirty,
-            isValid,
-          }) => (
-            <>
+
+      {renderProfileImage()}
+      <Formik
+        innerRef={formikRef}
+        initialValues={{
+          firstName: '',
+          lastName: '',
+          email: '',
+          phone: '',
+          password: '',
+          confirm_password: '',
+          address: '',
+          company: '',
+          type: 'individual',
+          privacy: false,
+          terms: false,
+          agent_type: '',
+          iban: '',
+        }}
+        onSubmit={onSubmit}
+        validationSchema={yup.object().shape({
+          firstName: yup.string().min(1).required(),
+          lastName: yup.string().min(1).required(),
+          email: yup.string().email().required(),
+          phone: yup.string().min(10).required(),
+          password: yup.string().min(8).required(),
+          address: yup.string().min(3).required(),
+          agent_type: yup.string().required(),
+          iban: yup.string().required(),
+          terms: yup
+            .bool()
+            .oneOf([true], 'Accept Terms & Conditions is required'),
+          privacy: yup
+            .bool()
+            .oneOf([true], 'Accept Privacy Policy is required'),
+          confirm_password: yup
+            .string()
+            .when('password', {
+              is: (val) => (val && val.length > 0 ? true : false),
+              then: yup
+                .string()
+                .oneOf(
+                  [yup.ref('password')],
+                  'Both password need to be the same',
+                ),
+            })
+            .required(),
+        })}>
+        {({
+          values,
+          handleChange,
+          errors,
+          setFieldTouched,
+          touched,
+          setFieldValue,
+          handleSubmit,
+          dirty,
+          isValid,
+        }) => (
+          <>
+            <KeyboardAwareScrollView
+              contentContainerStyle={{paddingBottom: t4}}>
               <Block flex={false} padding={[0, w3]}>
                 <Input
                   value={values.firstName}
@@ -248,24 +316,33 @@ const Signup = () => {
                   onBlur={() => setFieldTouched('phone')}
                   error={touched.phone && errors.phone}
                 />
+
+                {renderType(
+                  'Agent type',
+                  'Select agent type',
+                  () => onOpen('agent'),
+                  values.agent_type.name,
+                )}
+                {renderFiles('Identity Card')}
+                {renderFiles('Anonymous Curriculum Vitae')}
+                {renderFiles('Social Security Number')}
                 <Input
-                  label="Password"
-                  placeholder="Enter password"
-                  value={values.password}
-                  onChangeText={handleChange('password')}
-                  onBlur={() => setFieldTouched('password')}
-                  error={touched.password && errors.password}
-                  secureTextEntry={true}
+                  label="IBAN Info"
+                  placeholder="Enter IBAN Info"
+                  value={values.iban}
+                  onChangeText={handleChange('iban')}
+                  onBlur={() => setFieldTouched('iban')}
+                  error={touched.iban && errors.iban}
                 />
                 <Input
-                  label="Confirm password"
-                  placeholder="Confirm password"
-                  value={values.confirm_password}
-                  onChangeText={handleChange('confirm_password')}
-                  onBlur={() => setFieldTouched('confirm_password')}
-                  error={touched.confirm_password && errors.confirm_password}
-                  secureTextEntry={true}
+                  label="CNAPS Number"
+                  placeholder="Enter CNAPS Number"
+                  value={values.cnaps}
+                  onChangeText={handleChange('cnaps')}
+                  onBlur={() => setFieldTouched('cnaps')}
+                  error={touched.cnaps && errors.cnaps}
                 />
+
                 <Input
                   label="Home address"
                   placeholder="Enter home address"
@@ -274,61 +351,133 @@ const Signup = () => {
                   onBlur={() => setFieldTouched('address')}
                   error={touched.address && errors.address}
                 />
+                <Input
+                  label="Work Location"
+                  placeholder="Work Location"
+                  value={values.work_location}
+                  onChangeText={handleChange('work_location')}
+                  onBlur={() => setFieldTouched('work_location')}
+                  error={touched.work_location && errors.work_location}
+                />
               </Block>
-              <Block center margin={[0, w3]} row flex={false}>
-                <Text
-                  size={16}
-                  style={{width: widthPercentageToDP(45)}}
-                  regular>
-                  Are you an individual or company?
-                </Text>
-
+              <Block flex={false} padding={[0, w2]}>
                 <Block
-                  primary
-                  padding={[t1]}
-                  margin={[0, w4]}
-                  color={'#F7F8FA'}
-                  borderRadius={30}
+                  // space={'between'}
+                  center
+                  margin={[t1, w1]}
                   row
                   flex={false}>
-                  <CustomButton
-                    onPress={() => setFieldValue('type', 'individual')}
-                    center
-                    middle
+                  <Text
+                    size={16}
+                    style={{width: widthPercentageToDP(40)}}
+                    regular>
+                    Do you possess a vehicle?
+                  </Text>
+                  <Block
+                    flex={false}
+                    style={{width: widthPercentageToDP(15)}}
+                  />
+                  <Block
+                    primary
+                    margin={[0, w4, 0, 0]}
+                    color={'#F7F8FA'}
                     borderRadius={30}
-                    padding={
-                      values.type === 'individual'
-                        ? [heightPercentageToDP(1.5)]
-                        : [0, heightPercentageToDP(1.5)]
-                    }
-                    color={values.type === 'individual' ? '#FFFFFF' : '#F7F8FA'}
-                    shadow={values.type === 'individual'}
-                    margin={[0, w1]}>
-                    <Text size={14} semibold>
-                      Individual
-                    </Text>
-                  </CustomButton>
-                  <CustomButton
-                    onPress={() => setFieldValue('type', 'company')}
-                    center
-                    middle
-                    borderRadius={20}
-                    padding={
-                      values.type === 'company'
-                        ? [heightPercentageToDP(1.5)]
-                        : [
-                            0,
-                            widthPercentageToDP(1.5),
-                            0,
-                            widthPercentageToDP(1.5),
-                          ]
-                    }
-                    color={values.type === 'company' ? '#FFFFFF' : '#F7F8FA'}
-                    shadow={values.type === 'company'}>
-                    <Text size={14} semibold>
-                      Company
-                    </Text>
-                  </CustomButton>
+                    row
+                    flex={false}>
+                    <CustomButton
+                      onPress={() => setFieldValue('type', 'yes')}
+                      center
+                      middle
+                      borderRadius={30}
+                      padding={
+                        values.type === 'yes'
+                          ? [heightPercentageToDP(1.5), widthPercentageToDP(8)]
+                          : [0, widthPercentageToDP(6)]
+                      }
+                      color={values.type === 'yes' ? '#FFFFFF' : '#F7F8FA'}
+                      shadow={values.type === 'yes'}
+                      margin={[0, w1]}>
+                      <Text size={14} semibold>
+                        Yes
+                      </Text>
+                    </CustomButton>
+                    <CustomButton
+                      onPress={() => setFieldValue('type', 'no')}
+                      center
+                      middle
+                      borderRadius={20}
+                      padding={
+                        values.type === 'no'
+                          ? [heightPercentageToDP(1.5), widthPercentageToDP(8)]
+                          : [0, widthPercentageToDP(6)]
+                      }
+                      color={values.type === 'no' ? '#FFFFFF' : '#F7F8FA'}
+                      shadow={values.type === 'no'}>
+                      <Text size={14} semibold>
+                        No
+                      </Text>
+                    </CustomButton>
+                  </Block>
+                </Block>
+              </Block>
+              <Block flex={false} padding={[0, w2]}>
+                <Block
+                  // space={'between'}
+                  center
+                  margin={[t1, w1]}
+                  row
+                  flex={false}>
+                  <Text
+                    size={16}
+                    style={{width: widthPercentageToDP(40)}}
+                    regular>
+                    Are you a sub-contractor?
+                  </Text>
+                  <Block
+                    flex={false}
+                    style={{width: widthPercentageToDP(15)}}
+                  />
+                  <Block
+                    primary
+                    margin={[0, w4, 0, 0]}
+                    color={'#F7F8FA'}
+                    borderRadius={30}
+                    row
+                    flex={false}>
+                    <CustomButton
+                      onPress={() => setFieldValue('type', 'yes')}
+                      center
+                      middle
+                      borderRadius={30}
+                      padding={
+                        values.type === 'yes'
+                          ? [heightPercentageToDP(1.5), widthPercentageToDP(8)]
+                          : [0, widthPercentageToDP(6)]
+                      }
+                      color={values.type === 'yes' ? '#FFFFFF' : '#F7F8FA'}
+                      shadow={values.type === 'yes'}
+                      margin={[0, w1]}>
+                      <Text size={14} semibold>
+                        Yes
+                      </Text>
+                    </CustomButton>
+                    <CustomButton
+                      onPress={() => setFieldValue('type', 'no')}
+                      center
+                      middle
+                      borderRadius={20}
+                      padding={
+                        values.type === 'no'
+                          ? [heightPercentageToDP(1.5), widthPercentageToDP(8)]
+                          : [0, widthPercentageToDP(6)]
+                      }
+                      color={values.type === 'no' ? '#FFFFFF' : '#F7F8FA'}
+                      shadow={values.type === 'no'}>
+                      <Text size={14} semibold>
+                        No
+                      </Text>
+                    </CustomButton>
+                  </Block>
                 </Block>
               </Block>
               <Block flex={false} padding={[0, w3]}>
@@ -370,6 +519,7 @@ const Signup = () => {
                     </Text>
                   </Text>
                 </Block>
+
                 <Button
                   disabled={!isValid || !dirty}
                   isLoading={loading}
@@ -379,10 +529,24 @@ const Signup = () => {
                   Finish registration
                 </Button>
               </Block>
-            </>
-          )}
-        </Formik>
-      </KeyboardAwareScrollView>
+            </KeyboardAwareScrollView>
+            <Modalize
+              adjustToContentHeight={true}
+              handlePosition="inside"
+              ref={modalizeRef}>
+              {action === 'agent' && (
+                <AgentType
+                  state={values.agent_type}
+                  setValues={(v) => setFieldValue('agent_type', v)}
+                  closeModal={() => {
+                    onClose();
+                  }}
+                />
+              )}
+            </Modalize>
+          </>
+        )}
+      </Formik>
       <AlertCompnent
         visible={modal}
         title={'Registration Success !'}

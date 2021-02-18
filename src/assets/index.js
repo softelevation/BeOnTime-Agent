@@ -33,6 +33,7 @@ export const images = {
   star_u_icon: require('./icons/staru.png'),
   blurAvatar_icon: require('./icons/blur_Avatar.png'),
   doc_icon: require('./icons/doc.png'),
+  document_icon: require('./icons/Document.png'),
   vehicle_icon: require('./icons/Vehicle.png'),
   mastercard: require('./icons/mastercard.png'),
   jcb: require('./icons/jcb.png'),
