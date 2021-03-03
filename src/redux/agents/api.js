@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
-import {config} from '../../utils/config';
+import { config } from '../../utils/config';
 export const Api = async () => {
   const token = await AsyncStorage.getItem('token');
   const headers = {
@@ -28,7 +28,7 @@ export const SearchApi = async (data) => {
   });
 };
 export const MissionAgentsApi = async (data) => {
-  const {mission_id} = data;
+  const { mission_id } = data;
   const token = await AsyncStorage.getItem('token');
   const headers = {
     'Content-Type': 'application/json',
@@ -44,7 +44,7 @@ export const MissionAgentsApi = async (data) => {
   });
 };
 export const BookAgentsApi = async (data) => {
-  const {agent_id, mission_id} = data;
+  const { agent_id, mission_id } = data;
   const token = await AsyncStorage.getItem('token');
   const headers = {
     'Content-Type': 'application/json',
@@ -60,3 +60,4 @@ export const BookAgentsApi = async (data) => {
     },
   });
 };
+

@@ -88,7 +88,7 @@ const ChooseType = () => {
 
         setlocation(region);
       },
-      (error) => console.log(error),
+      (error) => console.log("error==>>>",error),
       {
         enableHighAccuracy: true,
         timeout: 15000,

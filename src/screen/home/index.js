@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -19,7 +19,7 @@ import {
 } from '../../components';
 // import MapView, {Marker} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
-import {images} from '../../assets';
+import { images } from '../../assets';
 import {
   heightPercentageToDP,
   heightPercentageToDP as hp,
@@ -27,33 +27,48 @@ import {
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import ResponsiveImage from 'react-native-responsive-image';
-import {t1, t2, w1, w3, w4, w5} from '../../components/theme/fontsize';
-import {useNavigation} from '@react-navigation/native';
-import {Modalize} from 'react-native-modalize';
+import { t1, t2, w1, w3, w4, w5 } from '../../components/theme/fontsize';
+import { useNavigation } from '@react-navigation/native';
+import { Modalize } from 'react-native-modalize';
 import SearchFilters from './components/SearchFilters';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   agentslistRequest,
   locationSuccess,
-  profileRequest,
+  profileRequest
 } from '../../redux/action';
 import Header from '../../components/common/header';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import * as yup from 'yup';
-import {Formik} from 'formik';
+import { Formik } from 'formik';
 import EmptyFile from '../../components/emptyFile';
 import CommonMap from '../common/Map';
-import {divider} from '../../utils/commonView';
-import {AgentType} from '../../utils/data';
+import { divider } from '../../utils/commonView';
+import { AgentType } from '../../utils/data';
+import AsyncStorage from '@react-native-community/async-storage';
+import CommonApi from "../../utils/CommonApi";
+
 
 const Home = () => {
   const navigation = useNavigation();
 
   const modalizeRef = useRef(null);
+  const Profileeee = useSelector((state) => state);
+  const [agentList, setAgentList] = useState([])
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(profileRequest());
+    CommonApi.fetchAppCommon('/agent/mission-requests', 'GET', '').then(
+      response => {
+        if (response.status == 1) {
+          setAgentList(response.data)
+        }
+
+      }).catch(err => {
+        console.log("mission-requests===>>", err)
+      })
+
   }, []);
 
   useEffect(() => {
@@ -71,7 +86,7 @@ const Home = () => {
     return () => Geolocation.clearWatch(watchId);
   }, []);
 
-  const onSubmit = () => {};
+  const onSubmit = () => { };
 
   const renderAgentDetails = (item) => {
     return (
@@ -80,7 +95,7 @@ const Home = () => {
           <ImageComponent name="blurAvatar_icon" height="50" width="50" />
           <Block margin={[0, w3]} flex={false}>
             <Text semibold size={18} margin={[0, w3, 0, 0]}>
-              {item.name}
+              {item.title}
             </Text>
             <Text margin={[hp(0.5), 0, 0]} size={16} grey>
               {AgentType(item.agent_type)}
@@ -102,7 +117,7 @@ const Home = () => {
     );
   };
 
-  const renderCards = ({item, index}) => {
+  const renderCards = ({ item, index }) => {
     return (
       <Block
         shadow
@@ -110,12 +125,12 @@ const Home = () => {
         margin={[0, w5, t2]}
         padding={[0, 0, t2, 0]}
         borderRadius={10}>
-        <Block margin={[0, 0, t2]} style={{height: hp(15)}} secondary>
+        <Block margin={[0, 0, t2]} style={{ height: hp(15) }} secondary>
           <CommonMap />
         </Block>
         <Block padding={[0, w3]}>
           <Text semibold grey size={14}>
-            MISN0{item.id}
+            MISN0{item.agent_id}
           </Text>
           <Text margin={[hp(0.5), 0]} size={16} semibold>
             {item.title}
@@ -126,7 +141,7 @@ const Home = () => {
         {/* {renderRequestReview(item)} */}
         <Block row space={'around'} flex={false} center>
           <Button
-            style={{width: wp(40)}}
+            style={{ width: wp(40) }}
             onPress={() =>
               navigation.navigate('MissionDetails', {
                 item: item,
@@ -136,7 +151,7 @@ const Home = () => {
             Reject
           </Button>
           <Button
-            style={{width: wp(40)}}
+            style={{ width: wp(40) }}
             onPress={() =>
               navigation.navigate('MissionDetails', {
                 item: item,
@@ -179,7 +194,7 @@ const Home = () => {
             <>
               <KeyboardAwareScrollView
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={{flexGrow: 1}}>
+                contentContainerStyle={{ flexGrow: 1 }}>
                 <Block flex={false} padding={[0, w4]}>
                   <Block
                     // space={'between'}
@@ -189,7 +204,7 @@ const Home = () => {
                     flex={false}>
                     <Text
                       size={16}
-                      style={{width: widthPercentageToDP(45)}}
+                      style={{ width: widthPercentageToDP(45) }}
                       regular>
                       Accepting new mission requests?
                     </Text>
@@ -209,9 +224,9 @@ const Home = () => {
                         padding={
                           values.type === 'yes'
                             ? [
-                                heightPercentageToDP(1.5),
-                                widthPercentageToDP(8),
-                              ]
+                              heightPercentageToDP(1.5),
+                              widthPercentageToDP(8),
+                            ]
                             : [0, widthPercentageToDP(6)]
                         }
                         color={values.type === 'yes' ? '#FFFFFF' : '#F7F8FA'}
@@ -229,9 +244,9 @@ const Home = () => {
                         padding={
                           values.type === 'no'
                             ? [
-                                heightPercentageToDP(1.5),
-                                widthPercentageToDP(8),
-                              ]
+                              heightPercentageToDP(1.5),
+                              widthPercentageToDP(8),
+                            ]
                             : [0, widthPercentageToDP(6)]
                         }
                         color={values.type === 'no' ? '#FFFFFF' : '#F7F8FA'}
@@ -245,12 +260,13 @@ const Home = () => {
                 </Block>
                 <Block flex={false} margin={[t1, 0, 0]}>
                   <FlatList
-                    contentContainerStyle={{flexGrow: 1}}
+                    contentContainerStyle={{ flexGrow: 1 }}
                     ListEmptyComponent={<EmptyFile />}
-                    data={[
-                      {id: 1, title: 'Ha', agent_type: 2, name: 'user122'},
-                      {id: 1, title: 'Na', agent_type: 3, name: 'user122'},
-                    ]}
+                    data={agentList}
+                    // data={[
+                    //   { id: 1, title: 'Ha', agent_type: 2, name: 'user122' },
+                    //   { id: 1, title: 'Na', agent_type: 3, name: 'user122' },
+                    // ]}
                     renderItem={renderCards}
                   />
                 </Block>
@@ -262,6 +278,6 @@ const Home = () => {
     </Block>
   );
 };
-const circle = {height: 50, width: 50};
+const circle = { height: 50, width: 50 };
 
 export default Home;

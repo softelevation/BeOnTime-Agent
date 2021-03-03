@@ -14,7 +14,7 @@ const Splash = () => {
     const token = await AsyncStorage.getItem('token');
     const user = await AsyncStorage.getItem('user');
     const parsedUser = JSON.parse(user);
-    console.log(token);
+    console.log("token==>>>",token);
     if (strictValidString(token)) {
       dispatch(loginSuccess(parsedUser));
       setTimeout(() => {

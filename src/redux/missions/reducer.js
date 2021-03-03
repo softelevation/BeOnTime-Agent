@@ -1,5 +1,6 @@
 import {combineReducers} from 'redux';
 import {ActionConstants} from '../constants';
+
 const initialState = {
   loading: false,
   data: [],

@@ -1,20 +1,21 @@
-import React, {useState, useRef, useEffect} from 'react';
-import {Block, Button, ImageComponent, Text} from '../../../components';
+import React, { useState, useRef, useEffect } from 'react';
+import { Block, Button, ImageComponent, Text } from '../../../components';
 import Header from '../../../components/common/header';
 import CommonMap from '../../common/Map';
-import {Modalize} from 'react-native-modalize';
-import {t1, t2, w3} from '../../../components/theme/fontsize';
-import {AgentType, MissionType, PaymentStatus} from '../../../utils/data';
+import { Modalize } from 'react-native-modalize';
+import { t1, t2, w3 } from '../../../components/theme/fontsize';
+import { AgentType, MissionType, PaymentStatus } from '../../../utils/data';
 import Rating from '../../../components/ratings';
-import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
-import {divider} from '../../../utils/commonView';
+import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { divider } from '../../../utils/commonView';
 import moment from 'moment';
 import ImagePicker from 'react-native-image-crop-picker';
+import CommonApi from '../../../utils/CommonApi';
 // import SignatureScreen from '../../../components/common/signature';
 
 const MissionDetails = ({
   route: {
-    params: {item},
+    params: { item },
   },
 }) => {
   const [toggle, setToggle] = useState(true);
@@ -41,8 +42,20 @@ const MissionDetails = ({
   } = item;
   const ref = useRef();
 
+  useEffect(() => {
+    CommonApi.fetchAppCommon('/agent/mission/' + item.id, 'GET', '').then(
+      response => {
+        if (response.status == 1) {
+
+        }
+
+      }).catch(err => {
+        console.log("missionDetail ===>>", err)
+      })
+  }, []);
+
   const handleSignature = (signature) => {
-    console.log(signature);
+    console.log("signature==>>>", signature);
   };
 
   const handleEmpty = () => {
@@ -101,7 +114,7 @@ const MissionDetails = ({
           flex={false}
           center
           middle
-          style={{height: 50, width: 50}}
+          style={{ height: 50, width: 50 }}
           borderRadius={30}>
           {status === 3 && (
             <Text bold margin={[-t1, 0, 0, 0]}>
@@ -215,7 +228,7 @@ const MissionDetails = ({
 
       <Button
         onPress={() => openCamera()}
-        style={{marginTop: hp(2)}}
+        style={{ marginTop: hp(2) }}
         color="primary">
         Upload proof of payment
       </Button>
@@ -239,7 +252,9 @@ const MissionDetails = ({
       <Modalize
         ref={modalizeRef}
         // contentRef={contentRef}
-        snapPoint={350}>
+        alwaysOpen={350}
+        snapPoint={350}
+        > 
         {renderHeader()}
       </Modalize>
     </Block>

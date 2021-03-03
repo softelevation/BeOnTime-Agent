@@ -21,6 +21,11 @@ const Profile = () => {
       routes: [{name: 'Auth'}],
     });
   };
+
+  alert(JSON.stringify(profile))
+
+  console.log("=====>>>>", profile)
+
   const _renderItem = ({item}) => {
     return (
       <Block

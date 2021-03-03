@@ -8,6 +8,7 @@ import {light} from '../../components/theme/colors';
 export function* request(action) {
   try {
     const response = yield call(Api, action.payload);
+    console.log("mission===>>>",JSON.stringify(response))
     if (response.data.status === 1) {
       yield put(getMissionsSuccess(response.data.data));
     } else {

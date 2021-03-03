@@ -6,7 +6,7 @@ export const SignatureScreen = () => {
   const [signature, setSign] = useState(null);
 
   const handleSignature = (signature) => {
-    console.log(signature);
+    console.log("signature==>>>",signature);
     setSign(signature);
   };
 
