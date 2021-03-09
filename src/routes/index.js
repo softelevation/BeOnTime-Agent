@@ -9,6 +9,9 @@ import ChooseType from '../screen/choose-type';
 import ReviewDetails from '../screen/review';
 import Payment from '../screen/payment';
 import MissionDetails from '../screen/missions/details';
+import MissionReport from '../screen/mission-report';
+
+
 const Stack = createStackNavigator();
 
 function Routes() {
@@ -23,6 +26,8 @@ function Routes() {
         <Stack.Screen name="ReviewDetails" component={ReviewDetails} />
         <Stack.Screen name="Payment" component={Payment} />
         <Stack.Screen name="MissionDetails" component={MissionDetails} />
+        <Stack.Screen name="MissionReport" component={MissionReport} />
+        
       </Stack.Navigator>
     </NavigationContainer>
   );

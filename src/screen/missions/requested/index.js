@@ -22,18 +22,30 @@ import {strictValidObject} from '../../../utils/commonUtils';
 import {divider} from '../../../utils/commonView';
 import {AgentType} from '../../../utils/data';
 import CommonMap from '../../common/Map';
+import CommonApi from "../../../utils/CommonApi";
 
 const Requested = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const MissionData = useSelector((state) => state.mission.missions.data);
-  useEffect(() => {
-    dispatch(getMissionsRequest());
-    const unsubscribe = navigation.addListener('focus', () => {
-      dispatch(getMissionsRequest());
-    });
+  const [requestedData, setRequestedData] = useState([])
 
-    return unsubscribe;
+  useEffect(() => {
+    // dispatch(getMissionsRequest());
+    // const unsubscribe = navigation.addListener('focus', () => {
+    //   dispatch(getMissionsRequest());
+    // });
+
+   // return unsubscribe;
+   CommonApi.fetchAppCommon('/agent/mission-list', 'GET', '').then(
+    response => {
+      if (response.status == 1) {
+        setRequestedData(response.data.missionPending)
+      }
+
+    }).catch(err => {
+      console.log("mission-requests===>>", err)
+    })
   }, []);
   console.log(MissionData, 'MissionData');
   const renderCards = ({item, index}) => {
@@ -103,14 +115,14 @@ const Requested = () => {
   return (
     <Block primary>
       <Block padding={[t2, 0]}>
-        {strictValidObject(MissionData) && (
+        {/* {strictValidObject(MissionData) && ( */}
           <FlatList
             contentContainerStyle={{flexGrow: 1}}
             ListEmptyComponent={<EmptyFile />}
-            data={MissionData.missionPending}
+            data={requestedData}
             renderItem={renderCards}
           />
-        )}
+        {/* )} */}
       </Block>
     </Block>
   );

@@ -1,12 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {useNavigation} from '@react-navigation/native';
-import React, {useEffect} from 'react';
+import React, {useEffect,useState} from 'react';
 import {FlatList} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import {useDispatch, useSelector} from 'react-redux';
+
 import {
   Block,
   Button,
@@ -21,18 +22,33 @@ import {strictValidObject} from '../../../utils/commonUtils';
 import {divider} from '../../../utils/commonView';
 import {AgentType} from '../../../utils/data';
 import CommonMap from '../../common/Map';
+import CommonApi from "../../../utils/CommonApi";
 
 const InProgress = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const MissionData = useSelector((state) => state.mission.missions.data);
-  useEffect(() => {
-    dispatch(getMissionsRequest());
-    const unsubscribe = navigation.addListener('focus', () => {
-      dispatch(getMissionsRequest());
-    });
+  const [missionDataProgress, setMissionDataProgress] = useState([])
 
-    return unsubscribe;
+  useEffect(() => {
+    CommonApi.fetchAppCommon('/agent/mission-list', 'GET', '').then(
+      response => {
+        if (response.status == 1) {
+          setMissionDataProgress(response.data.mission_all)
+        //  alert(JSON.stringify(missionDataProgress))
+        }
+
+      }).catch(err => {
+        console.log("mission-requests===>>", err)
+      })
+    // dispatch(getMissionsRequest());
+    // const unsubscribe = navigation.addListener('focus', () => {
+    //   dispatch(getMissionsRequest());
+    // });
+
+   // return unsubscribe;
+
+    
   }, []);
   const renderCards = ({item, index}) => {
     return (
@@ -118,14 +134,14 @@ const InProgress = () => {
   return (
     <Block primary>
       <Block padding={[t2, 0]}>
-        {strictValidObject(MissionData) && (
+        {/* {strictValidObject(missionDataProgress) && ( */}
           <FlatList
             contentContainerStyle={{flexGrow: 1}}
             ListEmptyComponent={<EmptyFile />}
-            data={MissionData.missionInProgress}
+            data={missionDataProgress}
             renderItem={renderCards}
           />
-        )}
+        {/* )} */}
       </Block>
     </Block>
   );

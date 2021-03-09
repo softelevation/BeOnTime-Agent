@@ -34,10 +34,10 @@ export const Api = async (data) => {
   formData.append('phone', phone);
   formData.append('home_address', data.address);
   //formData.append('customer_type', customer_type);
-  formData.append('password', '12345678');
+ // formData.append('password', '12345678');
   //formData.append('company_name', company_name);
   formData.append('agent_type', agent_type);
-  formData.append('image', JSON.stringify(data.profile));
+ // formData.append('image', data.profile);
   formData.append('iban', iban);
   formData.append('lat', '');
   formData.append('long', '');
@@ -45,11 +45,9 @@ export const Api = async (data) => {
   formData.append('is_vehicle', data.is_vehicle);
   formData.append('is_subc', data.is_subc);
   formData.append('supplier_company', data.supplier_company);
-  // formData.append('social_security_number', JSON.stringify(data.social_security_number));
-  //formData.append('cv', JSON.stringify(data.cv));
-  formData.append('social_security_number', data.social_security_number);
-  formData.append('cv', data.cv);
-  formData.append('identity_card', data.identity_card);
+  // formData.append('social_security_number', data.social_security_number);
+  // formData.append('cv', data.cv);
+  // formData.append('identity_card', data.identity_card);
 
 
 

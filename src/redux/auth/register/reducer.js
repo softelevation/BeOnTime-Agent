@@ -6,6 +6,7 @@ const initialState = {
   isSuccess: false,
 };
 export function register(state = initialState, action) {
+ // alert(JSON.stringify(action.type))
   switch (action.type) {
     case ActionConstants.REGISTER_REQUEST:
       return {

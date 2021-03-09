@@ -246,14 +246,17 @@ const MissionDetails = ({
   return (
     <Block primary>
       <Header centerText="Mission-Details" />
-      <Block flex={1}>
+      {/* <Block flex={1}>
         <CommonMap />
-      </Block>
+      </Block> */}
       <Modalize
         ref={modalizeRef}
         // contentRef={contentRef}
-        alwaysOpen={350}
-        snapPoint={350}
+        alwaysOpen={85}
+        handlePosition="inside"
+
+       // snapPoint={350}
+       // handlePosition="inside"
         > 
         {renderHeader()}
       </Modalize>
