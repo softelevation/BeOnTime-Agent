@@ -41,3 +41,4 @@ export {
   makePaymentRequest,
   makePaymentSuccess,
 } from './payments/action';
+export {socketConnection, socketDisconnect, socketFlush} from './socket/action';

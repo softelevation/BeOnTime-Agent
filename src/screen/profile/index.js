@@ -22,10 +22,6 @@ const Profile = () => {
     });
   };
 
-  alert(JSON.stringify(profile))
-
-  console.log("=====>>>>", profile)
-
   const _renderItem = ({item}) => {
     return (
       <Block
@@ -53,11 +49,11 @@ const Profile = () => {
             height="150"
             width="150"
           />
-          <Text semibold margin={[t1, 0]}>
+          <Text transform="capitalize" semibold margin={[t1, 0]}>
             {profile.first_name} {profile.last_name}
           </Text>
           <Text size={16} grey>
-            Customer
+            {profile.type}
           </Text>
         </Block>
         <Block
