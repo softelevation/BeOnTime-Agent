@@ -9,7 +9,7 @@ export const Api = async (data) => {
   };
   return axios({
     method: 'get',
-    url: `${config.Api_Url}/customer/my-mission-list`,
+    url: `${config.Api_Url}/agent/my-mission-list`,
     headers,
     data: data,
   });

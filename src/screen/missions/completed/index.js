@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {useNavigation} from '@react-navigation/native';
-import React, {useEffect} from 'react';
+import React, {useEffect,useState} from 'react';
 import {FlatList} from 'react-native';
 import {
   heightPercentageToDP as hp,
@@ -21,18 +21,31 @@ import {strictValidObject} from '../../../utils/commonUtils';
 import {divider} from '../../../utils/commonView';
 import {AgentType} from '../../../utils/data';
 import CommonMap from '../../common/Map';
+import CommonApi from "../../../utils/CommonApi";
 
 const Finished = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const MissionData = useSelector((state) => state.mission.missions.data);
-  useEffect(() => {
-    dispatch(getMissionsRequest());
-    const unsubscribe = navigation.addListener('focus', () => {
-      dispatch(getMissionsRequest());
-    });
+  const [completedData, setCompletedData] = useState([])
 
-    return unsubscribe;
+  useEffect(() => {
+    // dispatch(getMissionsRequest());
+    // const unsubscribe = navigation.addListener('focus', () => {
+    //   dispatch(getMissionsRequest());
+    // });
+
+    // return unsubscribe;
+    CommonApi.fetchAppCommon('/agent/mission-list', 'GET', '').then(
+      response => {
+        if (response.status == 1) {
+          setCompletedData(response.data.missionCompleted)
+        //  alert(JSON.stringify(missionDataProgress))
+        }
+
+      }).catch(err => {
+        console.log("mission-requests===>>", err)
+      })
   }, []);
   console.log(MissionData, 'MissionData');
   const renderCards = ({item, index}) => {
@@ -119,14 +132,14 @@ const Finished = () => {
   return (
     <Block primary>
       <Block padding={[t2, 0]}>
-        {strictValidObject(MissionData) && (
+        {/* {strictValidObject(MissionData) && ( */}
           <FlatList
             contentContainerStyle={{flexGrow: 1}}
             ListEmptyComponent={<EmptyFile />}
-            data={MissionData.missionCompleted}
+            data={completedData}
             renderItem={renderCards}
           />
-        )}
+        {/* )} */}
       </Block>
     </Block>
   );

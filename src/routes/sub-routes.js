@@ -16,6 +16,7 @@ import Requested from '../screen/missions/requested';
 import InProgress from '../screen/missions/in_progress';
 import Finished from '../screen/missions/completed';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import MissionReport from '../screen/mission-report'
 
 const TopTab = createMaterialTopTabNavigator();
 const Stack = createStackNavigator();

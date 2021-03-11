@@ -117,6 +117,40 @@ const Home = () => {
     );
   };
 
+  const acceptMission = (item) => {
+    navigation.navigate('MissionDetails', {item: item});
+
+    // var parm = {
+    //   "status": 3,
+    // }
+    // CommonApi.fetchAppCommon('/agent/mission-request/' + item.id, 'POST', JSON.stringify(parm)).then(
+    //   response => {
+    //     if (response.status == 1) {
+    //       navigation.navigate('MissionDetails', { item: item })
+    //     }
+
+    //   }).catch(err => {
+    //     console.log("missionRequest===>>", err)
+    //   })
+  };
+
+  const rejectMission = (item) => {
+    navigation.navigate('MissionDetails', {item: item});
+
+    // var parm = {
+    //   "status": 2,
+    // }
+    // CommonApi.fetchAppCommon('/agent/mission-request/' + item.id, 'POST', JSON.stringify(parm)).then(
+    //   response => {
+    //     if (response.status == 1) {
+    //       navigation.navigate('MissionDetails', { item: item })
+    //     }
+
+    //   }).catch(err => {
+    //     console.log("missionRequest===>>", err)
+    //   })
+  };
+
   const renderCards = ({item, index}) => {
     return (
       <Block
@@ -142,21 +176,13 @@ const Home = () => {
         <Block row space={'around'} flex={false} center>
           <Button
             style={{width: wp(40)}}
-            onPress={() =>
-              navigation.navigate('MissionDetails', {
-                item: item,
-              })
-            }
+            onPress={() => rejectMission(item)}
             color="primary">
             Reject
           </Button>
           <Button
             style={{width: wp(40)}}
-            onPress={() =>
-              navigation.navigate('MissionDetails', {
-                item: item,
-              })
-            }
+            onPress={() => acceptMission(item)}
             color="secondary">
             Accept
           </Button>

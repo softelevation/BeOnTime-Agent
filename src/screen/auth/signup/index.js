@@ -107,12 +107,15 @@ const Signup = () => {
           uploading: false,
           profileImage: Platform.OS === 'ios' ? image.sourceURL : image.path,
           profileData: {
-            name: image.filename ? image.filename : `photo.${filename}`,
-            type: image.mime,
+            name:  image.path.split("/").pop(),
+
+          //  name: image.filename ? image.filename : `photo.${filename}`,
+                       type: 'image/jpeg',
+              //type: image.mime,
             uri:
               Platform.OS === 'ios'
                 ? image.sourceURL
-                : image.path.replace('file://', ''),
+                : image.path.replace('file:///', ''),
           },
         });
       }, 2000);
@@ -300,8 +303,9 @@ const Signup = () => {
             uploadings: false,
             socialSecImage: Platform.OS === 'ios' ? image.sourceURL : image.path,
             socialSecData: {
-              name: image.filename ? image.filename : `photo.${filename}`,
-              type: image.mime,
+              name:  image.path.split("/").pop(),
+            //  name: image.filename ? image.filename : `photo.${filename}`,
+              type: 'image/jpeg',
               uri:
                 Platform.OS === 'ios'
                   ? image.sourceURL
@@ -332,8 +336,8 @@ const Signup = () => {
             uploadings: false,
             socialSecImage: Platform.OS === 'ios' ? image.sourceURL : image.path,
             socialSecImage: {
-              name: image.filename ? image.filename : `photo.${filename}`,
-              type: image.mime,
+              name:  image.path.split("/").pop(),
+              type: 'image/jpeg',
               uri:
                 Platform.OS === 'ios'
                   ? image.sourceURL
@@ -479,10 +483,10 @@ const Signup = () => {
 
 
     console.log("**************************", values);
-    if (profileData == '') {
-      Toast.show('Please Upload Profile Picture')
-    }
-    else if (values.firstName == '') {
+    // if (profileData == '') {
+    //   Toast.show('Please Upload Profile Picture')
+    // }
+     if (values.firstName == '') {
       Toast.show('Please Enter First Name')
     }
     else if (values.lastName == '') {
@@ -494,15 +498,15 @@ const Signup = () => {
     else if (values.phone == '') {
       Toast.show('Please enter phone number')
     }
-    else if (idCardData == '') {
-      Toast.show('Please Upload Identity Card Document')
-    }
-    else if (AcvCardData == '') {
-      Toast.show('Please Upload Anonymous Curriculum Vitae document')
-    }
-    else if (socialSecData == '') {
-      Toast.show('Please Upload Social Security Number document')
-    }
+    // else if (idCardData == '') {
+    //   Toast.show('Please Upload Identity Card Document')
+    // }
+    // else if (AcvCardData == '') {
+    //   Toast.show('Please Upload Anonymous Curriculum Vitae document')
+    // }
+    // else if (socialSecData == '') {
+    //   Toast.show('Please Upload Social Security Number document')
+    // }
     else if (values.iban == '') {
       Toast.show('Please enter IBAN number')
     }
@@ -556,7 +560,7 @@ const Signup = () => {
         first_name: firstName,
         last_name: lastName,
         email: email,
-        password: '12345678',
+       // password: '',
         phone: phone,
         iban: iban,
         agent_type: agent_type.name,

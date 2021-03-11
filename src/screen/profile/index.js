@@ -4,16 +4,19 @@ import {
   useNavigation,
   NavigationAction,
 } from '@react-navigation/native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {FlatList, ScrollView} from 'react-native';
 import {useSelector} from 'react-redux';
 import {Block, Button, ImageComponent, Text} from '../../components';
 import Header from '../../components/common/header';
 import {t1, t5, w3} from '../../components/theme/fontsize';
+import CommonApi from '../../utils/CommonApi';
 
 const Profile = () => {
   const navigation = useNavigation();
-  const profile = useSelector((state) => state.user.profile.user.data);
+  // const profile = useSelector((state) => state.user.profile.user.data);
+  const [profile, setProfileData] = useState({});
+
   const onLogout = async () => {
     const keys = await AsyncStorage.getAllKeys();
     await AsyncStorage.multiRemove(keys);
@@ -21,6 +24,18 @@ const Profile = () => {
       routes: [{name: 'Auth'}],
     });
   };
+
+  useEffect(() => {
+    CommonApi.fetchAppCommon('/profile', 'GET', '')
+      .then((response) => {
+        if (response.status == 1) {
+          setProfileData(response.data);
+        }
+      })
+      .catch((err) => {
+        console.log('error profile===>>', err);
+      });
+  }, []);
 
   const _renderItem = ({item}) => {
     return (
@@ -92,11 +107,31 @@ const Profile = () => {
             {profile.home_address}
           </Text>
         </Block>
+        <Block
+          flex={false}
+          row
+          space={'between'}
+          margin={[t1, 0]}
+          padding={[0, w3]}
+          center>
+          <Text size={16}>Completed missions</Text>
+          <Text grey size={16} />
+        </Block>
+        <Block
+          flex={false}
+          row
+          space={'between'}
+          margin={[t1, 0]}
+          padding={[0, w3]}
+          center>
+          <Text size={16}>Hours clocked</Text>
+          <Text grey size={16} />
+        </Block>
         <Block flex={false} padding={[0, w3]} margin={[t5, 0, 0]}>
           <FlatList
             scrollEnabled={false}
             data={[
-              'Billing',
+              // 'Billing',
               'Edit profile',
               'Change email',
               'Change password',
