@@ -34,7 +34,6 @@ export function* searchAgentsRequest(action) {
       yield put(searchAgentsError(response));
     }
   } catch (err) {
-    console.log(err, 'err');
     yield put(searchAgentsError());
   }
 }
@@ -47,7 +46,6 @@ export function* missionAgentsRequest(action) {
       yield put(missionsAgentError(response));
     }
   } catch (err) {
-    console.log(err, 'err');
     yield put(missionsAgentError());
   }
 }
@@ -61,7 +59,6 @@ export function* bookAgentsRequest(action) {
       yield put(bookAgentError(response));
     }
   } catch (err) {
-    console.log(err, 'err');
     yield put(bookAgentError());
   }
 }

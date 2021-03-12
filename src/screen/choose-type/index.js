@@ -84,11 +84,10 @@ const ChooseType = () => {
           longitudeDelta: 0.00421 * 1.5,
           // angle: position.coords.heading,
         };
-        console.log(position, 'position');
 
         setlocation(region);
       },
-      (error) => console.log("error==>>>",error),
+      (error) => console.log('error==>>>', error),
       {
         enableHighAccuracy: true,
         timeout: 15000,

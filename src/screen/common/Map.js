@@ -89,14 +89,13 @@
 
 // export default CommonMap;
 
-
 import Geolocation from '@react-native-community/geolocation';
-import React, { useEffect, useRef, useState } from 'react';
-import { View, StyleSheet } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+import React, {useEffect, useRef, useState} from 'react';
+import {View, StyleSheet} from 'react-native';
+import MapView, {Marker} from 'react-native-maps';
 import ResponsiveImage from 'react-native-responsive-image';
-import { images } from '../../assets';
-import { Block } from '../../components';
+import {images} from '../../assets';
+import {Block} from '../../components';
 
 const CommonMap = () => {
   const [location, setlocation] = useState({
@@ -137,8 +136,6 @@ const CommonMap = () => {
           latitudeDelta: 0.00922 * 1.5,
           longitudeDelta: 0.00421 * 1.5,
         };
-        console.log(position, 'position');
-
         setlocation(region);
       },
       (error) => console.log(error),
@@ -151,10 +148,10 @@ const CommonMap = () => {
     return () => Geolocation.clearWatch(watchId);
   }, []);
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{flex: 1}}>
       <MapView
         ref={mapRef}
-        style={{ ...StyleSheet.absoluteFillObject }}
+        style={{...StyleSheet.absoluteFillObject}}
         region={location}
         onRegionChangeComplete={async (coords) => {
           if (!isMapRegionSydney(coords)) {
@@ -171,7 +168,7 @@ const CommonMap = () => {
           <View>
             <ResponsiveImage
               style={{
-                transform: [{ rotate: '120deg' }],
+                transform: [{rotate: '120deg'}],
               }}
               source={images.currentlocation_icon}
               initHeight="60"

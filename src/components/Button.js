@@ -75,6 +75,7 @@ const Button = ({
   disabled,
   borderColor,
   textStyle,
+  loaderColor,
   ...rest
 }) => {
   const styles = componentStyles();
@@ -107,7 +108,7 @@ const Button = ({
       activeOpacity={disabled ? opacity || 0.8 : 0.2}
       {...rest}>
       {isLoading ? (
-        <ActivityIndicator size="small" color="#ffffff" />
+        <ActivityIndicator size="small" color={loaderColor} />
       ) : (
         <Text
           semibold
@@ -129,6 +130,7 @@ Button.defaultProps = {
   locations: [0.1, 0.9],
   opacity: 0.8,
   color: '#FFF',
+  loaderColor: '#fff',
 };
 
 export default Button;

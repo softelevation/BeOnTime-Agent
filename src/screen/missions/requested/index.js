@@ -1,12 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import AsyncStorage from '@react-native-community/async-storage';
 import {useNavigation} from '@react-navigation/native';
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {FlatList} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import {useDispatch, useSelector} from 'react-redux';
+import {Socket} from 'socket.io-client';
 import {
   Block,
   Button,
@@ -14,40 +16,33 @@ import {
   ImageComponent,
   Text,
 } from '../../../components';
-import Header from '../../../components/common/header';
+import ActivityLoader from '../../../components/activityLoader';
 import EmptyFile from '../../../components/emptyFile';
-import {t1, t2, w1, w3, w4, w5} from '../../../components/theme/fontsize';
+import {t1, t2, w3, w5} from '../../../components/theme/fontsize';
 import {getMissionsRequest} from '../../../redux/action';
-import {strictValidObject} from '../../../utils/commonUtils';
+import {strictValidArrayWithLength} from '../../../utils/commonUtils';
 import {divider} from '../../../utils/commonView';
-import {AgentType} from '../../../utils/data';
 import CommonMap from '../../common/Map';
-import CommonApi from "../../../utils/CommonApi";
 
 const Requested = () => {
   const navigation = useNavigation();
-  const dispatch = useDispatch();
   const MissionData = useSelector((state) => state.mission.missions.data);
-  const [requestedData, setRequestedData] = useState([])
+  const {missionPending} = MissionData;
+  const isLoad = useSelector((state) => state.mission.missions.loading);
+  const socket = useSelector((state) => state.socket.data);
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    // dispatch(getMissionsRequest());
-    // const unsubscribe = navigation.addListener('focus', () => {
-    //   dispatch(getMissionsRequest());
-    // });
+  const startMission = async (id) => {
+    const token = await AsyncStorage.getItem('token');
+    const mission_id = id;
+    socket.emit('start_mission', {mission_id, token});
 
-   // return unsubscribe;
-   CommonApi.fetchAppCommon('/agent/mission-list', 'GET', '').then(
-    response => {
-      if (response.status == 1) {
-        setRequestedData(response.data.missionPending)
-      }
+    socket.on(`mission_data_${mission_id}`, (msg) => {
+      console.log(msg, `mission_data_${mission_id}`);
+      dispatch(getMissionsRequest());
+    });
+  };
 
-    }).catch(err => {
-      console.log("mission-requests===>>", err)
-    })
-  }, []);
-  console.log(MissionData, 'MissionData');
   const renderCards = ({item, index}) => {
     return (
       <Block
@@ -70,7 +65,9 @@ const Requested = () => {
         {divider()}
         {renderAgentDetails(item)}
         <Block flex={false} padding={[0, w3]}>
-          <Button color="secondary">Start mission</Button>
+          <Button onPress={() => startMission(item.id)} color="secondary">
+            Start mission
+          </Button>
         </Block>
         <CustomButton
           onPress={() =>
@@ -90,11 +87,15 @@ const Requested = () => {
         <Block flex={false} row center>
           <ImageComponent name="blurAvatar_icon" height="50" width="50" />
           <Block margin={[0, w3]} flex={false}>
-            <Text semibold size={18} margin={[0, w3, 0, 0]}>
-              {item.username}
+            <Text
+              transform="capitalize"
+              semibold
+              size={18}
+              margin={[0, w3, 0, 0]}>
+              {item.first_name} {item.last_name}
             </Text>
             <Text margin={[hp(0.5), 0, 0]} size={16} grey>
-              {AgentType(item.agent_type)}
+              {item.location}
             </Text>
           </Block>
         </Block>
@@ -114,15 +115,21 @@ const Requested = () => {
   };
   return (
     <Block primary>
+      {isLoad && <ActivityLoader />}
+
       <Block padding={[t2, 0]}>
-        {/* {strictValidObject(MissionData) && ( */}
+        {strictValidArrayWithLength(missionPending) ? (
           <FlatList
             contentContainerStyle={{flexGrow: 1}}
             ListEmptyComponent={<EmptyFile />}
-            data={requestedData}
+            data={missionPending}
             renderItem={renderCards}
           />
-        {/* )} */}
+        ) : (
+          <Block center middle>
+            <Text>No Results</Text>
+          </Block>
+        )}
       </Block>
     </Block>
   );

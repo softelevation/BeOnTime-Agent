@@ -3,7 +3,11 @@ import {useNavigation} from '@react-navigation/native';
 import React, {useEffect} from 'react';
 import {useDispatch} from 'react-redux';
 import {Block, ImageComponent} from '../../components';
-import {loginSuccess, socketConnection} from '../../redux/action';
+import {
+  loginSuccess,
+  profileRequest,
+  socketConnection,
+} from '../../redux/action';
 import {strictValidString} from '../../utils/commonUtils';
 import io from 'socket.io-client';
 
@@ -15,9 +19,10 @@ const Splash = () => {
     const token = await AsyncStorage.getItem('token');
     const user = await AsyncStorage.getItem('user');
     const parsedUser = JSON.parse(user);
-    console.log('token==>>>', token);
     if (strictValidString(token)) {
       dispatch(loginSuccess(parsedUser));
+      dispatch(profileRequest());
+
       setTimeout(() => {
         navigation.navigate('Home');
       }, 3000);

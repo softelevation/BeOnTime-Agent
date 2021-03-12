@@ -63,7 +63,6 @@ const Payment = () => {
     );
   };
   useEffect(() => {
-    console.log('get true');
     if (isSuccess === true) {
       setvisible(true);
     }

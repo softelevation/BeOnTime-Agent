@@ -23,7 +23,6 @@ export default CommonApi = {
       headers: header,
     })
       .then((response) => {
-        // console.log("====>>>", response)
         if (response.ok) {
           return response.json();
         } else {

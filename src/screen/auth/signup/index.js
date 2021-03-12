@@ -1,5 +1,5 @@
-import { Formik } from 'formik';
-import React, { useState, useEffect, useRef } from 'react';
+import {Formik} from 'formik';
+import React, {useState, useEffect, useRef} from 'react';
 import Toast from 'react-native-simple-toast';
 import {
   ActivityIndicator,
@@ -7,15 +7,14 @@ import {
   ImageBackground,
   Platform,
   TouchableOpacity,
-
 } from 'react-native';
 import ImageCropPicker from 'react-native-image-crop-picker';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {
   heightPercentageToDP,
   widthPercentageToDP,
 } from 'react-native-responsive-screen';
-import { images } from '../../../assets';
+import {images} from '../../../assets';
 import {
   Block,
   CustomButton,
@@ -26,15 +25,15 @@ import {
   Button,
 } from '../../../components';
 import Header from '../../../components/common/header';
-import { t1, t2, t4, w1, w2, w3, w4 } from '../../../components/theme/fontsize';
+import {t1, t2, t4, w1, w2, w3, w4} from '../../../components/theme/fontsize';
 import * as yup from 'yup';
-import { useNavigation } from '@react-navigation/native';
-import { useDispatch, useSelector } from 'react-redux';
-import { loginRequest, registerRequest } from '../../../redux/action';
+import {useNavigation} from '@react-navigation/native';
+import {useDispatch, useSelector} from 'react-redux';
+import {loginRequest, registerRequest} from '../../../redux/action';
 import AlertCompnent from '../../../components/AlertCompnent';
 import AgentType from './agent-type';
-import ImagePicker from "./imagePicker";
-import { Modalize } from 'react-native-modalize';
+import ImagePicker from './imagePicker';
+import {Modalize} from 'react-native-modalize';
 
 const Signup = () => {
   const navigation = useNavigation();
@@ -51,7 +50,7 @@ const Signup = () => {
     uploading: false,
     profileData: '',
   });
-  const { profileImage, profileData, uploading } = userProfileDetails;
+  const {profileImage, profileData, uploading} = userProfileDetails;
 
   const [userIDCardDetails, setUserIDCardDetails] = useState({
     idCardImage: '',
@@ -59,7 +58,7 @@ const Signup = () => {
     idCardData: '',
   });
 
-  const { idCardImage, idCardData, uploadings } = userIDCardDetails;
+  const {idCardImage, idCardData, uploadings} = userIDCardDetails;
 
   const [userAcvCardDetails, setUserAcvCardDetails] = useState({
     AcvCardImage: '',
@@ -67,8 +66,7 @@ const Signup = () => {
     AcvCardData: '',
   });
 
-  const { AcvCardImage, AcvCardData, uploadingss } = userAcvCardDetails;
-
+  const {AcvCardImage, AcvCardData, uploadingss} = userAcvCardDetails;
 
   const [userSocialSec, setUserSocialSec] = useState({
     socialSecImage: '',
@@ -76,8 +74,7 @@ const Signup = () => {
     socialSecData: '',
   });
 
-  const { socialSecImage, socialSecData, uploadingSS } = userSocialSec;
-
+  const {socialSecImage, socialSecData, uploadingSS} = userSocialSec;
 
   // useEffect(() => {
   //   if (isSuccess) {
@@ -86,7 +83,6 @@ const Signup = () => {
   // }, [isSuccess]);
 
   const uploadPhoto = (type) => {
-
     ImageCropPicker.openPicker({
       width: 300,
       height: 400,
@@ -96,7 +92,6 @@ const Signup = () => {
         ...userProfileDetails,
         uploading: true,
       });
-      console.log(image, 'image');
       const uri = image.path;
       const uriParts = uri.split('.');
       const filename = uriParts[uriParts.length - 1];
@@ -107,11 +102,11 @@ const Signup = () => {
           uploading: false,
           profileImage: Platform.OS === 'ios' ? image.sourceURL : image.path,
           profileData: {
-            name:  image.path.split("/").pop(),
+            name: image.path.split('/').pop(),
 
-          //  name: image.filename ? image.filename : `photo.${filename}`,
-                       type: 'image/jpeg',
-              //type: image.mime,
+            //  name: image.filename ? image.filename : `photo.${filename}`,
+            type: 'image/jpeg',
+            //type: image.mime,
             uri:
               Platform.OS === 'ios'
                 ? image.sourceURL
@@ -121,7 +116,6 @@ const Signup = () => {
       }, 2000);
     });
   };
-
 
   const uploadDocumentIdCard = (type) => {
     if (type == 'gallary') {
@@ -134,10 +128,6 @@ const Signup = () => {
           ...userIDCardDetails,
           uploading: true,
         });
-
-
-
-        console.log(image, 'image');
         const uri = image.path;
         const uriParts = uri.split('.');
         const filename = uriParts[uriParts.length - 1];
@@ -158,9 +148,7 @@ const Signup = () => {
           });
         }, 2000);
       });
-    }
-    else {
-
+    } else {
       ImageCropPicker.openCamera({
         width: 300,
         height: 400,
@@ -170,10 +158,6 @@ const Signup = () => {
           ...userIDCardDetails,
           uploading: true,
         });
-
-
-
-        console.log(image, 'image');
         const uri = image.path;
         const uriParts = uri.split('.');
         const filename = uriParts[uriParts.length - 1];
@@ -196,7 +180,6 @@ const Signup = () => {
       });
     }
   };
-
 
   const uploadDocumentAcv = (type) => {
     if (type == 'gallary') {
@@ -240,9 +223,7 @@ const Signup = () => {
           });
         }, 2000);
       });
-    }
-    else {
-
+    } else {
       ImageCropPicker.openCamera({
         width: 300,
         height: 400,
@@ -252,10 +233,6 @@ const Signup = () => {
           ...userIDCardDetails,
           uploading: true,
         });
-
-
-
-        console.log(image, 'image');
         const uri = image.path;
         const uriParts = uri.split('.');
         const filename = uriParts[uriParts.length - 1];
@@ -279,7 +256,6 @@ const Signup = () => {
     }
   };
 
-
   const uploadDocumentSocial = (type) => {
     if (type == 'gallary') {
       ImageCropPicker.openPicker({
@@ -292,7 +268,6 @@ const Signup = () => {
           uploading: true,
         });
 
-
         const uri = image.path;
         const uriParts = uri.split('.');
         const filename = uriParts[uriParts.length - 1];
@@ -301,10 +276,11 @@ const Signup = () => {
           setUserSocialSec({
             ...userSocialSec,
             uploadings: false,
-            socialSecImage: Platform.OS === 'ios' ? image.sourceURL : image.path,
+            socialSecImage:
+              Platform.OS === 'ios' ? image.sourceURL : image.path,
             socialSecData: {
-              name:  image.path.split("/").pop(),
-            //  name: image.filename ? image.filename : `photo.${filename}`,
+              name: image.path.split('/').pop(),
+              //  name: image.filename ? image.filename : `photo.${filename}`,
               type: 'image/jpeg',
               uri:
                 Platform.OS === 'ios'
@@ -314,9 +290,7 @@ const Signup = () => {
           });
         }, 2000);
       });
-    }
-    else {
-
+    } else {
       ImageCropPicker.openCamera({
         width: 300,
         height: 400,
@@ -334,9 +308,10 @@ const Signup = () => {
           setUserAcvCardDetails({
             ...userAcvCardDetails,
             uploadings: false,
-            socialSecImage: Platform.OS === 'ios' ? image.sourceURL : image.path,
+            socialSecImage:
+              Platform.OS === 'ios' ? image.sourceURL : image.path,
             socialSecImage: {
-              name:  image.path.split("/").pop(),
+              name: image.path.split('/').pop(),
               type: 'image/jpeg',
               uri:
                 Platform.OS === 'ios'
@@ -351,14 +326,14 @@ const Signup = () => {
 
   const renderProfileImagePath = () => {
     if (profileImage) {
-      return { uri: profileImage };
+      return {uri: profileImage};
     }
     return images.default_profile_icon;
   };
 
   const renderIdCardImage = () => {
     if (idCardImage) {
-      return { uri: idCardImage };
+      return {uri: idCardImage};
     }
     return images.default_profile_icon;
   };
@@ -373,7 +348,7 @@ const Signup = () => {
         <>
           <ImageBackground
             source={renderProfileImagePath()}
-            imageStyle={{ borderRadius: 80 }}
+            imageStyle={{borderRadius: 80}}
             style={BackgroundStyle}>
             <TouchableOpacity onPress={() => uploadPhoto()}>
               <ImageComponent name="plus_icon" height="55" width="55" />
@@ -383,7 +358,6 @@ const Signup = () => {
       );
     }
   };
-
 
   const renderIdCardImageDoc = () => {
     if (uploadings) {
@@ -396,21 +370,19 @@ const Signup = () => {
         <>
           <ImageBackground
             source={renderIdCardImage()}
-            imageStyle={{ borderRadius: 80 }}
-            style={BackgroundStyle}>
-
-          </ImageBackground>
+            imageStyle={{borderRadius: 80}}
+            style={BackgroundStyle}
+          />
         </>
       );
     }
   };
   const renderAcvImagePath = () => {
     if (AcvCardImage) {
-      return { uri: AcvCardImage };
+      return {uri: AcvCardImage};
     }
     return images.default_profile_icon;
   };
-
 
   const renderAcvCardImage = () => {
     if (uploading) {
@@ -423,7 +395,7 @@ const Signup = () => {
         <>
           <ImageBackground
             source={renderAcvImagePath()}
-            imageStyle={{ borderRadius: 80 }}
+            imageStyle={{borderRadius: 80}}
             style={BackgroundStyle}>
             {/* <TouchableOpacity onPress={() => uploadPhoto()}>
               <ImageComponent name="plus_icon" height="55" width="55" />
@@ -436,11 +408,10 @@ const Signup = () => {
 
   const renderSocialSecImagePath = () => {
     if (socialSecImage) {
-      return { uri: socialSecImage };
+      return {uri: socialSecImage};
     }
     return images.default_profile_icon;
   };
-
 
   const renderSocialSecImage = () => {
     if (uploadingSS) {
@@ -453,7 +424,7 @@ const Signup = () => {
         <>
           <ImageBackground
             source={renderSocialSecImagePath()}
-            imageStyle={{ borderRadius: 80 }}
+            imageStyle={{borderRadius: 80}}
             style={BackgroundStyle}>
             {/* <TouchableOpacity onPress={() => uploadPhoto()}>
               <ImageComponent name="plus_icon" height="55" width="55" />
@@ -477,26 +448,19 @@ const Signup = () => {
     //   setmodal(false);
     // }
     setmodal(false);
-
   };
   const onSubmit = (values) => {
-
-
-    console.log("**************************", values);
     // if (profileData == '') {
     //   Toast.show('Please Upload Profile Picture')
     // }
-     if (values.firstName == '') {
-      Toast.show('Please Enter First Name')
-    }
-    else if (values.lastName == '') {
-      Toast.show('Please Enter Last  Name')
-    }
-    else if (values.email == '') {
-      Toast.show('Please enter email')
-    }
-    else if (values.phone == '') {
-      Toast.show('Please enter phone number')
+    if (values.firstName == '') {
+      Toast.show('Please Enter First Name');
+    } else if (values.lastName == '') {
+      Toast.show('Please Enter Last  Name');
+    } else if (values.email == '') {
+      Toast.show('Please enter email');
+    } else if (values.phone == '') {
+      Toast.show('Please enter phone number');
     }
     // else if (idCardData == '') {
     //   Toast.show('Please Upload Identity Card Document')
@@ -508,28 +472,20 @@ const Signup = () => {
     //   Toast.show('Please Upload Social Security Number document')
     // }
     else if (values.iban == '') {
-      Toast.show('Please enter IBAN number')
-    }
-    else if (values.cnaps == '') {
-      Toast.show('Please enter CNAPS Number')
-    }
-    else if (values.address == '') {
-      Toast.show('Please Enter Home Address')
-    }
-    else if (values.work_location == '') {
-      Toast.show('Please Enter Work Location Address')
-    }
-    else if (values.company == '') {
-      Toast.show('Please Enter Company Name')
-    }
-    else if (values.privacy == false) {
-      Toast.show('Please accept Privacy Policy')
-    }
-    else if (values.terms == false) {
-      Toast.show('Please accept Terms')
-    }
-
-    else {
+      Toast.show('Please enter IBAN number');
+    } else if (values.cnaps == '') {
+      Toast.show('Please enter CNAPS Number');
+    } else if (values.address == '') {
+      Toast.show('Please Enter Home Address');
+    } else if (values.work_location == '') {
+      Toast.show('Please Enter Work Location Address');
+    } else if (values.company == '') {
+      Toast.show('Please Enter Company Name');
+    } else if (values.privacy == false) {
+      Toast.show('Please accept Privacy Policy');
+    } else if (values.terms == false) {
+      Toast.show('Please accept Terms');
+    } else {
       const {
         firstName,
         lastName,
@@ -560,7 +516,7 @@ const Signup = () => {
         first_name: firstName,
         last_name: lastName,
         email: email,
-       // password: '',
+        // password: '',
         phone: phone,
         iban: iban,
         agent_type: agent_type.name,
@@ -578,13 +534,11 @@ const Signup = () => {
         //   social_security_number:'',
         // cv: '',
       };
-      console.log("submit====>>>>", JSON.stringify(data))
       dispatch(registerRequest(data));
     }
   };
 
   const onOpen = (type) => {
-
     modalizeRef.current?.open();
     setAction(type);
   };
@@ -675,40 +629,38 @@ const Signup = () => {
           Ssn: 'Please Upload Document',
           typeVehicle: 'no',
           typeContractor: 'no',
-
         }}
         onSubmit={onSubmit}
-      //   validationSchema={yup.object().shape({
-      //     firstName: yup.string().min(1).required(),
-      //     lastName: yup.string().min(1).required(),
-      //     email: yup.string().email().required(),
-      //     phone: yup.string().min(10).required(),
-      //     address: yup.string().min(3).required(),
-      //     agent_type: yup.string().required(),
-      //     iban: yup.string().required(),
-      //     cnaps:yup.string().required(),
-      //     company:yup.string.required(),
-      //  //  work_location:yup.string.required(),
-      //     terms: yup
-      //       .bool()
-      //       .oneOf([true], 'Accept Terms & Conditions is required'),
-      //     privacy: yup
-      //       .bool()
-      //       .oneOf([true], 'Accept Privacy Policy is required'),
-      //     // confirm_password: yup
-      //     //   .string()
-      //     //   .when('password', {
-      //     //     is: (val) => (val && val.length > 0 ? true : false),
-      //     //     then: yup
-      //     //       .string()
-      //     //       .oneOf(
-      //     //         [yup.ref('password')],
-      //     //         'Both password need to be the same',
-      //     //       ),
-      //     //   })
-      //     //   .required(),
-      //   })}
-
+        //   validationSchema={yup.object().shape({
+        //     firstName: yup.string().min(1).required(),
+        //     lastName: yup.string().min(1).required(),
+        //     email: yup.string().email().required(),
+        //     phone: yup.string().min(10).required(),
+        //     address: yup.string().min(3).required(),
+        //     agent_type: yup.string().required(),
+        //     iban: yup.string().required(),
+        //     cnaps:yup.string().required(),
+        //     company:yup.string.required(),
+        //  //  work_location:yup.string.required(),
+        //     terms: yup
+        //       .bool()
+        //       .oneOf([true], 'Accept Terms & Conditions is required'),
+        //     privacy: yup
+        //       .bool()
+        //       .oneOf([true], 'Accept Privacy Policy is required'),
+        //     // confirm_password: yup
+        //     //   .string()
+        //     //   .when('password', {
+        //     //     is: (val) => (val && val.length > 0 ? true : false),
+        //     //     then: yup
+        //     //       .string()
+        //     //       .oneOf(
+        //     //         [yup.ref('password')],
+        //     //         'Both password need to be the same',
+        //     //       ),
+        //     //   })
+        //     //   .required(),
+        //   })}
       >
         {({
           values,
@@ -723,7 +675,7 @@ const Signup = () => {
         }) => (
           <>
             <KeyboardAwareScrollView
-              contentContainerStyle={{ paddingBottom: t4 }}>
+              contentContainerStyle={{paddingBottom: t4}}>
               <Block flex={false} padding={[0, w3]}>
                 <Input
                   value={values.firstName}
@@ -764,19 +716,22 @@ const Signup = () => {
                   () => onOpen('agent'),
                   values.agent_type.name,
                 )}
-                {renderFiles('Identity Card',
+                {renderFiles(
+                  'Identity Card',
                   'Please Upload document',
                   () => onOpen('identry_card'),
                   values.identy_card,
                 )}
-                {renderFiles('Anonymous Curriculum Vitae',
+                {renderFiles(
+                  'Anonymous Curriculum Vitae',
                   'Please Upload document',
                   () => onOpen('Acv'),
                   values.Acv,
                 )}
                 {/* {renderFiles('Anonymous Curriculum Vitae')} */}
                 {/* {renderFiles('Social Security Number')} */}
-                {renderFiles('Social Security Number',
+                {renderFiles(
+                  'Social Security Number',
                   'Please Upload document',
                   () => onOpen('Ssn'),
                   values.Acv,
@@ -824,13 +779,13 @@ const Signup = () => {
                   flex={false}>
                   <Text
                     size={16}
-                    style={{ width: widthPercentageToDP(40) }}
+                    style={{width: widthPercentageToDP(40)}}
                     regular>
                     Do you possess a vehicle?
                   </Text>
                   <Block
                     flex={false}
-                    style={{ width: widthPercentageToDP(15) }}
+                    style={{width: widthPercentageToDP(15)}}
                   />
                   <Block
                     primary
@@ -849,7 +804,9 @@ const Signup = () => {
                           ? [heightPercentageToDP(1.5), widthPercentageToDP(8)]
                           : [0, widthPercentageToDP(6)]
                       }
-                      color={values.typeVehicle === 'yes' ? '#FFFFFF' : '#F7F8FA'}
+                      color={
+                        values.typeVehicle === 'yes' ? '#FFFFFF' : '#F7F8FA'
+                      }
                       shadow={values.typeVehicle === 'yes'}
                       margin={[0, w1]}>
                       <Text size={14} semibold>
@@ -866,7 +823,9 @@ const Signup = () => {
                           ? [heightPercentageToDP(1.5), widthPercentageToDP(8)]
                           : [0, widthPercentageToDP(6)]
                       }
-                      color={values.typeVehicle === 'no' ? '#FFFFFF' : '#F7F8FA'}
+                      color={
+                        values.typeVehicle === 'no' ? '#FFFFFF' : '#F7F8FA'
+                      }
                       shadow={values.typeVehicle === 'no'}>
                       <Text size={14} semibold>
                         No
@@ -884,13 +843,13 @@ const Signup = () => {
                   flex={false}>
                   <Text
                     size={16}
-                    style={{ width: widthPercentageToDP(40) }}
+                    style={{width: widthPercentageToDP(40)}}
                     regular>
                     Are you a sub-contractor?
                   </Text>
                   <Block
                     flex={false}
-                    style={{ width: widthPercentageToDP(15) }}
+                    style={{width: widthPercentageToDP(15)}}
                   />
                   <Block
                     primary
@@ -909,7 +868,9 @@ const Signup = () => {
                           ? [heightPercentageToDP(1.5), widthPercentageToDP(8)]
                           : [0, widthPercentageToDP(6)]
                       }
-                      color={values.typeContractor === 'yes' ? '#FFFFFF' : '#F7F8FA'}
+                      color={
+                        values.typeContractor === 'yes' ? '#FFFFFF' : '#F7F8FA'
+                      }
                       shadow={values.typeContractor === 'yes'}
                       margin={[0, w1]}>
                       <Text size={14} semibold>
@@ -926,7 +887,9 @@ const Signup = () => {
                           ? [heightPercentageToDP(1.5), widthPercentageToDP(8)]
                           : [0, widthPercentageToDP(6)]
                       }
-                      color={values.typeContractor === 'no' ? '#FFFFFF' : '#F7F8FA'}
+                      color={
+                        values.typeContractor === 'no' ? '#FFFFFF' : '#F7F8FA'
+                      }
                       shadow={values.typeContractor === 'no'}>
                       <Text size={14} semibold>
                         No
@@ -949,13 +912,13 @@ const Signup = () => {
                 <Block row center>
                   <Checkbox
                     onChange={() => setFieldValue('privacy', !values.privacy)}
-                    checkboxStyle={{ height: 25, width: 25 }}
+                    checkboxStyle={{height: 25, width: 25}}
                     label=""
                     checked={values.privacy}
                   />
                   <Text size={16}>
                     I accept{' '}
-                    <Text style={{ textDecorationLine: 'underline' }} size={16}>
+                    <Text style={{textDecorationLine: 'underline'}} size={16}>
                       Privacy Policy.
                     </Text>
                   </Text>
@@ -963,13 +926,13 @@ const Signup = () => {
                 <Block margin={[t1, 0]} row center>
                   <Checkbox
                     onChange={() => setFieldValue('terms', !values.terms)}
-                    checkboxStyle={{ height: 25, width: 25 }}
+                    checkboxStyle={{height: 25, width: 25}}
                     label=""
                     checked={values.terms}
                   />
                   <Text size={16}>
                     I accept{' '}
-                    <Text style={{ textDecorationLine: 'underline' }} size={16}>
+                    <Text style={{textDecorationLine: 'underline'}} size={16}>
                       Terms & Conditions.
                     </Text>
                   </Text>
@@ -979,7 +942,7 @@ const Signup = () => {
                   //  disabled={!isValid || !dirty}
                   isLoading={loading}
                   onPress={handleSubmit}
-                  style={{ marginTop: t2 }}
+                  style={{marginTop: t2}}
                   color="secondary">
                   Finish registration
                 </Button>
@@ -996,9 +959,7 @@ const Signup = () => {
                   closeModal={() => {
                     onClose();
                   }}
-
                 />
-
               )}
               {action === 'identry_card' && (
                 <ImagePicker
@@ -1009,9 +970,7 @@ const Signup = () => {
                   closeModal={() => {
                     onClose();
                   }}
-
                 />
-
               )}
               {action === 'Acv' && (
                 <ImagePicker
@@ -1022,7 +981,6 @@ const Signup = () => {
                   closeModal={() => {
                     onClose();
                   }}
-
                 />
               )}
               {action === 'Ssn' && (
@@ -1034,10 +992,8 @@ const Signup = () => {
                   closeModal={() => {
                     onClose();
                   }}
-
                 />
               )}
-
             </Modalize>
           </>
         )}

@@ -5,15 +5,20 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
+import {useDispatch, useSelector} from 'react-redux';
 import {Block, Text, CustomButton} from '../../components';
 import Header from '../../components/common/header';
 import {t2, w4} from '../../components/theme/fontsize';
+import {getMissionsRequest} from '../../redux/action';
 
 const Missions = ({navigationState}) => {
   const {routes, index} = navigationState;
-  console.log(navigationState, 'navigationState');
+  const dispatch = useDispatch();
   const selected = index;
   const navigation = useNavigation();
+  const socket = useSelector((state) => state.socket.data);
+  const profile = useSelector((state) => state.user.profile.user.data);
+  const agentId = profile.id;
   const getValues = (name) => {
     if (name === 'Requested') {
       return 'Accepted';
@@ -23,6 +28,19 @@ const Missions = ({navigationState}) => {
     }
     return 'Finished';
   };
+
+  useEffect(() => {
+    dispatch(getMissionsRequest());
+    socket.on('refresh_feed', (msg) => {
+      console.log(msg, 'refresh_feed');
+
+      dispatch(getMissionsRequest());
+    });
+    socket.on(`mission_data_${agentId}`, (msg) => {
+      console.log(msg, `mission_data_${agentId}`);
+      dispatch(getMissionsRequest());
+    });
+  }, []);
 
   return (
     <Block primary flex={false}>
