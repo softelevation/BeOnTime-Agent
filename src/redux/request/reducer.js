@@ -7,18 +7,18 @@ const initialState = {
 };
 export function list(state = initialState, action) {
   switch (action.type) {
-    case ActionConstants.AGENTS_LIST_REQUEST:
+    case ActionConstants.MISSION_LIST_REQUEST:
       return {
         ...state,
         loading: true,
       };
-    case ActionConstants.AGENTS_LIST_SUCCESS:
+    case ActionConstants.MISSION_LIST_SUCCESS:
       return {
         ...state,
         loading: false,
         agents: action.data,
       };
-    case ActionConstants.AGENTS_LIST_ERROR:
+    case ActionConstants.MISSION_LIST_ERROR:
       return {
         ...state,
         loading: false,
@@ -127,10 +127,10 @@ export function bookAgennts(state = initialBookAgentState, action) {
   }
 }
 
-const agents = combineReducers({
+const request = combineReducers({
   list,
   searchAgentList,
   agentMissionList,
   bookAgennts,
 });
-export default agents;
+export default request;

@@ -125,18 +125,12 @@ const Finished = () => {
       {isLoad && <ActivityLoader />}
 
       <Block padding={[t2, 0]}>
-        {strictValidArrayWithLength(missionCompleted) ? (
-          <FlatList
-            contentContainerStyle={{flexGrow: 1}}
-            ListEmptyComponent={<EmptyFile />}
-            data={missionCompleted}
-            renderItem={renderCards}
-          />
-        ) : (
-          <Block center middle>
-            <Text>No Results</Text>
-          </Block>
-        )}
+        <FlatList
+          contentContainerStyle={{flexGrow: 1}}
+          ListEmptyComponent={<EmptyFile />}
+          data={missionCompleted}
+          renderItem={renderCards}
+        />
       </Block>
     </Block>
   );

@@ -19,7 +19,11 @@ import {
 import {t1, t2, w1, w3, w4, w5} from '../../components/theme/fontsize';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
-import {locationSuccess, profileRequest} from '../../redux/action';
+import {
+  locationSuccess,
+  missionListRequest,
+  profileRequest,
+} from '../../redux/action';
 import Header from '../../components/common/header';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import * as yup from 'yup';
@@ -46,16 +50,15 @@ const initialState = {
 };
 const Home = () => {
   const navigation = useNavigation();
-  const [agentList, setAgentList] = useState([]);
   const dispatch = useDispatch();
   const socket = useSelector((state) => state.socket.data);
   const profile = useSelector((state) => state.user.profile.user.data);
-  const [type, settype] = useState(
-    strictValidObjectWithKeys(profile) && profile.available,
-  );
+  const agentList = useSelector((state) => state.request.list.agents);
+  const load = useSelector((state) => state.request.list.loading);
+  const [type, settype] = useState(null);
   const [loader, setloader] = useState(initialState);
   const {acceptloader, rejecttloader} = loader;
-  const [load, setload] = useState(false);
+
   useEffect(() => {
     ApiRequest();
     socket.on('refresh_feed', (msg) => {
@@ -63,19 +66,16 @@ const Home = () => {
     });
   }, []);
 
+  useEffect(() => {
+    if (strictValidObjectWithKeys(profile)) {
+      settype(profile.available);
+    }
+  }, [profile]);
+
   const ApiRequest = () => {
-    setload(true);
-    CommonApi.fetchAppCommon('/agent/mission-requests', 'GET', '')
-      .then((response) => {
-        if (response.status === 1) {
-          setload(false);
-          setAgentList(response.data);
-        }
-      })
-      .catch((err) => {
-        setload(false);
-      });
+    dispatch(missionListRequest());
   };
+
   useEffect(() => {
     const watchId = Geolocation.getCurrentPosition(
       (position) => {
@@ -90,46 +90,6 @@ const Home = () => {
 
     return () => Geolocation.clearWatch(watchId);
   }, []);
-
-  const onSubmit = () => {};
-
-  const onTimerPassed = () => {
-    // socket.emit('');
-  };
-  const renderAgentDetails = (item) => {
-    return (
-      <Block margin={[0, w3, t1]} flex={false} row space="between">
-        <Block flex={false} row center>
-          <ImageComponent name="blurAvatar_icon" height="50" width="50" />
-          <Block margin={[0, w3]} flex={false}>
-            <Text
-              transform="capitalize"
-              semibold
-              size={18}
-              margin={[0, w3, 0, 0]}>
-              {item.first_name} {item.last_name}
-            </Text>
-            <Text margin={[hp(0.5), 0, 0]} size={16} grey>
-              {item.location}
-            </Text>
-          </Block>
-        </Block>
-        <CountdownCircleTimer
-          onComplete={onTimerPassed}
-          isPlaying
-          size={50}
-          strokeWidth={4}
-          duration={item.time_intervel}
-          colors={'#000'}>
-          {({remainingTime, animatedColor}) => (
-            <Text size={12} bold>
-              {format(remainingTime)}
-            </Text>
-          )}
-        </CountdownCircleTimer>
-      </Block>
-    );
-  };
 
   const changeStatus = async (status) => {
     settype(status);
@@ -157,6 +117,39 @@ const Home = () => {
     setloader(val);
     const mission_id = id;
     socket.emit('agent_mission_request', {mission_id, status});
+  };
+  const renderAgentDetails = (item) => {
+    return (
+      <Block margin={[0, w3, t1]} flex={false} row space="between">
+        <Block flex={false} row center>
+          <ImageComponent name="blurAvatar_icon" height="50" width="50" />
+          <Block margin={[0, w3]} flex={false}>
+            <Text
+              transform="capitalize"
+              semibold
+              size={18}
+              margin={[0, w3, 0, 0]}>
+              {item.first_name} {item.last_name}
+            </Text>
+            <Text margin={[hp(0.5), 0, 0]} size={16} grey>
+              {item.location}
+            </Text>
+          </Block>
+        </Block>
+        <CountdownCircleTimer
+          isPlaying
+          size={50}
+          strokeWidth={4}
+          duration={item.time_intervel}
+          colors={'#000'}>
+          {({remainingTime, animatedColor}) => (
+            <Text size={12} bold>
+              {format(remainingTime)}
+            </Text>
+          )}
+        </CountdownCircleTimer>
+      </Block>
+    );
   };
 
   const renderCards = ({item, index}) => {
@@ -270,7 +263,7 @@ const Home = () => {
               </Block>
             </Block>
           </Block>
-          <Block flex={false} margin={[t1, 0, 0]}>
+          <Block flex={1} margin={[t1, 0, 0]}>
             <FlatList
               contentContainerStyle={{flexGrow: 1}}
               ListEmptyComponent={<EmptyFile />}

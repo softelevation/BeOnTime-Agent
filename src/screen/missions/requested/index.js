@@ -117,19 +117,13 @@ const Requested = () => {
     <Block primary>
       {isLoad && <ActivityLoader />}
 
-      <Block padding={[t2, 0]}>
-        {strictValidArrayWithLength(missionPending) ? (
-          <FlatList
-            contentContainerStyle={{flexGrow: 1}}
-            ListEmptyComponent={<EmptyFile />}
-            data={missionPending}
-            renderItem={renderCards}
-          />
-        ) : (
-          <Block center middle>
-            <Text>No Results</Text>
-          </Block>
-        )}
+      <Block>
+        <FlatList
+          contentContainerStyle={{flexGrow: 1}}
+          ListEmptyComponent={<EmptyFile />}
+          data={missionPending}
+          renderItem={renderCards}
+        />
       </Block>
     </Block>
   );

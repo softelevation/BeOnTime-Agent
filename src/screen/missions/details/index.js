@@ -4,86 +4,95 @@ import Header from '../../../components/common/header';
 import CommonMap from '../../common/Map';
 import {Modalize} from 'react-native-modalize';
 import {t1, t2, w3} from '../../../components/theme/fontsize';
-import {AgentType, MissionType, PaymentStatus} from '../../../utils/data';
-import Rating from '../../../components/ratings';
+import {AgentType, MissionType} from '../../../utils/data';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import {divider} from '../../../utils/commonView';
-import moment from 'moment';
-import ImagePicker from 'react-native-image-crop-picker';
-import CommonApi from '../../../utils/CommonApi';
-// import SignatureScreen from '../../../components/common/signature';
 import {CountdownCircleTimer} from 'react-native-countdown-circle-timer';
 import {format} from '../../../utils/commonUtils';
-
+import AsyncStorage from '@react-native-community/async-storage';
+import {getMissionsRequest, missionListRequest} from '../../../redux/action';
+import {useDispatch, useSelector} from 'react-redux';
+import {StackActions, useNavigation} from '@react-navigation/core';
+const initialState = {
+  acceptloader: null,
+  rejecttloader: null,
+  startloader: null,
+  finishloader: null,
+};
 const MissionDetails = ({
   route: {
     params: {item},
   },
 }) => {
-  const [toggle, setToggle] = useState(true);
   const modalizeRef = useRef(null);
-  useEffect(() => {
-    modalizeRef.current?.open();
-  }, []);
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
+  const [loader, setloader] = useState(initialState);
+
+  const {acceptloader, rejecttloader, finishloader, startloader} = loader;
+
+  // Reducers
+
+  const socket = useSelector((state) => state.socket.data);
+
   const {
     id,
     first_name,
     last_name,
     title,
     location,
-    latitude,
-    longitude,
     agent_type,
     description,
     vehicle_required,
     total_hours,
-    amount,
-    payment_status,
     status,
     intervention,
-    start_date_time,
   } = item;
-  const ref = useRef();
 
   useEffect(() => {
-    CommonApi.fetchAppCommon('/agent/mission/' + item.id, 'GET', '')
-      .then((response) => {
-        if (response.status == 1) {
-        }
-      })
-      .catch((err) => {});
+    modalizeRef.current?.open();
   }, []);
 
-  const handleSignature = (signature) => {};
-
-  const handleEmpty = () => {};
-
-  const handleClear = () => {};
-
-  const handleEnd = () => {
-    ref.current.readSignature();
-  };
-  const openCamera = () => {
-    ImagePicker.openCamera({
-      width: 400,
-      height: 600,
-      cropping: false,
-    }).then((image) => {});
+  const navigateToBack = () => {
+    navigation.dispatch(StackActions.pop());
   };
 
-  const formatDate = (date) => {
-    return moment(date).format('DD/MM/YYYY HH:mm:ss');
+  const acceptRejectMission = (id, status) => {
+    const val = status === '1' ? {acceptloader: id} : {rejecttloader: id};
+    setloader(val);
+    const mission_id = id;
+    socket.emit('agent_mission_request', {mission_id, status});
+    navigateToBack();
   };
 
-  const acceptRejectMission = () => {
-    //  const val = status === '1' ? {acceptloader: id} : {rejecttloader: id};
-    //  setloader(val);
-    //  const mission_id = id;
-    //  socket.emit('agent_mission_request', {mission_id, status});
+  const finishMission = async (id) => {
+    const token = await AsyncStorage.getItem('token');
+    const mission_id = id;
+    socket.emit('finish_mission', {mission_id, token});
+
+    socket.on(`finish_mission_${mission_id}`, (msg) => {
+      console.log(msg, `finish_mission_${mission_id}`);
+      dispatch(getMissionsRequest());
+      navigateToBack();
+    });
   };
+
+  const startMission = async (id) => {
+    setloader({startloader: true});
+    const token = await AsyncStorage.getItem('token');
+    const mission_id = id;
+    socket.emit('start_mission', {mission_id, token});
+    setloader({startloader: false});
+    socket.on(`mission_data_${mission_id}`, (msg) => {
+      console.log(msg, `mission_data_${mission_id}`);
+      dispatch(getMissionsRequest());
+      navigateToBack();
+    });
+  };
+
   const renderAgentDetails = () => {
     return (
       <Block flex={false}>
@@ -166,77 +175,20 @@ const MissionDetails = ({
   const renderMissionStatus = () => {
     return (
       <Block margin={[t1, 0]} flex={false}>
-        {/* <Block
-          color={values === 'finished' ? '#000' : '#F7F8FA'}
-          flex={false}
-          center
-          middle
-          style={{height: 50, width: 50}}
-          borderRadius={30}>
-          {status === 3 && (
-            <Text bold margin={[-t1, 0, 0, 0]}>
-              ...
-            </Text>
-          )}
-          {status === 4 && (
-            <Text size={12} bold>
-              0%
-            </Text>
-          )}
-          {status === 5 && (
-            <Text white size={12} bold>
-              100%
-            </Text>
-          )}
-        </Block>
-        <Block margin={[0, w3]} flex={false}>
-          <Block flex={false}>
-            {status === 3 && (
-              <>
-                <Text semibold size={16} margin={[0, w3, 0, 0]}>
-                  Request in Review
-                </Text>
-                <Text margin={[hp(0.5), 0, 0]} size={14} grey>
-                  You will receive notification soon.
-                </Text>
-              </>
-            )}
-            {status === 4 && (
-              <>
-                <Text semibold size={16} margin={[0, w3, 0, 0]}>
-                  Mission Accepted
-                </Text>
-                <Text margin={[hp(0.5), 0, 0]} size={14} grey>
-                  Reaching location in 15 min.
-                </Text>
-              </>
-            )}
-            {status === 5 && (
-              <>
-                <Text semibold size={16} margin={[0, w3, 0, 0]}>
-                  Mission Accepted
-                </Text>
-                <Text margin={[hp(0.5), 0, 0]} size={14} grey>
-                  Mission ended. Payment pending.
-                </Text>
-              </>
-            )}
-          </Block>
-        </Block> */}
         {status === 0 && (
           <Block row space={'between'} flex={false} center>
             <Button
               loaderColor="#000"
-              // isLoading={rejecttloader === item.id}
+              isLoading={rejecttloader === id}
               style={{width: wp(43)}}
-              onPress={() => acceptRejectMission(item.id, '2')}
+              onPress={() => acceptRejectMission(id, '2')}
               color="primary">
               Reject
             </Button>
             <Button
-              // isLoading={acceptloader === item.id}
+              isLoading={acceptloader === id}
               style={{width: wp(43)}}
-              onPress={() => acceptRejectMission(item.id, '1')}
+              onPress={() => acceptRejectMission(id, '1')}
               color="secondary">
               Accept
             </Button>
@@ -244,9 +196,18 @@ const MissionDetails = ({
         )}
         {status === 3 && (
           <Button
-            onPress={() => acceptRejectMission(item.id, '1')}
+            isLoading={startloader}
+            onPress={() => startMission(id)}
             color="secondary">
             Start Mission
+          </Button>
+        )}
+        {status === 4 && (
+          <Button
+            isLoading={finishloader}
+            onPress={() => finishMission(id)}
+            color="secondary">
+            Finish Mission
           </Button>
         )}
       </Block>
@@ -300,23 +261,6 @@ const MissionDetails = ({
         )}
       </Block>
       {divider()}
-      {/* <Text semibold size={18}>
-        Payment Details
-      </Text>
-      <Block flex={false} margin={[t1, 0, 0]}>
-        {renderDetails('Amount', `$${amount}`)}
-        {renderDetails('Status', PaymentStatus(payment_status))}
-        {renderDetails('Due', formatDate(start_date_time))}
-      </Block> */}
-      {/* <SignatureScreen
-        ref={ref}
-        onEnd={handleEnd}
-        onOK={handleSignature}
-        onEmpty={handleEmpty}
-        onClear={handleClear}
-        autoClear={true}
-        descriptionText={'text'}
-      /> */}
     </Block>
   );
   return (

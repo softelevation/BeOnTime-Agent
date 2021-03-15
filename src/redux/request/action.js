@@ -1,22 +1,22 @@
 import {ActionConstants} from '../constants';
 // Agent List
-export const agentslistRequest = (payload) => {
+export const missionListRequest = (payload) => {
   return {
-    type: ActionConstants.AGENTS_LIST_REQUEST,
+    type: ActionConstants.MISSION_LIST_REQUEST,
     payload,
     res: false,
   };
 };
-export const agentslistSuccess = (data) => {
+export const missionListSuccess = (data) => {
   return {
-    type: ActionConstants.AGENTS_LIST_SUCCESS,
+    type: ActionConstants.MISSION_LIST_SUCCESS,
     data,
     res: true,
   };
 };
-export const agentslistError = (error) => {
+export const missionListError = (error) => {
   return {
-    type: ActionConstants.AGENTS_LIST_ERROR,
+    type: ActionConstants.MISSION_LIST_ERROR,
     error,
     res: false,
   };

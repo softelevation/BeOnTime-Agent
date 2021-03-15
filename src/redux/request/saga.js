@@ -1,7 +1,7 @@
 import {ActionConstants} from '../constants';
 import {
-  agentslistError,
-  agentslistSuccess,
+  missionListError,
+  missionListSuccess,
   searchAgentsSuccess,
   searchAgentsError,
   missionsAgentError,
@@ -12,16 +12,16 @@ import {Api, SearchApi, MissionAgentsApi, BookAgentsApi} from './api';
 import * as navigation from '../../routes/NavigationService';
 import {bookAgentError, bookAgentSuccess} from './action';
 
-export function* agentsListRequest(action) {
+export function* missionListRequest(action) {
   try {
     const response = yield call(Api, action.payload);
     if (response.data.status === 1) {
-      yield put(agentslistSuccess(response.data));
+      yield put(missionListSuccess(response.data.data));
     } else {
-      yield put(agentslistError(response));
+      yield put(missionListError(response));
     }
   } catch (err) {
-    yield put(agentslistError());
+    yield put(missionListError());
   }
 }
 export function* searchAgentsRequest(action) {
@@ -65,7 +65,7 @@ export function* bookAgentsRequest(action) {
 
 export function* agentWatcher() {
   yield all([
-    takeLatest(ActionConstants.AGENTS_LIST_REQUEST, agentsListRequest),
+    takeLatest(ActionConstants.MISSION_LIST_REQUEST, missionListRequest),
     takeLatest(ActionConstants.SEARCH_AGENTS_REQUEST, searchAgentsRequest),
     takeLatest(ActionConstants.MISSION_AGENTS_REQUEST, missionAgentsRequest),
     takeLatest(ActionConstants.BOOK_AGENTS_REQUEST, bookAgentsRequest),

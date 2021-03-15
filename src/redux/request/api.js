@@ -8,8 +8,8 @@ export const Api = async () => {
     Authorization: `${token}`,
   };
   return axios({
-    method: 'post',
-    url: `${config.Api_Url}/customer/available-agents`,
+    method: 'get',
+    url: `${config.Api_Url}/agent/mission-requests`,
     headers,
   });
 };

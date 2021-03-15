@@ -16,9 +16,6 @@ const Missions = ({navigationState}) => {
   const dispatch = useDispatch();
   const selected = index;
   const navigation = useNavigation();
-  const socket = useSelector((state) => state.socket.data);
-  const profile = useSelector((state) => state.user.profile.user.data);
-  const agentId = profile.id;
   const getValues = (name) => {
     if (name === 'Requested') {
       return 'Accepted';
@@ -31,15 +28,6 @@ const Missions = ({navigationState}) => {
 
   useEffect(() => {
     dispatch(getMissionsRequest());
-    socket.on('refresh_feed', (msg) => {
-      console.log(msg, 'refresh_feed');
-
-      dispatch(getMissionsRequest());
-    });
-    socket.on(`mission_data_${agentId}`, (msg) => {
-      console.log(msg, `mission_data_${agentId}`);
-      dispatch(getMissionsRequest());
-    });
   }, []);
 
   return (

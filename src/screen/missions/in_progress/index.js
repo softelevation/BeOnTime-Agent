@@ -37,13 +37,13 @@ const InProgress = () => {
   const {missionInProgress} = MissionData;
   const socket = useSelector((state) => state.socket.data);
 
-  const startMission = async (id) => {
+  const finishMission = async (id) => {
     const token = await AsyncStorage.getItem('token');
     const mission_id = id;
-    socket.emit('start_mission', {mission_id, token});
+    socket.emit('finish_mission', {mission_id, token});
 
-    socket.on(`mission_data_${mission_id}`, (msg) => {
-      console.log(msg, `mission_data_${mission_id}`);
+    socket.on(`finish_mission_${mission_id}`, (msg) => {
+      console.log(msg, `finish_mission_${mission_id}`);
       dispatch(getMissionsRequest());
     });
   };
@@ -71,7 +71,9 @@ const InProgress = () => {
         {renderAgentDetails(item)}
         {renderRequestReview(item)}
         <Block flex={false} padding={[0, w3]}>
-          <Button color="secondary">Finish mission</Button>
+          <Button onPress={() => finishMission(item.id)} color="secondary">
+            Finish mission
+          </Button>
         </Block>
         <CustomButton
           onPress={() =>
@@ -136,19 +138,13 @@ const InProgress = () => {
   return (
     <Block primary>
       {isLoad && <ActivityLoader />}
-      <Block padding={[t2, 0]}>
-        {strictValidArrayWithLength(missionInProgress) ? (
-          <FlatList
-            contentContainerStyle={{flexGrow: 1}}
-            ListEmptyComponent={<EmptyFile />}
-            data={missionInProgress}
-            renderItem={renderCards}
-          />
-        ) : (
-          <Block center middle>
-            <Text>No Results</Text>
-          </Block>
-        )}
+      <Block>
+        <FlatList
+          contentContainerStyle={{flexGrow: 1}}
+          ListEmptyComponent={<EmptyFile />}
+          data={missionInProgress}
+          renderItem={renderCards}
+        />
       </Block>
     </Block>
   );
