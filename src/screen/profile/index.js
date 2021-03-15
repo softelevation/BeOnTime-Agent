@@ -32,9 +32,7 @@ const Profile = () => {
           setProfileData(response.data);
         }
       })
-      .catch((err) => {
-        console.log('error profile===>>', err);
-      });
+      .catch((err) => {});
   }, []);
 
   const _renderItem = ({item}) => {

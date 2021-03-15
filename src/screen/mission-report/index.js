@@ -34,17 +34,11 @@ const MissionReport = ({}) => {
     setAddSignature(true);
   };
 
-  const handleSignature = (signature) => {
-    console.log('signature==>>>', signature);
-  };
+  const handleSignature = (signature) => {};
 
-  const handleEmpty = () => {
-    console.log('Empty');
-  };
+  const handleEmpty = () => {};
 
-  const handleClear = () => {
-    console.log('clear success!');
-  };
+  const handleClear = () => {};
 
   const handleEnd = () => {
     ref.current.readSignature();

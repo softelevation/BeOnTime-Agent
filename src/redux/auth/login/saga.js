@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import * as navigation from '../../../routes/NavigationService';
 import {Alerts} from '../../../utils/commonUtils';
 import {light} from '../../../components/theme/colors';
+import {profileRequest} from '../profile/action';
 const SaveToken = async (token) => {
   return await AsyncStorage.setItem('token', token.data.accessToken);
 };
@@ -17,11 +18,12 @@ const SaveData = async (data) => {
 export function* loginRequest(action) {
   try {
     const response = yield call(Api, action.payload);
-    console.log(response, 'response');
     if (response.data.status === 1) {
       yield call(SaveToken, response.data);
       yield call(SaveData, response.data);
       yield put(loginSuccess(response.data));
+      yield put(profileRequest());
+
       Alerts('Login Successful', response.data.message, light.success);
       navigation.navigate('Home');
     } else {
@@ -29,7 +31,6 @@ export function* loginRequest(action) {
       Alerts('Login Failed', response.data.message, light.danger);
     }
   } catch (err) {
-    console.log(err.response, 'err');
     yield put(loginError(err.response.data.message));
     Alerts('Login Failed', err.response.data.message, light.danger);
   }

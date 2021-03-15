@@ -1,8 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
-import { config } from '../../../utils/config';
+import {config} from '../../../utils/config';
 export const Api = async (data) => {
-  console.log("data===>>>>", JSON.stringify(data.is_vehicle))
   // const {
   //   first_name,
   //   last_name,
@@ -24,7 +23,6 @@ export const Api = async (data) => {
     iban,
     work_location,
     agent_type,
-
   } = data;
 
   var formData = new FormData();
@@ -34,10 +32,10 @@ export const Api = async (data) => {
   formData.append('phone', phone);
   formData.append('home_address', data.address);
   //formData.append('customer_type', customer_type);
- // formData.append('password', '12345678');
+  // formData.append('password', '12345678');
   //formData.append('company_name', company_name);
   formData.append('agent_type', agent_type);
- // formData.append('image', data.profile);
+  // formData.append('image', data.profile);
   formData.append('iban', iban);
   formData.append('lat', '');
   formData.append('long', '');
@@ -48,9 +46,6 @@ export const Api = async (data) => {
   // formData.append('social_security_number', data.social_security_number);
   // formData.append('cv', data.cv);
   // formData.append('identity_card', data.identity_card);
-
-
-
 
   const headers = {
     'Content-Type': 'multipart/form-data',

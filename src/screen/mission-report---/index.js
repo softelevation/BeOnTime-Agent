@@ -56,9 +56,7 @@ const MissionReport = ({
           setProfileData(response.data);
         }
       })
-      .catch((err) => {
-        console.log('error profile===>>', err);
-      });
+      .catch((err) => {});
   }, []);
 
   // const renderType = (label, description, onPress, value) => {

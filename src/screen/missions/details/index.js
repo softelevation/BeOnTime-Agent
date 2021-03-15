@@ -1,21 +1,26 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Block, Button, ImageComponent, Text } from '../../../components';
+import React, {useState, useRef, useEffect} from 'react';
+import {Block, Button, ImageComponent, Text} from '../../../components';
 import Header from '../../../components/common/header';
 import CommonMap from '../../common/Map';
-import { Modalize } from 'react-native-modalize';
-import { t1, t2, w3 } from '../../../components/theme/fontsize';
-import { AgentType, MissionType, PaymentStatus } from '../../../utils/data';
+import {Modalize} from 'react-native-modalize';
+import {t1, t2, w3} from '../../../components/theme/fontsize';
+import {AgentType, MissionType, PaymentStatus} from '../../../utils/data';
 import Rating from '../../../components/ratings';
-import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { divider } from '../../../utils/commonView';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
+import {divider} from '../../../utils/commonView';
 import moment from 'moment';
 import ImagePicker from 'react-native-image-crop-picker';
 import CommonApi from '../../../utils/CommonApi';
 // import SignatureScreen from '../../../components/common/signature';
+import {CountdownCircleTimer} from 'react-native-countdown-circle-timer';
+import {format} from '../../../utils/commonUtils';
 
 const MissionDetails = ({
   route: {
-    params: { item },
+    params: {item},
   },
 }) => {
   const [toggle, setToggle] = useState(true);
@@ -25,7 +30,8 @@ const MissionDetails = ({
   }, []);
   const {
     id,
-    username,
+    first_name,
+    last_name,
     title,
     location,
     latitude,
@@ -43,28 +49,19 @@ const MissionDetails = ({
   const ref = useRef();
 
   useEffect(() => {
-    CommonApi.fetchAppCommon('/agent/mission/' + item.id, 'GET', '').then(
-      response => {
+    CommonApi.fetchAppCommon('/agent/mission/' + item.id, 'GET', '')
+      .then((response) => {
         if (response.status == 1) {
-
         }
-
-      }).catch(err => {
-        console.log("missionDetail ===>>", err)
       })
+      .catch((err) => {});
   }, []);
 
-  const handleSignature = (signature) => {
-    console.log("signature==>>>", signature);
-  };
+  const handleSignature = (signature) => {};
 
-  const handleEmpty = () => {
-    console.log('Empty');
-  };
+  const handleEmpty = () => {};
 
-  const handleClear = () => {
-    console.log('clear success!');
-  };
+  const handleClear = () => {};
 
   const handleEnd = () => {
     ref.current.readSignature();
@@ -74,13 +71,18 @@ const MissionDetails = ({
       width: 400,
       height: 600,
       cropping: false,
-    }).then((image) => {
-      console.log(image);
-    });
+    }).then((image) => {});
   };
 
   const formatDate = (date) => {
     return moment(date).format('DD/MM/YYYY HH:mm:ss');
+  };
+
+  const acceptRejectMission = () => {
+    //  const val = status === '1' ? {acceptloader: id} : {rejecttloader: id};
+    //  setloader(val);
+    //  const mission_id = id;
+    //  socket.emit('agent_mission_request', {mission_id, status});
   };
   const renderAgentDetails = () => {
     return (
@@ -90,31 +92,86 @@ const MissionDetails = ({
             <ImageComponent name="blurAvatar_icon" height="60" width="60" />
             <Block margin={[0, w3]} flex={false}>
               <Block row center flex={false}>
-                <Text semibold size={18} margin={[0, w3, 0, 0]}>
-                  {username}
+                <Text
+                  transform="capitalize"
+                  semibold
+                  size={18}
+                  margin={[0, w3, 0, 0]}>
+                  {first_name} {last_name}
                 </Text>
                 <ImageComponent name="vehicle_icon" height="25" width="25" />
               </Block>
               <Text margin={[hp(0.5), 0, 0]} size={16} grey>
-                {AgentType(agent_type)}
+                {location}
               </Text>
             </Block>
           </Block>
-          <Rating rating={0} />
+          {status === 0 && (
+            <CountdownCircleTimer
+              isPlaying
+              size={50}
+              strokeWidth={4}
+              duration={item.time_intervel}
+              colors={'#000'}>
+              {({remainingTime, animatedColor}) => (
+                <Text size={12} bold>
+                  {format(remainingTime)}
+                </Text>
+              )}
+            </CountdownCircleTimer>
+          )}
+          {status === 3 && (
+            <Block
+              color={'#F7F8FA'}
+              flex={false}
+              center
+              middle
+              style={{height: 50, width: 50}}
+              borderRadius={30}>
+              <Text bold margin={[-t1, 0, 0, 0]}>
+                ...
+              </Text>
+            </Block>
+          )}
+          {status === 4 && (
+            <Block
+              color={'#F7F8FA'}
+              flex={false}
+              center
+              middle
+              style={{height: 50, width: 50}}
+              borderRadius={30}>
+              <Text bold size={12}>
+                20%
+              </Text>
+            </Block>
+          )}
+          {status === 5 && (
+            <Block
+              color={'#000'}
+              flex={false}
+              center
+              middle
+              style={{height: 50, width: 50}}
+              borderRadius={30}>
+              <Text white bold size={12}>
+                20%
+              </Text>
+            </Block>
+          )}
         </Block>
       </Block>
     );
   };
   const renderMissionStatus = () => {
-    const values = 'requested';
     return (
-      <Block margin={[t1, 0]} flex={false} row center>
-        <Block
+      <Block margin={[t1, 0]} flex={false}>
+        {/* <Block
           color={values === 'finished' ? '#000' : '#F7F8FA'}
           flex={false}
           center
           middle
-          style={{ height: 50, width: 50 }}
+          style={{height: 50, width: 50}}
           borderRadius={30}>
           {status === 3 && (
             <Text bold margin={[-t1, 0, 0, 0]}>
@@ -165,7 +222,33 @@ const MissionDetails = ({
               </>
             )}
           </Block>
-        </Block>
+        </Block> */}
+        {status === 0 && (
+          <Block row space={'between'} flex={false} center>
+            <Button
+              loaderColor="#000"
+              // isLoading={rejecttloader === item.id}
+              style={{width: wp(43)}}
+              onPress={() => acceptRejectMission(item.id, '2')}
+              color="primary">
+              Reject
+            </Button>
+            <Button
+              // isLoading={acceptloader === item.id}
+              style={{width: wp(43)}}
+              onPress={() => acceptRejectMission(item.id, '1')}
+              color="secondary">
+              Accept
+            </Button>
+          </Block>
+        )}
+        {status === 3 && (
+          <Button
+            onPress={() => acceptRejectMission(item.id, '1')}
+            color="secondary">
+            Start Mission
+          </Button>
+        )}
       </Block>
     );
   };
@@ -217,21 +300,14 @@ const MissionDetails = ({
         )}
       </Block>
       {divider()}
-      <Text semibold size={18}>
+      {/* <Text semibold size={18}>
         Payment Details
       </Text>
       <Block flex={false} margin={[t1, 0, 0]}>
         {renderDetails('Amount', `$${amount}`)}
         {renderDetails('Status', PaymentStatus(payment_status))}
         {renderDetails('Due', formatDate(start_date_time))}
-      </Block>
-
-      <Button
-        onPress={() => openCamera()}
-        style={{ marginTop: hp(2) }}
-        color="primary">
-        Upload proof of payment
-      </Button>
+      </Block> */}
       {/* <SignatureScreen
         ref={ref}
         onEnd={handleEnd}
@@ -246,18 +322,19 @@ const MissionDetails = ({
   return (
     <Block primary>
       <Header centerText="Mission-Details" />
-      {/* <Block flex={1}>
+      <Block flex={1}>
         <CommonMap />
-      </Block> */}
+      </Block>
       <Modalize
         ref={modalizeRef}
         // contentRef={contentRef}
-        alwaysOpen={85}
+        alwaysOpen={350}
+        snapPoint={350}
         handlePosition="inside"
 
-       // snapPoint={350}
-       // handlePosition="inside"
-        > 
+        // snapPoint={350}
+        // handlePosition="inside"
+      >
         {renderHeader()}
       </Modalize>
     </Block>

@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {useNavigation} from '@react-navigation/native';
-import React, {useEffect,useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {FlatList} from 'react-native';
 import {
   heightPercentageToDP as hp,
@@ -18,38 +18,36 @@ import {
 import EmptyFile from '../../../components/emptyFile';
 import {t1, t2, w3, w5} from '../../../components/theme/fontsize';
 import {getMissionsRequest} from '../../../redux/action';
-import {strictValidObject} from '../../../utils/commonUtils';
+import {
+  strictValidArrayWithLength,
+  strictValidObject,
+} from '../../../utils/commonUtils';
 import {divider} from '../../../utils/commonView';
 import {AgentType} from '../../../utils/data';
 import CommonMap from '../../common/Map';
-import CommonApi from "../../../utils/CommonApi";
+import CommonApi from '../../../utils/CommonApi';
+import ActivityLoader from '../../../components/activityLoader';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const InProgress = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const MissionData = useSelector((state) => state.mission.missions.data);
-  const [missionDataProgress, setMissionDataProgress] = useState([])
+  const isLoad = useSelector((state) => state.mission.missions.loading);
+  const {missionInProgress} = MissionData;
+  const socket = useSelector((state) => state.socket.data);
 
-  useEffect(() => {
-    CommonApi.fetchAppCommon('/agent/mission-list', 'GET', '').then(
-      response => {
-        if (response.status == 1) {
-          setMissionDataProgress(response.data.mission_all)
-        //  alert(JSON.stringify(missionDataProgress))
-        }
+  const startMission = async (id) => {
+    const token = await AsyncStorage.getItem('token');
+    const mission_id = id;
+    socket.emit('start_mission', {mission_id, token});
 
-      }).catch(err => {
-        console.log("mission-requests===>>", err)
-      })
-    // dispatch(getMissionsRequest());
-    // const unsubscribe = navigation.addListener('focus', () => {
-    //   dispatch(getMissionsRequest());
-    // });
+    socket.on(`mission_data_${mission_id}`, (msg) => {
+      console.log(msg, `mission_data_${mission_id}`);
+      dispatch(getMissionsRequest());
+    });
+  };
 
-   // return unsubscribe;
-
-    
-  }, []);
   const renderCards = ({item, index}) => {
     return (
       <Block
@@ -92,11 +90,15 @@ const InProgress = () => {
       <Block margin={[0, w3, t1]} flex={false} row center>
         <ImageComponent name="blurAvatar_icon" height="50" width="50" />
         <Block margin={[0, w3]} flex={false}>
-          <Text semibold size={18} margin={[0, w3, 0, 0]}>
-            {item.name}
+          <Text
+            transform="capitalize"
+            semibold
+            size={18}
+            margin={[0, w3, 0, 0]}>
+            {item.first_name} {item.last_name}
           </Text>
           <Text margin={[hp(0.5), 0, 0]} size={16} grey>
-            {AgentType(item.agent_type)}
+            {item.location}
           </Text>
         </Block>
       </Block>
@@ -133,15 +135,20 @@ const InProgress = () => {
   };
   return (
     <Block primary>
+      {isLoad && <ActivityLoader />}
       <Block padding={[t2, 0]}>
-        {/* {strictValidObject(missionDataProgress) && ( */}
+        {strictValidArrayWithLength(missionInProgress) ? (
           <FlatList
             contentContainerStyle={{flexGrow: 1}}
             ListEmptyComponent={<EmptyFile />}
-            data={missionDataProgress}
+            data={missionInProgress}
             renderItem={renderCards}
           />
-        {/* )} */}
+        ) : (
+          <Block center middle>
+            <Text>No Results</Text>
+          </Block>
+        )}
       </Block>
     </Block>
   );

@@ -55,6 +55,7 @@ const Login = () => {
       loginRequest({
         email: values.email,
         password: values.password,
+        role_id: 2,
       }),
     );
   };

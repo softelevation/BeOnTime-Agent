@@ -31,9 +31,7 @@ const CreateMission = () => {
   const [action, setAction] = useState('');
   const location = useSelector((state) => state.common.location.data);
   const isLoad = useSelector((state) => state.agents.searchAgentList.loading);
-  console.log(isLoad);
   var CurrentDate = moment().format('YYYY-MM-DD HH:mm:ss');
-  console.log(CurrentDate, 'CurrentDate');
   const onSubmit = (values) => {
     const data = {
       title: values.title,
@@ -50,7 +48,6 @@ const CreateMission = () => {
       description: values.description,
       vehicle_required: values.preferVehicle ? 1 : 2,
     };
-    console.log(data, 'data');
     dispatch(searchAgentsRequest(data));
   };
 

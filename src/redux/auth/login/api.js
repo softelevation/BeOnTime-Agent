@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {config} from '../../../utils/config';
 export const Api = async (data) => {
-  const {email, password} = data;
+  const {email, password, role_id} = data;
   const headers = {
     'Content-Type': 'application/json',
   };
@@ -12,6 +12,7 @@ export const Api = async (data) => {
     data: {
       email: `${email}`,
       password: `${password}`,
+      role_id: role_id,
     },
   });
 };

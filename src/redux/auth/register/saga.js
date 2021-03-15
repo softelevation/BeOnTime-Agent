@@ -11,17 +11,16 @@ export function* request(action) {
   try {
     const response = yield call(Api, action.payload);
     if (response.data.status === 1) {
-      Toast.show('Please check your email  account for your password')
-    ///  alert(JSON.stringify(response.data))
-    // navigation.navigate('Home');
-    navigation.navigate('Login');
+      Toast.show('Please check your email  account for your password');
+      ///  alert(JSON.stringify(response.data))
+      // navigation.navigate('Home');
+      navigation.navigate('Login');
       yield put(registerSuccess(response.data));
     } else {
       Toast.show(response.data.message);
       yield put(registerError(response));
     }
   } catch (err) {
-   console.log(JSON.stringify(err))
     yield put(registerError(err));
   }
 }

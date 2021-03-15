@@ -6,13 +6,10 @@ export const SignatureScreen = () => {
   const [signature, setSign] = useState(null);
 
   const handleSignature = (signature) => {
-    console.log("signature==>>>",signature);
     setSign(signature);
   };
 
-  const handleEmpty = () => {
-    console.log('Empty');
-  };
+  const handleEmpty = () => {};
 
   const style = `.m-signature-pad--footer
     .button {
