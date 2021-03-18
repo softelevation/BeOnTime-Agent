@@ -10,7 +10,8 @@ import ReviewDetails from '../screen/review';
 import Payment from '../screen/payment';
 import MissionDetails from '../screen/missions/details';
 import MissionReport from '../screen/mission-report';
-
+import NewSupport from '../screen/message-center/new-support';
+import EditProfile from '../screen/profile/edit-profile';
 
 const Stack = createStackNavigator();
 
@@ -27,7 +28,8 @@ function Routes() {
         <Stack.Screen name="Payment" component={Payment} />
         <Stack.Screen name="MissionDetails" component={MissionDetails} />
         <Stack.Screen name="MissionReport" component={MissionReport} />
-        
+        <Stack.Screen name="NewSupport" component={NewSupport} />
+        <Stack.Screen name="EditProfile" component={EditProfile} />
       </Stack.Navigator>
     </NavigationContainer>
   );

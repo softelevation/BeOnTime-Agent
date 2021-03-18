@@ -37,6 +37,9 @@ const componentStyles = () => {
     },
     primary: {backgroundColor: light.primary},
     secondary: {backgroundColor: light.secondary},
+    borderColor: {
+      borderColor: '#E9EBF3',
+    },
   });
 };
 

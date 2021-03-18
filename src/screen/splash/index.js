@@ -4,16 +4,33 @@ import React, {useEffect} from 'react';
 import {useDispatch} from 'react-redux';
 import {Block, ImageComponent} from '../../components';
 import {
+  locationSuccess,
   loginSuccess,
   profileRequest,
   socketConnection,
 } from '../../redux/action';
 import {strictValidString} from '../../utils/commonUtils';
 import io from 'socket.io-client';
+import Geolocation from '@react-native-community/geolocation';
 
 const Splash = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const watchId = Geolocation.getCurrentPosition(
+      (position) => {
+        dispatch(locationSuccess(position.coords));
+      },
+      (error) => {},
+      {
+        enableHighAccuracy: true,
+        timeout: 15000,
+      },
+    );
+
+    return () => Geolocation.clearWatch(watchId);
+  }, []);
 
   const callAuthApi = async () => {
     const token = await AsyncStorage.getItem('token');

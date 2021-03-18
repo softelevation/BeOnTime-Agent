@@ -122,3 +122,51 @@ export const PaymentStatus = (type) => {
       return 'completed';
   }
 };
+export const meteoData = [
+  {name: 'Vent fort', value: 'Vent fort'},
+  {name: 'Pluie', value: 'Pluie'},
+  {name: 'Orage', value: 'Orage'},
+  {name: 'Neige', value: 'Neige'},
+];
+export const circulationData = [
+  {name: 'Mauvaise (motif)', value: 'Mauvaise (motif)'},
+];
+export const verificationData = [
+  {name: 'Intérieur', value: 'Intérieur'},
+  {name: 'Extérieur', value: 'Extérieur'},
+];
+export const allumeeData = [
+  {name: 'Non', value: 'Non'},
+  {name: 'Oui Pièce', value: 'Oui Pièce'},
+];
+export const ouvertesData = [
+  {name: 'Non', value: 'Non'},
+  {name: 'Oui Lesquelles', value: 'Oui Lesquelles'},
+];
+export const fonctionData = [
+  {name: 'Non', value: 'Non'},
+  {name: 'Oui', value: 'Oui'},
+];
+export const systemData = [
+  {name: 'En service', value: 'En service'},
+  {
+    name: 'Hors service à l’arrivée de l’intervenant',
+    value: 'Hors service à l’arrivée de l’intervenant',
+  },
+];
+export const RemiseData = [
+  {name: 'Non', value: 'Non'},
+  {name: 'Oui', value: 'Oui'},
+  {name: 'Zone(s) en anomalies', value: 'Zone(s) en anomalies'},
+  {name: 'Zones isolées', value: 'Zones isolées'},
+];
+export const EffractionData = [
+  {name: 'Non', value: 'Non'},
+  {name: 'Oui', value: 'Oui'},
+];
+export const presenceData = [
+  {name: 'Client', value: 'Client'},
+  {name: 'Police', value: 'Police'},
+  {name: 'Gendarmerie', value: 'Gendarmerie'},
+  {name: 'Pompiers', value: 'Pompiers'},
+];

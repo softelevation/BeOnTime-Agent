@@ -30,25 +30,6 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const isLoad = useSelector((state) => state.user.login.loading);
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
-      'keyboardDidShow',
-      () => {
-        setKeyboardVisible(true); // or some other action
-      },
-    );
-    const keyboardDidHideListener = Keyboard.addListener(
-      'keyboardDidHide',
-      () => {
-        setKeyboardVisible(false); // or some other action
-      },
-    );
-
-    return () => {
-      keyboardDidHideListener.remove();
-      keyboardDidShowListener.remove();
-    };
-  }, []);
 
   const onSubmit = async (values) => {
     dispatch(
@@ -64,7 +45,7 @@ const Login = () => {
       <Header centerText="Login" />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={heightPercentageToDP(20)}
+        keyboardVerticalOffset={heightPercentageToDP(30)}
         style={{flexGrow: 1}}>
         <Formik
           initialValues={{
@@ -75,8 +56,6 @@ const Login = () => {
           validationSchema={yup.object().shape({
             email: yup.string().email().required(),
             password: yup.string().min(6).required(),
-
-            // password: yup.string().min(8).required(),
           })}>
           {({
             values,
@@ -90,7 +69,7 @@ const Login = () => {
             dirty,
           }) => (
             <>
-              <CustomButton onPress={Keyboard.dismiss} flex={0.5} primary />
+              <CustomButton onPress={Keyboard.dismiss} flex={0.45} primary />
               <Block padding={[0, w4]} flex={0.5}>
                 <Block flex={false} margin={[t1, 0]}>
                   <ImageComponent name="logo" height="50" width="50" />

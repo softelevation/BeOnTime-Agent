@@ -2,17 +2,19 @@ import {ActionConstants} from '../constants';
 import {
   missionListError,
   missionListSuccess,
-  searchAgentsSuccess,
-  searchAgentsError,
+  missionReportSubmitSuccess,
+  missionReportSubmitError,
   missionsAgentError,
   missionsAgentSuccess,
+  missionListRequest,
+  getMissionsRequest,
 } from '../action';
 import {put, call, all, takeLatest} from 'redux-saga/effects';
-import {Api, SearchApi, MissionAgentsApi, BookAgentsApi} from './api';
+import {Api, missionReportApi, MissionAgentsApi, BookAgentsApi} from './api';
 import * as navigation from '../../routes/NavigationService';
 import {bookAgentError, bookAgentSuccess} from './action';
 
-export function* missionListRequest(action) {
+export function* missionListRequested(action) {
   try {
     const response = yield call(Api, action.payload);
     if (response.data.status === 1) {
@@ -24,17 +26,18 @@ export function* missionListRequest(action) {
     yield put(missionListError());
   }
 }
-export function* searchAgentsRequest(action) {
+export function* missionReportSubmit(action) {
   try {
-    const response = yield call(SearchApi, action.payload);
+    const response = yield call(missionReportApi, action.payload);
     if (response.data.status === 1) {
-      yield put(searchAgentsSuccess(response.data));
-      navigation.navigate('ChooseType');
+      yield put(missionReportSubmitSuccess(response.data));
+      yield put(missionListRequest());
+      yield put(getMissionsRequest());
     } else {
-      yield put(searchAgentsError(response));
+      yield put(missionReportSubmitError(response));
     }
   } catch (err) {
-    yield put(searchAgentsError());
+    yield put(missionReportSubmitError());
   }
 }
 export function* missionAgentsRequest(action) {
@@ -65,8 +68,11 @@ export function* bookAgentsRequest(action) {
 
 export function* agentWatcher() {
   yield all([
-    takeLatest(ActionConstants.MISSION_LIST_REQUEST, missionListRequest),
-    takeLatest(ActionConstants.SEARCH_AGENTS_REQUEST, searchAgentsRequest),
+    takeLatest(ActionConstants.MISSION_LIST_REQUEST, missionListRequested),
+    takeLatest(
+      ActionConstants.MISSION_REPORT_SUBMIT_REQUEST,
+      missionReportSubmit,
+    ),
     takeLatest(ActionConstants.MISSION_AGENTS_REQUEST, missionAgentsRequest),
     takeLatest(ActionConstants.BOOK_AGENTS_REQUEST, bookAgentsRequest),
   ]);

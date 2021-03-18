@@ -22,24 +22,30 @@ export const missionListError = (error) => {
   };
 };
 // Search Agents List
-export const searchAgentsRequest = (payload) => {
+export const missionReportSubmitRequest = (payload) => {
   return {
-    type: ActionConstants.SEARCH_AGENTS_REQUEST,
+    type: ActionConstants.MISSION_REPORT_SUBMIT_REQUEST,
     payload,
     res: false,
   };
 };
-export const searchAgentsSuccess = (data) => {
+export const missionReportSubmitSuccess = (data) => {
   return {
-    type: ActionConstants.SEARCH_AGENTS_SUCCESS,
+    type: ActionConstants.MISSION_REPORT_SUBMIT_SUCCESS,
     data,
     res: true,
   };
 };
-export const searchAgentsError = (error) => {
+export const missionReportSubmitError = (error) => {
   return {
-    type: ActionConstants.SEARCH_AGENTS_ERROR,
+    type: ActionConstants.MISSION_REPORT_SUBMIT_ERROR,
     error,
+    res: false,
+  };
+};
+export const missionReportSubmitFlush = () => {
+  return {
+    type: ActionConstants.MISSION_REPORT_SUBMIT_FLUSH,
     res: false,
   };
 };

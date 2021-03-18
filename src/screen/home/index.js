@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useState} from 'react';
-import {FlatList} from 'react-native';
+import {FlatList, RefreshControl} from 'react-native';
 import {
   Block,
   Button,
@@ -8,8 +8,6 @@ import {
   ImageComponent,
   Text,
 } from '../../components';
-// import MapView, {Marker} from 'react-native-maps';
-import Geolocation from '@react-native-community/geolocation';
 import {
   heightPercentageToDP,
   heightPercentageToDP as hp,
@@ -19,15 +17,8 @@ import {
 import {t1, t2, w1, w3, w4, w5} from '../../components/theme/fontsize';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
-import {
-  locationSuccess,
-  missionListRequest,
-  profileRequest,
-} from '../../redux/action';
+import {missionListRequest} from '../../redux/action';
 import Header from '../../components/common/header';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import * as yup from 'yup';
-import {Formik} from 'formik';
 import EmptyFile from '../../components/emptyFile';
 import CommonMap from '../common/Map';
 import {divider} from '../../utils/commonView';
@@ -39,8 +30,6 @@ import {
 } from '../../utils/commonUtils';
 import {CountdownCircleTimer} from 'react-native-countdown-circle-timer';
 import AsyncStorage from '@react-native-community/async-storage';
-import Toast from 'react-native-simple-toast';
-import {showMessage} from 'react-native-flash-message';
 import {light} from '../../components/theme/colors';
 import ActivityLoader from '../../components/activityLoader';
 
@@ -58,6 +47,15 @@ const Home = () => {
   const [type, settype] = useState(null);
   const [loader, setloader] = useState(initialState);
   const {acceptloader, rejecttloader} = loader;
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+    ApiRequest();
+  };
 
   useEffect(() => {
     ApiRequest();
@@ -75,21 +73,6 @@ const Home = () => {
   const ApiRequest = () => {
     dispatch(missionListRequest());
   };
-
-  useEffect(() => {
-    const watchId = Geolocation.getCurrentPosition(
-      (position) => {
-        dispatch(locationSuccess(position.coords));
-      },
-      (error) => {},
-      {
-        enableHighAccuracy: true,
-        timeout: 15000,
-      },
-    );
-
-    return () => Geolocation.clearWatch(watchId);
-  }, []);
 
   const changeStatus = async (status) => {
     settype(status);
@@ -117,6 +100,7 @@ const Home = () => {
     setloader(val);
     const mission_id = id;
     socket.emit('agent_mission_request', {mission_id, status});
+    ApiRequest();
   };
   const renderAgentDetails = (item) => {
     return (
@@ -211,9 +195,7 @@ const Home = () => {
       <Header centerText="Mission Requests" leftIcon />
       {load && <ActivityLoader />}
       <>
-        <KeyboardAwareScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{flexGrow: 1}}>
+        <Block>
           <Block flex={false} padding={[0, w4]}>
             <Block center margin={[t1, w3]} row flex={false}>
               <Text size={16} style={{width: widthPercentageToDP(45)}} regular>
@@ -265,13 +247,20 @@ const Home = () => {
           </Block>
           <Block flex={1} margin={[t1, 0, 0]}>
             <FlatList
+              refreshControl={
+                <RefreshControl
+                  tintColor="#000"
+                  refreshing={refreshing}
+                  onRefresh={onRefresh}
+                />
+              }
               contentContainerStyle={{flexGrow: 1}}
               ListEmptyComponent={<EmptyFile />}
               data={agentList}
               renderItem={renderCards}
             />
           </Block>
-        </KeyboardAwareScrollView>
+        </Block>
       </>
     </Block>
   );

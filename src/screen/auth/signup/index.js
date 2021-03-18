@@ -41,6 +41,7 @@ const Signup = () => {
   const loading = useSelector((state) => state.user.register.loading);
   const isLoad = useSelector((state) => state.user.login.loading);
   const isSuccess = useSelector((state) => state.user.register.isSuccess);
+  const location = useSelector((state) => state.common.location.data);
   const modalizeRef = useRef();
   const dispatch = useDispatch();
   const [action, setAction] = useState('');
@@ -522,10 +523,10 @@ const Signup = () => {
         agent_type: agent_type.name,
         home_address: address,
         work_location_address: work_location,
-        lat: '',
-        long: '',
-        is_vehicle: values.typeVehicle == 'yes' ? 1 : 0,
-        is_subc: values.typeContractor == 'yes' ? 1 : 0,
+        lat: location.latitude,
+        long: location.longitude,
+        is_vehicle: values.typeVehicle === 'yes' ? 1 : 0,
+        is_subc: values.typeContractor === 'yes' ? 1 : 0,
         supplier_company: company,
         identity_card: idCardData,
         social_security_number: socialSecData,
@@ -534,6 +535,7 @@ const Signup = () => {
         //   social_security_number:'',
         // cv: '',
       };
+      console.log(data, 'vv');
       dispatch(registerRequest(data));
     }
   };

@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {useNavigation} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
-import {FlatList} from 'react-native';
+import {FlatList, RefreshControl} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -19,14 +19,15 @@ import {t1, t2, w3, w5} from '../../../components/theme/fontsize';
 import {getMissionsRequest} from '../../../redux/action';
 import {
   strictValidArrayWithLength,
+  strictValidNumber,
   strictValidObject,
+  strictValidString,
 } from '../../../utils/commonUtils';
 import {divider} from '../../../utils/commonView';
-import {AgentType} from '../../../utils/data';
+import {AgentType, PaymentStatus} from '../../../utils/data';
 import CommonMap from '../../common/Map';
 import CommonApi from '../../../utils/CommonApi';
 import ActivityLoader from '../../../components/activityLoader';
-import AsyncStorage from '@react-native-community/async-storage';
 
 const Finished = () => {
   const navigation = useNavigation();
@@ -34,6 +35,15 @@ const Finished = () => {
   const MissionData = useSelector((state) => state.mission.missions.data);
   const isLoad = useSelector((state) => state.mission.missions.loading);
   const {missionCompleted} = MissionData;
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+    dispatch(getMissionsRequest());
+  };
 
   const renderCards = ({item, index}) => {
     return (
@@ -58,16 +68,20 @@ const Finished = () => {
         {renderAgentDetails(item)}
         {renderRequestReview(item)}
         <Block flex={false} padding={[0, w3]}>
-          <Button color="secondary">View report</Button>
+          <Button
+            onPress={() =>
+              navigation.navigate('MissionReport', {
+                item: item,
+              })
+            }
+            color="secondary">
+            {strictValidNumber(item.reports_id)
+              ? 'View report'
+              : 'Submit Report'}
+          </Button>
         </Block>
-        <CustomButton
-          onPress={() =>
-            navigation.navigate('MissionDetails', {
-              item: item,
-            })
-          }
-          center>
-          <Text size={14}>Mission Details</Text>
+        <CustomButton center>
+          <Text size={14}>Archive</Text>
         </CustomButton>
       </Block>
     );
@@ -91,7 +105,7 @@ const Finished = () => {
       </Block>
     );
   };
-  const renderRequestReview = () => {
+  const renderRequestReview = (item) => {
     return (
       <Block margin={[t1, w3, t1]} flex={false} row center>
         <Block
@@ -112,7 +126,8 @@ const Finished = () => {
                 Mission Accepted
               </Text>
               <Text margin={[hp(0.5), 0, 0]} size={14} grey>
-                Mission ended. Payment pending.
+                {/* `{Mission ended. }`PaymentStatus */}
+                {`Mission ended ${PaymentStatus(item.payment_status)}`}
               </Text>
             </>
           </Block>
@@ -126,6 +141,13 @@ const Finished = () => {
 
       <Block padding={[t2, 0]}>
         <FlatList
+          refreshControl={
+            <RefreshControl
+              tintColor="#000"
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+            />
+          }
           contentContainerStyle={{flexGrow: 1}}
           ListEmptyComponent={<EmptyFile />}
           data={missionCompleted}

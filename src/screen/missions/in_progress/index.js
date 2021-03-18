@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {useNavigation} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
-import {FlatList} from 'react-native';
+import {FlatList, RefreshControl} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -31,6 +31,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 const InProgress = () => {
   const navigation = useNavigation();
+  const [refreshing, setRefreshing] = useState(false);
   const dispatch = useDispatch();
   const MissionData = useSelector((state) => state.mission.missions.data);
   const isLoad = useSelector((state) => state.mission.missions.loading);
@@ -46,6 +47,14 @@ const InProgress = () => {
       console.log(msg, `finish_mission_${mission_id}`);
       dispatch(getMissionsRequest());
     });
+  };
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+    dispatch(getMissionsRequest());
   };
 
   const renderCards = ({item, index}) => {
@@ -140,6 +149,13 @@ const InProgress = () => {
       {isLoad && <ActivityLoader />}
       <Block>
         <FlatList
+          refreshControl={
+            <RefreshControl
+              tintColor="#000"
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+            />
+          }
           contentContainerStyle={{flexGrow: 1}}
           ListEmptyComponent={<EmptyFile />}
           data={missionInProgress}

@@ -269,16 +269,12 @@ const MissionDetails = ({
       <Block flex={1}>
         <CommonMap />
       </Block>
+
       <Modalize
         ref={modalizeRef}
-        // contentRef={contentRef}
-        alwaysOpen={350}
-        snapPoint={350}
-        handlePosition="inside"
-
-        // snapPoint={350}
-        // handlePosition="inside"
-      >
+        alwaysOpen={500}
+        snapPoint={500}
+        handlePosition="inside">
         {renderHeader()}
       </Modalize>
     </Block>

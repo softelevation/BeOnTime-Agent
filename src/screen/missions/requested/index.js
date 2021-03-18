@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import AsyncStorage from '@react-native-community/async-storage';
 import {useNavigation} from '@react-navigation/native';
-import React from 'react';
-import {FlatList} from 'react-native';
+import React, {useState} from 'react';
+import {FlatList, RefreshControl} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -26,6 +26,8 @@ import CommonMap from '../../common/Map';
 
 const Requested = () => {
   const navigation = useNavigation();
+  const [refreshing, setRefreshing] = useState(false);
+
   const MissionData = useSelector((state) => state.mission.missions.data);
   const {missionPending} = MissionData;
   const isLoad = useSelector((state) => state.mission.missions.loading);
@@ -41,6 +43,14 @@ const Requested = () => {
       console.log(msg, `mission_data_${mission_id}`);
       dispatch(getMissionsRequest());
     });
+  };
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+    dispatch(getMissionsRequest());
   };
 
   const renderCards = ({item, index}) => {
@@ -119,6 +129,13 @@ const Requested = () => {
 
       <Block>
         <FlatList
+          refreshControl={
+            <RefreshControl
+              tintColor="#000"
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+            />
+          }
           contentContainerStyle={{flexGrow: 1}}
           ListEmptyComponent={<EmptyFile />}
           data={missionPending}

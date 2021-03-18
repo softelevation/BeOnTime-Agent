@@ -5,6 +5,7 @@ import rootSaga from './src/redux/saga';
 import FlashMessage from 'react-native-flash-message';
 import {sagaMiddleware, store, persistor} from './src/redux/store';
 import {PersistGate} from 'redux-persist/integration/react';
+
 sagaMiddleware.run(rootSaga);
 
 const App = () => {

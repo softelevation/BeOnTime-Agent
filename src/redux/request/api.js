@@ -14,7 +14,7 @@ export const Api = async () => {
   });
 };
 
-export const SearchApi = async (data) => {
+export const missionReportApi = async (data) => {
   const token = await AsyncStorage.getItem('token');
   const headers = {
     'Content-Type': 'application/json',
@@ -22,11 +22,12 @@ export const SearchApi = async (data) => {
   };
   return axios({
     method: 'post',
-    url: `${config.Api_Url}/customer/quick-create-mission`,
+    url: `${config.Api_Url}/agent/mission-report`,
     headers,
     data: data,
   });
 };
+
 export const MissionAgentsApi = async (data) => {
   const {mission_id} = data;
   const token = await AsyncStorage.getItem('token');

@@ -115,8 +115,8 @@ const Input = ({
   const inputStyles = [
     styles.input,
     !editable && {
-      backgroundColor: '#000',
-      color: '#fff',
+      backgroundColor: 'transparent',
+      color: '#8A8E99',
       borderColor: '#000',
     },
     style,

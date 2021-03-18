@@ -34,25 +34,37 @@ const initialSearchState = {
   loading: false,
   searchList: [],
   error: '',
+  isSuccess: false,
 };
-export function searchAgentList(state = initialSearchState, action) {
+export function missionReport(state = initialSearchState, action) {
   switch (action.type) {
-    case ActionConstants.SEARCH_AGENTS_REQUEST:
+    case ActionConstants.MISSION_REPORT_SUBMIT_REQUEST:
       return {
         ...state,
         loading: true,
+        isSuccess: false,
       };
-    case ActionConstants.SEARCH_AGENTS_SUCCESS:
+    case ActionConstants.MISSION_REPORT_SUBMIT_SUCCESS:
       return {
         ...state,
         loading: false,
         searchList: action.data,
+        isSuccess: true,
       };
-    case ActionConstants.SEARCH_AGENTS_ERROR:
+    case ActionConstants.MISSION_REPORT_SUBMIT_ERROR:
       return {
         ...state,
         loading: false,
         error: action.error,
+        isSuccess: false,
+      };
+    case ActionConstants.MISSION_REPORT_SUBMIT_FLUSH:
+      return {
+        ...state,
+        loading: false,
+        error: '',
+        isSuccess: false,
+        searchList: [],
       };
 
     default:
@@ -129,7 +141,7 @@ export function bookAgennts(state = initialBookAgentState, action) {
 
 const request = combineReducers({
   list,
-  searchAgentList,
+  missionReport,
   agentMissionList,
   bookAgennts,
 });
