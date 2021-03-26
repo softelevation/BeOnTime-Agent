@@ -23,9 +23,27 @@ export function loginReducer(state = initialState, action) {
         loading: false,
         error: action.error,
       };
+    case ActionConstants.CHANGE_PASSWORD_REQUEST:
+      return {
+        ...state,
+        loading: true,
+      };
+    case ActionConstants.CHANGE_PASSWORD_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        user: action.data,
+      };
+    case ActionConstants.CHANGE_PASSWORD_ERROR:
+      return {
+        ...state,
+        loading: false,
+        error: action.error,
+      };
 
     default:
       return state;
   }
 }
+
 export default loginReducer;

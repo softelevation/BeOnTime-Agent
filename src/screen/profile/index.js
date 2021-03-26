@@ -6,11 +6,19 @@ import {
 } from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {FlatList, ScrollView} from 'react-native';
+import {heightPercentageToDP} from 'react-native-responsive-screen';
 import {useSelector} from 'react-redux';
-import {Block, Button, ImageComponent, Text} from '../../components';
+import {
+  Block,
+  Button,
+  CustomButton,
+  ImageComponent,
+  Text,
+} from '../../components';
 import Header from '../../components/common/header';
 import {t1, t5, w3} from '../../components/theme/fontsize';
 import CommonApi from '../../utils/CommonApi';
+import {ProfileData} from '../../utils/data';
 
 const Profile = () => {
   const navigation = useNavigation();
@@ -37,19 +45,20 @@ const Profile = () => {
 
   const _renderItem = ({item}) => {
     return (
-      <Block
+      <CustomButton
+        onPress={() => navigation.navigate(item.nav)}
         flex={false}
         row
         space="between"
         padding={[t1]}
         borderWidth={1}
-        margin={[t1, 0]}
+        // margin={[t1, 0]}
         borderColorDeafult>
         <Text semibold size={16}>
-          {item}
+          {item.name}
         </Text>
         <ImageComponent name="arrow_right_2_icon" height="20" width="20" />
-      </Block>
+      </CustomButton>
     );
   };
   return (
@@ -128,12 +137,11 @@ const Profile = () => {
         <Block flex={false} padding={[0, w3]} margin={[t5, 0, 0]}>
           <FlatList
             scrollEnabled={false}
-            data={[
-              // 'Billing',
-              'Edit profile',
-              'Change email',
-              'Change password',
-            ]}
+            contentContainerStyle={{
+              paddingBottom: heightPercentageToDP(4),
+              paddingTop: heightPercentageToDP(2),
+            }}
+            data={ProfileData}
             renderItem={_renderItem}
           />
           <Button onPress={() => onLogout()} color="secondary">

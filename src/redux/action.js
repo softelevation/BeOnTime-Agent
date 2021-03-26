@@ -1,4 +1,11 @@
-export {loginError, loginRequest, loginSuccess} from './auth/login/action';
+export {
+  loginError,
+  loginRequest,
+  loginSuccess,
+  changePasswordError,
+  changePasswordRequest,
+  changePasswordSuccess,
+} from './auth/login/action';
 export {
   registerError,
   registerRequest,
@@ -9,6 +16,9 @@ export {
   profileRequest,
   profileSuccess,
   profileFlush,
+  updateProfileError,
+  updateProfileRequest,
+  updateProfileSuccess,
 } from './auth/profile/action';
 export {
   generateOtpError,

@@ -8,7 +8,7 @@ export const Api = async (data) => {
     last_name,
     email,
     phone,
-    address,
+    home_address,
     type,
     iban,
     work_location_address,
@@ -20,13 +20,14 @@ export const Api = async (data) => {
     is_subc,
     is_vehicle,
   } = data;
+  console.log(data, 'data');
 
   var formData = new FormData();
   formData.append('first_name', first_name);
   formData.append('last_name', last_name);
   formData.append('email', email);
   formData.append('phone', phone);
-  formData.append('home_address', address);
+  formData.append('home_address', home_address);
   formData.append('agent_type', agent_type);
   formData.append('iban', iban);
   formData.append('lat', lat);

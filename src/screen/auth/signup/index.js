@@ -125,6 +125,7 @@ const Signup = () => {
         height: 400,
         cropping: true,
       }).then((image) => {
+        console.log(image, 'image');
         setUserIDCardDetails({
           ...userIDCardDetails,
           uploading: true,
@@ -494,33 +495,21 @@ const Signup = () => {
         phone,
         address,
         type,
-        //  password,
         iban,
         cnaps,
         work_location,
         agent_type,
-        //  socialSecData,
-        // AcvCardData,
         company,
       } = values;
 
       const data = {
-        // first_name: firstName,
-        // last_name: lastName,
-        // email: email,
-        // phone: phone,
-        // home_address: address,
-        // customer_type: type === 'company' ? 2 : 1,
-        // password: password,
-        // company_name: company,
         profile: profileData,
         first_name: firstName,
         last_name: lastName,
         email: email,
-        // password: '',
         phone: phone,
         iban: iban,
-        agent_type: agent_type.name,
+        agent_type: agent_type.value,
         home_address: address,
         work_location_address: work_location,
         lat: location.latitude,
@@ -531,9 +520,6 @@ const Signup = () => {
         identity_card: idCardData,
         social_security_number: socialSecData,
         cv: AcvCardData,
-        //   identity_card: '',
-        //   social_security_number:'',
-        // cv: '',
       };
       console.log(data, 'vv');
       dispatch(registerRequest(data));
@@ -621,7 +607,10 @@ const Signup = () => {
           type: 'individual',
           privacy: false,
           terms: false,
-          agent_type: '',
+          agent_type: {
+            value: null,
+            name: null,
+          },
           iban: '',
           cnaps: '',
           work_location: '',
@@ -722,13 +711,13 @@ const Signup = () => {
                   'Identity Card',
                   'Please Upload document',
                   () => onOpen('identry_card'),
-                  values.identy_card,
+                  idCardImage ? '1 file selected' : values.identy_card,
                 )}
                 {renderFiles(
                   'Anonymous Curriculum Vitae',
                   'Please Upload document',
                   () => onOpen('Acv'),
-                  values.Acv,
+                  AcvCardImage ? '1 file selected' : values.Acv,
                 )}
                 {/* {renderFiles('Anonymous Curriculum Vitae')} */}
                 {/* {renderFiles('Social Security Number')} */}
@@ -736,7 +725,7 @@ const Signup = () => {
                   'Social Security Number',
                   'Please Upload document',
                   () => onOpen('Ssn'),
-                  values.Acv,
+                  socialSecImage ? '1 file selected' : values.Acv,
                 )}
                 <Input
                   label="IBAN Info"

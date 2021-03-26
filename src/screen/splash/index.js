@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import React, {useEffect} from 'react';
 import {useDispatch} from 'react-redux';
-import {Block, ImageComponent} from '../../components';
+import {Block, ImageComponent, Text} from '../../components';
 import {
   locationSuccess,
   loginSuccess,
@@ -12,6 +12,7 @@ import {
 import {strictValidString} from '../../utils/commonUtils';
 import io from 'socket.io-client';
 import Geolocation from '@react-native-community/geolocation';
+import {t2, t4} from '../../components/theme/fontsize';
 
 const Splash = () => {
   const navigation = useNavigation();
@@ -41,11 +42,15 @@ const Splash = () => {
       dispatch(profileRequest());
 
       setTimeout(() => {
-        navigation.navigate('Home');
+        navigation.reset({
+          routes: [{name: 'Home'}],
+        });
       }, 3000);
     } else {
       setTimeout(() => {
-        navigation.navigate('Auth');
+        navigation.reset({
+          routes: [{name: 'Auth'}],
+        });
       }, 3000);
     }
   };
@@ -62,6 +67,9 @@ const Splash = () => {
   return (
     <Block primary center middle>
       <ImageComponent name="logo" height="170" width="170" />
+      <Text size={28} margin={[t4, 0, 0]} bold>
+        BE ON TIME
+      </Text>
     </Block>
   );
 };
