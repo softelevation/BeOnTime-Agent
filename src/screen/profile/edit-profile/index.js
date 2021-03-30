@@ -1,5 +1,5 @@
 import {Formik} from 'formik';
-import React, {useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   ActivityIndicator,
   ImageBackground,
@@ -11,13 +11,13 @@ import {heightPercentageToDP} from 'react-native-responsive-screen';
 import {images} from '../../../assets';
 import {Block, Button, ImageComponent, Input} from '../../../components';
 import Header from '../../../components/common/header';
-import {w3} from '../../../components/theme/fontsize';
+import {t1, w3} from '../../../components/theme/fontsize';
 import * as yup from 'yup';
 import {connect, useDispatch} from 'react-redux';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import CommonApi from '../../../utils/CommonApi';
 import {updateProfileRequest} from '../../../redux/auth/profile/action';
-const EditProfile = ({user}) => {
+import GooglePlacesTextInput from '../../../components/googlePlaces';
+const EditProfile = ({user, isLoad}) => {
   const dispatch = useDispatch();
   const [userProfileDetails, setUserDetails] = useState({
     profileImage: '',
@@ -25,7 +25,10 @@ const EditProfile = ({user}) => {
     profileData: '',
   });
   const {profileImage, profileData, uploading} = userProfileDetails;
-
+  const placesRef = useRef();
+  useEffect(() => {
+    placesRef.current?.setAddressText('Some Text');
+  }, [user]);
   const uploadPhoto = () => {
     ImageCropPicker.openPicker({
       width: 300,
@@ -107,15 +110,15 @@ const EditProfile = ({user}) => {
   return (
     <Block primary>
       <Header centerText="Edit Profile" />
-      <KeyboardAwareScrollView>
+      <KeyboardAwareScrollView keyboardShouldPersistTaps="always">
         {renderProfileImage()}
         <Formik
           enableReinitialize
           initialValues={{
-            first_name: user.first_name,
-            last_name: user.last_name,
-            phone: user.phone,
-            home_address: user.home_address,
+            first_name: user.first_name || '',
+            last_name: user.last_name || '',
+            phone: user.phone || '',
+            home_address: user.home_address || '',
           }}
           onSubmit={onSubmit}
           validationSchema={yup.object().shape({
@@ -168,7 +171,27 @@ const EditProfile = ({user}) => {
                 onBlur={() => setFieldTouched('home_address')}
                 error={touched.home_address && errors.home_address}
               />
+              {/* <Block flex={false} margin={[t1, 0, 0]}>
+                <GooglePlacesTextInput
+                  ref={placesRef}
+                  placeholder="Enter home address"
+                  label="Home address"
+                  value={values.home_address}
+                  onPress={(data, details) => {
+                    const description = data.description;
+                    setFieldValue('home_address', description);
+                  }}
+                  error={touched.home_address && errors.home_address}
+                  textInputProps={{
+                    placeholderTextColor: '#8A8E99',
+                    onblur: () => setFieldTouched('home_address'),
+                    value: values.home_address,
+                    onChangeText: handleChange('home_address'),
+                  }}
+                />
+              </Block> */}
               <Button
+                isLoading={isLoad}
                 disabled={!isValid || !dirty}
                 onPress={handleSubmit}
                 color="secondary">
@@ -201,6 +224,7 @@ const BackgroundStyle = {
 const mapStateToProps = (state) => {
   return {
     user: state.user.profile.user.data,
+    isLoad: state.user.profile.loading,
   };
 };
 export default connect(mapStateToProps, null)(EditProfile);
