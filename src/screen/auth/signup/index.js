@@ -7,6 +7,7 @@ import {
   ImageBackground,
   Platform,
   TouchableOpacity,
+  View,
 } from 'react-native';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -34,6 +35,8 @@ import AlertCompnent from '../../../components/AlertCompnent';
 import AgentType from './agent-type';
 import ImagePicker from './imagePicker';
 import {Modalize} from 'react-native-modalize';
+import {strictValidArrayWithLength} from '../../../utils/commonUtils';
+import GooglePlacesTextInput from '../../../components/googlePlaces';
 
 const Signup = () => {
   const navigation = useNavigation();
@@ -125,7 +128,6 @@ const Signup = () => {
         height: 400,
         cropping: true,
       }).then((image) => {
-        console.log(image, 'image');
         setUserIDCardDetails({
           ...userIDCardDetails,
           uploading: true,
@@ -184,7 +186,7 @@ const Signup = () => {
   };
 
   const uploadDocumentAcv = (type) => {
-    if (type == 'gallary') {
+    if (type === 'gallary') {
       ImageCropPicker.openPicker({
         width: 300,
         height: 400,
@@ -202,8 +204,6 @@ const Signup = () => {
         // });
 
         // const { idCardImage, idCardData, uploadings } = userAcvCardDetails;
-
-        // console.log(image, 'image');  const { AcvCardImage, AcvCardData, uploadings } = userAcvCardDetails;
 
         const uri = image.path;
         const uriParts = uri.split('.');
@@ -452,40 +452,45 @@ const Signup = () => {
     setmodal(false);
   };
   const onSubmit = (values) => {
-    // if (profileData == '') {
+    const agentTypeArray = [];
+    values.agent_type.map((v) => {
+      agentTypeArray.push(v.value);
+    });
+    console.log(agentTypeArray, 'agentTypeArray');
+    // if (profileData === '') {
     //   Toast.show('Please Upload Profile Picture')
     // }
-    if (values.firstName == '') {
+    if (values.firstName === '') {
       Toast.show('Please Enter First Name');
-    } else if (values.lastName == '') {
+    } else if (values.lastName === '') {
       Toast.show('Please Enter Last  Name');
-    } else if (values.email == '') {
+    } else if (values.email === '') {
       Toast.show('Please enter email');
-    } else if (values.phone == '') {
+    } else if (values.phone === '') {
       Toast.show('Please enter phone number');
     }
-    // else if (idCardData == '') {
+    // else if (idCardData === '') {
     //   Toast.show('Please Upload Identity Card Document')
     // }
-    // else if (AcvCardData == '') {
+    // else if (AcvCardData === '') {
     //   Toast.show('Please Upload Anonymous Curriculum Vitae document')
     // }
-    // else if (socialSecData == '') {
+    // else if (socialSecData === '') {
     //   Toast.show('Please Upload Social Security Number document')
     // }
-    else if (values.iban == '') {
+    else if (values.iban === '') {
       Toast.show('Please enter IBAN number');
-    } else if (values.cnaps == '') {
+    } else if (values.cnaps === '') {
       Toast.show('Please enter CNAPS Number');
-    } else if (values.address == '') {
+    } else if (values.address === '') {
       Toast.show('Please Enter Home Address');
-    } else if (values.work_location == '') {
+    } else if (values.work_location === '') {
       Toast.show('Please Enter Work Location Address');
-    } else if (values.company == '') {
+    } else if (values.company === '') {
       Toast.show('Please Enter Company Name');
-    } else if (values.privacy == false) {
+    } else if (values.privacy === false) {
       Toast.show('Please accept Privacy Policy');
-    } else if (values.terms == false) {
+    } else if (values.terms === false) {
       Toast.show('Please accept Terms');
     } else {
       const {
@@ -494,12 +499,11 @@ const Signup = () => {
         email,
         phone,
         address,
-        type,
         iban,
-        cnaps,
         work_location,
-        agent_type,
         company,
+        lat,
+        lng,
       } = values;
 
       const data = {
@@ -509,11 +513,11 @@ const Signup = () => {
         email: email,
         phone: phone,
         iban: iban,
-        agent_type: agent_type.value,
+        agent_type: agentTypeArray,
         home_address: address,
         work_location_address: work_location,
-        lat: location.latitude,
-        long: location.longitude,
+        lat: lat,
+        long: lng,
         is_vehicle: values.typeVehicle === 'yes' ? 1 : 0,
         is_subc: values.typeContractor === 'yes' ? 1 : 0,
         supplier_company: company,
@@ -521,7 +525,6 @@ const Signup = () => {
         social_security_number: socialSecData,
         cv: AcvCardData,
       };
-      console.log(data, 'vv');
       dispatch(registerRequest(data));
     }
   };
@@ -583,6 +586,48 @@ const Signup = () => {
       </CustomButton>
     );
   };
+  const renderAgentType = (label, description, onPress, value) => {
+    return (
+      <CustomButton
+        onPress={onPress}
+        margin={[t1, 0]}
+        borderWidth={1}
+        borderColor={'#F5F7FA'}
+        flex={false}
+        space={'between'}
+        padding={[t1]}
+        center
+        row>
+        <Block flex={false}>
+          <Text color="#8A8E99" caption>
+            {label}
+          </Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              width: widthPercentageToDP(80),
+            }}>
+            {strictValidArrayWithLength(value) ? (
+              value.map((a, index) => {
+                return (
+                  <Text bold color="#8A8E99" margin={[t1, 0, 0, 0]} size={16}>
+                    {value.length - 1 === index ? `${a.name}` : `${a.name},`}
+                  </Text>
+                );
+              })
+            ) : (
+              <Text bold color="#8A8E99" size={16} margin={[t1, 0, 0, 0]}>
+                {description}
+              </Text>
+            )}
+          </View>
+        </Block>
+        <ImageComponent name="down_arrow_icon" height="8" width="14" />
+      </CustomButton>
+    );
+  };
+
   return (
     <Block primary>
       <Header centerText="Get Started" />
@@ -607,10 +652,7 @@ const Signup = () => {
           type: 'individual',
           privacy: false,
           terms: false,
-          agent_type: {
-            value: null,
-            name: null,
-          },
+          agent_type: [],
           iban: '',
           cnaps: '',
           work_location: '',
@@ -620,6 +662,8 @@ const Signup = () => {
           Ssn: 'Please Upload Document',
           typeVehicle: 'no',
           typeContractor: 'no',
+          lat: '',
+          lng: '',
         }}
         onSubmit={onSubmit}
         //   validationSchema={yup.object().shape({
@@ -663,88 +707,128 @@ const Signup = () => {
           handleSubmit,
           dirty,
           isValid,
-        }) => (
-          <>
-            <KeyboardAwareScrollView
-              contentContainerStyle={{paddingBottom: t4}}>
-              <Block flex={false} padding={[0, w3]}>
-                <Input
-                  value={values.firstName}
-                  onChangeText={handleChange('firstName')}
-                  onBlur={() => setFieldTouched('firstName')}
-                  error={touched.firstName && errors.firstName}
-                  label="First Name"
-                  placeholder="Enter first name"
-                />
-                <Input
-                  label="Last Name"
-                  placeholder="Enter last name"
-                  value={values.lastName}
-                  onChangeText={handleChange('lastName')}
-                  onBlur={() => setFieldTouched('lastName')}
-                  error={touched.lastName && errors.lastName}
-                />
-                <Input
-                  label="Email address"
-                  placeholder="Enter email address"
-                  value={values.email}
-                  onChangeText={handleChange('email')}
-                  onBlur={() => setFieldTouched('email')}
-                  error={touched.email && errors.email}
-                />
-                <Input
-                  label="Phone number"
-                  placeholder="Enter phone number"
-                  value={values.phone}
-                  onChangeText={handleChange('phone')}
-                  onBlur={() => setFieldTouched('phone')}
-                  error={touched.phone && errors.phone}
-                />
-
-                {renderType(
-                  'Agent type',
-                  'Select agent type',
-                  () => onOpen('agent'),
-                  values.agent_type.name,
-                )}
-                {renderFiles(
-                  'Identity Card',
-                  'Please Upload document',
-                  () => onOpen('identry_card'),
-                  idCardImage ? '1 file selected' : values.identy_card,
-                )}
-                {renderFiles(
-                  'Anonymous Curriculum Vitae',
-                  'Please Upload document',
-                  () => onOpen('Acv'),
-                  AcvCardImage ? '1 file selected' : values.Acv,
-                )}
-                {/* {renderFiles('Anonymous Curriculum Vitae')} */}
-                {/* {renderFiles('Social Security Number')} */}
-                {renderFiles(
-                  'Social Security Number',
-                  'Please Upload document',
-                  () => onOpen('Ssn'),
-                  socialSecImage ? '1 file selected' : values.Acv,
-                )}
-                <Input
-                  label="IBAN Info"
-                  placeholder="Enter IBAN Info"
-                  value={values.iban}
-                  onChangeText={handleChange('iban')}
-                  onBlur={() => setFieldTouched('iban')}
-                  error={touched.iban && errors.iban}
-                />
-                <Input
-                  label="CNAPS Number"
-                  placeholder="Enter CNAPS Number"
-                  value={values.cnaps}
-                  onChangeText={handleChange('cnaps')}
-                  onBlur={() => setFieldTouched('cnaps')}
-                  error={touched.cnaps && errors.cnaps}
-                />
-
-                <Input
+        }) => {
+          return (
+            <>
+              <KeyboardAwareScrollView
+                keyboardShouldPersistTaps="always"
+                contentContainerStyle={{paddingBottom: t4}}>
+                <Block flex={false} padding={[0, w3]}>
+                  <Input
+                    value={values.firstName}
+                    onChangeText={handleChange('firstName')}
+                    onBlur={() => setFieldTouched('firstName')}
+                    error={touched.firstName && errors.firstName}
+                    label="First Name"
+                    placeholder="Enter first name"
+                  />
+                  <Input
+                    label="Last Name"
+                    placeholder="Enter last name"
+                    value={values.lastName}
+                    onChangeText={handleChange('lastName')}
+                    onBlur={() => setFieldTouched('lastName')}
+                    error={touched.lastName && errors.lastName}
+                  />
+                  <Input
+                    label="Email address"
+                    placeholder="Enter email address"
+                    value={values.email}
+                    onChangeText={handleChange('email')}
+                    onBlur={() => setFieldTouched('email')}
+                    error={touched.email && errors.email}
+                  />
+                  <Input
+                    label="Phone number"
+                    placeholder="Enter phone number"
+                    value={values.phone}
+                    onChangeText={handleChange('phone')}
+                    onBlur={() => setFieldTouched('phone')}
+                    error={touched.phone && errors.phone}
+                  />
+                  {renderAgentType(
+                    'Agent type',
+                    'Select agent type',
+                    () => onOpen('agent'),
+                    values.agent_type,
+                  )}
+                  {renderFiles(
+                    'Identity Card',
+                    'Please Upload document',
+                    () => onOpen('identry_card'),
+                    idCardImage ? '1 file selected' : values.identy_card,
+                  )}
+                  {renderFiles(
+                    'Anonymous Curriculum Vitae',
+                    'Please Upload document',
+                    () => onOpen('Acv'),
+                    AcvCardImage ? '1 file selected' : values.Acv,
+                  )}
+                  {/* {renderFiles('Anonymous Curriculum Vitae')} */}
+                  {/* {renderFiles('Social Security Number')} */}
+                  {renderFiles(
+                    'Social Security Number',
+                    'Please Upload document',
+                    () => onOpen('Ssn'),
+                    socialSecImage ? '1 file selected' : values.Acv,
+                  )}
+                  <Input
+                    label="IBAN Info"
+                    placeholder="Enter IBAN Info"
+                    value={values.iban}
+                    onChangeText={handleChange('iban')}
+                    onBlur={() => setFieldTouched('iban')}
+                    error={touched.iban && errors.iban}
+                  />
+                  <Input
+                    label="CNAPS Number"
+                    placeholder="Enter CNAPS Number"
+                    value={values.cnaps}
+                    onChangeText={handleChange('cnaps')}
+                    onBlur={() => setFieldTouched('cnaps')}
+                    error={touched.cnaps && errors.cnaps}
+                  />
+                  <View style={{marginTop: t1}}>
+                    <GooglePlacesTextInput
+                      placeholder="Enter home address"
+                      label="Home address"
+                      value={values.address}
+                      onPress={(data, details) => {
+                        const latlng = details.geometry.location;
+                        const description = data.description;
+                        setFieldValue('address', description);
+                      }}
+                      error={touched.address && errors.address}
+                      textInputProps={{
+                        placeholderTextColor: '#8A8E99',
+                        onblur: () => setFieldTouched('address'),
+                        value: values.address,
+                        onChangeText: handleChange('address'),
+                      }}
+                    />
+                  </View>
+                  <View style={{marginTop: t2}}>
+                    <GooglePlacesTextInput
+                      label="Work Location"
+                      placeholder="Work Location"
+                      value={values.work_location}
+                      onPress={(data, details) => {
+                        const latlng = details.geometry.location;
+                        const description = data.description;
+                        setFieldValue('work_location', description);
+                        setFieldValue('lat', latlng.lat);
+                        setFieldValue('lng', latlng.lng);
+                      }}
+                      error={touched.work_location && errors.work_location}
+                      textInputProps={{
+                        placeholderTextColor: '#8A8E99',
+                        onblur: () => setFieldTouched('work_location'),
+                        value: values.work_location,
+                        onChangeText: handleChange('work_location'),
+                      }}
+                    />
+                  </View>
+                  {/* <Input
                   label="Home address"
                   placeholder="Enter home address"
                   value={values.address}
@@ -759,235 +843,250 @@ const Signup = () => {
                   onChangeText={handleChange('work_location')}
                   onBlur={() => setFieldTouched('work_location')}
                   error={touched.work_location && errors.work_location}
-                />
-              </Block>
-              <Block flex={false} padding={[0, w2]}>
-                <Block
-                  // space={'between'}
-                  center
-                  margin={[t1, w1]}
-                  row
-                  flex={false}>
-                  <Text
-                    size={16}
-                    style={{width: widthPercentageToDP(40)}}
-                    regular>
-                    Do you possess a vehicle?
-                  </Text>
+                /> */}
+                </Block>
+                <Block flex={false} padding={[0, w2]}>
                   <Block
-                    flex={false}
-                    style={{width: widthPercentageToDP(15)}}
-                  />
-                  <Block
-                    primary
-                    margin={[0, w4, 0, 0]}
-                    color={'#F7F8FA'}
-                    borderRadius={30}
+                    // space={'between'}
+                    center
+                    margin={[t1, w1]}
                     row
                     flex={false}>
-                    <CustomButton
-                      onPress={() => setFieldValue('typeVehicle', 'yes')}
-                      center
-                      middle
+                    <Text
+                      size={16}
+                      style={{width: widthPercentageToDP(40)}}
+                      regular>
+                      Do you possess a vehicle?
+                    </Text>
+                    <Block
+                      flex={false}
+                      style={{width: widthPercentageToDP(15)}}
+                    />
+                    <Block
+                      primary
+                      margin={[0, w4, 0, 0]}
+                      color={'#F7F8FA'}
                       borderRadius={30}
-                      padding={
-                        values.typeVehicle === 'yes'
-                          ? [heightPercentageToDP(1.5), widthPercentageToDP(8)]
-                          : [0, widthPercentageToDP(6)]
-                      }
-                      color={
-                        values.typeVehicle === 'yes' ? '#FFFFFF' : '#F7F8FA'
-                      }
-                      shadow={values.typeVehicle === 'yes'}
-                      margin={[0, w1]}>
-                      <Text size={14} semibold>
-                        Yes
-                      </Text>
-                    </CustomButton>
-                    <CustomButton
-                      onPress={() => setFieldValue('typeVehicle', 'no')}
-                      center
-                      middle
-                      borderRadius={20}
-                      padding={
-                        values.typeVehicle === 'no'
-                          ? [heightPercentageToDP(1.5), widthPercentageToDP(8)]
-                          : [0, widthPercentageToDP(6)]
-                      }
-                      color={
-                        values.typeVehicle === 'no' ? '#FFFFFF' : '#F7F8FA'
-                      }
-                      shadow={values.typeVehicle === 'no'}>
-                      <Text size={14} semibold>
-                        No
-                      </Text>
-                    </CustomButton>
+                      row
+                      flex={false}>
+                      <CustomButton
+                        onPress={() => setFieldValue('typeVehicle', 'yes')}
+                        center
+                        middle
+                        borderRadius={30}
+                        padding={
+                          values.typeVehicle === 'yes'
+                            ? [
+                                heightPercentageToDP(1.5),
+                                widthPercentageToDP(8),
+                              ]
+                            : [0, widthPercentageToDP(6)]
+                        }
+                        color={
+                          values.typeVehicle === 'yes' ? '#FFFFFF' : '#F7F8FA'
+                        }
+                        shadow={values.typeVehicle === 'yes'}
+                        margin={[0, w1]}>
+                        <Text size={14} semibold>
+                          Yes
+                        </Text>
+                      </CustomButton>
+                      <CustomButton
+                        onPress={() => setFieldValue('typeVehicle', 'no')}
+                        center
+                        middle
+                        borderRadius={20}
+                        padding={
+                          values.typeVehicle === 'no'
+                            ? [
+                                heightPercentageToDP(1.5),
+                                widthPercentageToDP(8),
+                              ]
+                            : [0, widthPercentageToDP(6)]
+                        }
+                        color={
+                          values.typeVehicle === 'no' ? '#FFFFFF' : '#F7F8FA'
+                        }
+                        shadow={values.typeVehicle === 'no'}>
+                        <Text size={14} semibold>
+                          No
+                        </Text>
+                      </CustomButton>
+                    </Block>
                   </Block>
                 </Block>
-              </Block>
-              <Block flex={false} padding={[0, w2]}>
-                <Block
-                  // space={'between'}
-                  center
-                  margin={[t1, w1]}
-                  row
-                  flex={false}>
-                  <Text
-                    size={16}
-                    style={{width: widthPercentageToDP(40)}}
-                    regular>
-                    Are you a sub-contractor?
-                  </Text>
+                <Block flex={false} padding={[0, w2]}>
                   <Block
-                    flex={false}
-                    style={{width: widthPercentageToDP(15)}}
-                  />
-                  <Block
-                    primary
-                    margin={[0, w4, 0, 0]}
-                    color={'#F7F8FA'}
-                    borderRadius={30}
+                    // space={'between'}
+                    center
+                    margin={[t1, w1]}
                     row
                     flex={false}>
-                    <CustomButton
-                      onPress={() => setFieldValue('typeContractor', 'yes')}
-                      center
-                      middle
+                    <Text
+                      size={16}
+                      style={{width: widthPercentageToDP(40)}}
+                      regular>
+                      Are you a sub-contractor?
+                    </Text>
+                    <Block
+                      flex={false}
+                      style={{width: widthPercentageToDP(15)}}
+                    />
+                    <Block
+                      primary
+                      margin={[0, w4, 0, 0]}
+                      color={'#F7F8FA'}
                       borderRadius={30}
-                      padding={
-                        values.typeContractor === 'yes'
-                          ? [heightPercentageToDP(1.5), widthPercentageToDP(8)]
-                          : [0, widthPercentageToDP(6)]
-                      }
-                      color={
-                        values.typeContractor === 'yes' ? '#FFFFFF' : '#F7F8FA'
-                      }
-                      shadow={values.typeContractor === 'yes'}
-                      margin={[0, w1]}>
-                      <Text size={14} semibold>
-                        Yes
-                      </Text>
-                    </CustomButton>
-                    <CustomButton
-                      onPress={() => setFieldValue('typeContractor', 'no')}
-                      center
-                      middle
-                      borderRadius={20}
-                      padding={
-                        values.typeContractor === 'no'
-                          ? [heightPercentageToDP(1.5), widthPercentageToDP(8)]
-                          : [0, widthPercentageToDP(6)]
-                      }
-                      color={
-                        values.typeContractor === 'no' ? '#FFFFFF' : '#F7F8FA'
-                      }
-                      shadow={values.typeContractor === 'no'}>
-                      <Text size={14} semibold>
-                        No
-                      </Text>
-                    </CustomButton>
+                      row
+                      flex={false}>
+                      <CustomButton
+                        onPress={() => setFieldValue('typeContractor', 'yes')}
+                        center
+                        middle
+                        borderRadius={30}
+                        padding={
+                          values.typeContractor === 'yes'
+                            ? [
+                                heightPercentageToDP(1.5),
+                                widthPercentageToDP(8),
+                              ]
+                            : [0, widthPercentageToDP(6)]
+                        }
+                        color={
+                          values.typeContractor === 'yes'
+                            ? '#FFFFFF'
+                            : '#F7F8FA'
+                        }
+                        shadow={values.typeContractor === 'yes'}
+                        margin={[0, w1]}>
+                        <Text size={14} semibold>
+                          Yes
+                        </Text>
+                      </CustomButton>
+                      <CustomButton
+                        onPress={() => setFieldValue('typeContractor', 'no')}
+                        center
+                        middle
+                        borderRadius={20}
+                        padding={
+                          values.typeContractor === 'no'
+                            ? [
+                                heightPercentageToDP(1.5),
+                                widthPercentageToDP(8),
+                              ]
+                            : [0, widthPercentageToDP(6)]
+                        }
+                        color={
+                          values.typeContractor === 'no' ? '#FFFFFF' : '#F7F8FA'
+                        }
+                        shadow={values.typeContractor === 'no'}>
+                        <Text size={14} semibold>
+                          No
+                        </Text>
+                      </CustomButton>
+                    </Block>
                   </Block>
                 </Block>
-              </Block>
-              <Block flex={false} padding={[0, w3]}>
-                {/* {values.type === 'company' && ( */}
-                <Input
-                  label="Company name"
-                  placeholder="Enter company name"
-                  value={values.company}
-                  onChangeText={handleChange('company')}
-                  onBlur={() => setFieldTouched('company')}
-                  error={touched.company && errors.company}
-                />
-                {/* )} */}
-                <Block row center>
-                  <Checkbox
-                    onChange={() => setFieldValue('privacy', !values.privacy)}
-                    checkboxStyle={{height: 25, width: 25}}
-                    label=""
-                    checked={values.privacy}
+                <Block flex={false} padding={[0, w3]}>
+                  {/* {values.type === 'company' && ( */}
+                  <Input
+                    label="Company name"
+                    placeholder="Enter company name"
+                    value={values.company}
+                    onChangeText={handleChange('company')}
+                    onBlur={() => setFieldTouched('company')}
+                    error={touched.company && errors.company}
                   />
-                  <Text size={16}>
-                    I accept{' '}
-                    <Text style={{textDecorationLine: 'underline'}} size={16}>
-                      Privacy Policy.
+                  {/* )} */}
+                  <Block row center>
+                    <Checkbox
+                      onChange={() => setFieldValue('privacy', !values.privacy)}
+                      checkboxStyle={{height: 25, width: 25}}
+                      label=""
+                      checked={values.privacy}
+                    />
+                    <Text size={16}>
+                      I accept{' '}
+                      <Text style={{textDecorationLine: 'underline'}} size={16}>
+                        Privacy Policy.
+                      </Text>
                     </Text>
-                  </Text>
-                </Block>
-                <Block margin={[t1, 0]} row center>
-                  <Checkbox
-                    onChange={() => setFieldValue('terms', !values.terms)}
-                    checkboxStyle={{height: 25, width: 25}}
-                    label=""
-                    checked={values.terms}
-                  />
-                  <Text size={16}>
-                    I accept{' '}
-                    <Text style={{textDecorationLine: 'underline'}} size={16}>
-                      Terms & Conditions.
+                  </Block>
+                  <Block margin={[t1, 0]} row center>
+                    <Checkbox
+                      onChange={() => setFieldValue('terms', !values.terms)}
+                      checkboxStyle={{height: 25, width: 25}}
+                      label=""
+                      checked={values.terms}
+                    />
+                    <Text size={16}>
+                      I accept{' '}
+                      <Text style={{textDecorationLine: 'underline'}} size={16}>
+                        Terms & Conditions.
+                      </Text>
                     </Text>
-                  </Text>
-                </Block>
+                  </Block>
 
-                <Button
-                  //  disabled={!isValid || !dirty}
-                  isLoading={loading}
-                  onPress={handleSubmit}
-                  style={{marginTop: t2}}
-                  color="secondary">
-                  Finish registration
-                </Button>
-              </Block>
-            </KeyboardAwareScrollView>
-            <Modalize
-              adjustToContentHeight={true}
-              handlePosition="inside"
-              ref={modalizeRef}>
-              {action === 'agent' && (
-                <AgentType
-                  state={values.agent_type}
-                  setValues={(v) => setFieldValue('agent_type', v)}
-                  closeModal={() => {
-                    onClose();
-                  }}
-                />
-              )}
-              {action === 'identry_card' && (
-                <ImagePicker
-                  renderGallaryImage={renderIdCardImageDoc}
-                  uploadImage={uploadDocumentIdCard}
-                  state={values.identy_card}
-                  setValues={(v) => setFieldValue('identry_card', v)}
-                  closeModal={() => {
-                    onClose();
-                  }}
-                />
-              )}
-              {action === 'Acv' && (
-                <ImagePicker
-                  renderGallaryImage={renderAcvCardImage}
-                  uploadImage={uploadDocumentAcv}
-                  state={values.Acv}
-                  setValues={(v) => setFieldValue('Acv', v)}
-                  closeModal={() => {
-                    onClose();
-                  }}
-                />
-              )}
-              {action === 'Ssn' && (
-                <ImagePicker
-                  renderGallaryImage={renderSocialSecImage}
-                  uploadImage={uploadDocumentSocial}
-                  state={values.Acv}
-                  setValues={(v) => setFieldValue('Ssn', v)}
-                  closeModal={() => {
-                    onClose();
-                  }}
-                />
-              )}
-            </Modalize>
-          </>
-        )}
+                  <Button
+                    //  disabled={!isValid || !dirty}
+                    isLoading={loading}
+                    onPress={handleSubmit}
+                    style={{marginTop: t2}}
+                    color="secondary">
+                    Finish registration
+                  </Button>
+                </Block>
+              </KeyboardAwareScrollView>
+              <Modalize
+                adjustToContentHeight={true}
+                handlePosition="inside"
+                ref={modalizeRef}>
+                {action === 'agent' && (
+                  <AgentType
+                    state={values.agent_type}
+                    setValues={(v) => setFieldValue('agent_type', v)}
+                    closeModal={() => {
+                      onClose();
+                    }}
+                  />
+                )}
+                {action === 'identry_card' && (
+                  <ImagePicker
+                    renderGallaryImage={renderIdCardImageDoc}
+                    uploadImage={uploadDocumentIdCard}
+                    state={values.identy_card}
+                    setValues={(v) => setFieldValue('identry_card', v)}
+                    closeModal={() => {
+                      onClose();
+                    }}
+                  />
+                )}
+                {action === 'Acv' && (
+                  <ImagePicker
+                    renderGallaryImage={renderAcvCardImage}
+                    uploadImage={uploadDocumentAcv}
+                    state={values.Acv}
+                    setValues={(v) => setFieldValue('Acv', v)}
+                    closeModal={() => {
+                      onClose();
+                    }}
+                  />
+                )}
+                {action === 'Ssn' && (
+                  <ImagePicker
+                    renderGallaryImage={renderSocialSecImage}
+                    uploadImage={uploadDocumentSocial}
+                    state={values.Acv}
+                    setValues={(v) => setFieldValue('Ssn', v)}
+                    closeModal={() => {
+                      onClose();
+                    }}
+                  />
+                )}
+              </Modalize>
+            </>
+          );
+        }}
       </Formik>
       <AlertCompnent
         visible={modal}
