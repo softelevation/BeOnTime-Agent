@@ -1,20 +1,19 @@
 import AsyncStorage from '@react-native-community/async-storage';
-import { useNavigation } from '@react-navigation/native';
-import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { Block, ImageComponent, Text } from '../../components';
+import {useNavigation} from '@react-navigation/native';
+import React, {useEffect} from 'react';
+import {useDispatch} from 'react-redux';
+import {Block, ImageComponent, Text} from '../../components';
 import {
   locationSuccess,
   loginSuccess,
   profileRequest,
   socketConnection,
 } from '../../redux/action';
-import { strictValidString } from '../../utils/commonUtils';
+import {strictValidString} from '../../utils/commonUtils';
 import io from 'socket.io-client';
 import Geolocation from '@react-native-community/geolocation';
-import { t2, t4 } from '../../components/theme/fontsize';
+import {t2, t4} from '../../components/theme/fontsize';
 import messaging from '@react-native-firebase/messaging';
-
 
 const Splash = () => {
   const navigation = useNavigation();
@@ -25,7 +24,7 @@ const Splash = () => {
       (position) => {
         dispatch(locationSuccess(position.coords));
       },
-      (error) => { },
+      (error) => {},
       {
         enableHighAccuracy: true,
         timeout: 15000,
@@ -45,13 +44,13 @@ const Splash = () => {
 
       setTimeout(() => {
         navigation.reset({
-          routes: [{ name: 'Home' }],
+          routes: [{name: 'Home'}],
         });
       }, 3000);
     } else {
       setTimeout(() => {
         navigation.reset({
-          routes: [{ name: 'Auth' }],
+          routes: [{name: 'Auth'}],
         });
       }, 3000);
     }
@@ -68,26 +67,24 @@ const Splash = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-
   const requestUserPermission = async () => {
     const authStatus = await messaging().requestPermission();
     const enabled =
       authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
       authStatus === messaging.AuthorizationStatus.PROVISIONAL;
     if (enabled) {
-      getFcmToken()
+      getFcmToken();
       console.log('Authorization status:', authStatus);
     }
-  }
+  };
   const getFcmToken = async () => {
     const fcmToken = await messaging().getToken();
     if (fcmToken) {
-      console.log("Your Firebase Token is:", fcmToken);
+      console.log('Your Firebase Token is:', fcmToken);
     } else {
-      console.log("Failed", "No token received");
+      console.log('Failed', 'No token received');
     }
-  }
-
+  };
 
   return (
     <Block primary center middle>
