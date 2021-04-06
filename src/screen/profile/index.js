@@ -122,7 +122,9 @@ const Profile = () => {
           padding={[0, w3]}
           center>
           <Text size={16}>Completed missions</Text>
-          <Text grey size={16} />
+          <Text grey size={16}>
+            {profile.mission_completed}
+          </Text>
         </Block>
         <Block
           flex={false}
@@ -132,7 +134,9 @@ const Profile = () => {
           padding={[0, w3]}
           center>
           <Text size={16}>Hours clocked</Text>
-          <Text grey size={16} />
+          <Text grey size={16}>
+            {profile.mission_time}
+          </Text>
         </Block>
         <Block flex={false} padding={[0, w3]} margin={[t5, 0, 0]}>
           <FlatList
