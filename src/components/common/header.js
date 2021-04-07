@@ -8,7 +8,8 @@ import PropTypes from 'prop-types';
 import {useNavigation} from '@react-navigation/native';
 import {TouchableOpacity} from 'react-native';
 import {Text} from '../';
-const Header = ({onPress, centerText, rightText, leftIcon}) => {
+import {strictValidString} from '../../utils/commonUtils';
+const Header = ({onPress, centerText, rightText, leftIcon, bottomText}) => {
   const nav = useNavigation();
   return (
     <>
@@ -31,7 +32,14 @@ const Header = ({onPress, centerText, rightText, leftIcon}) => {
             <Text style={{height: 18, width: 18}} />
           </TouchableOpacity>
         )}
-        <Text semibold>{centerText}</Text>
+        <Block center flex={false}>
+          <Text semibold>{centerText}</Text>
+          {strictValidString(bottomText) && (
+            <Text size={16} semibold grey>
+              {bottomText}
+            </Text>
+          )}
+        </Block>
         <TouchableOpacity>
           <Text>{rightText}</Text>
         </TouchableOpacity>
@@ -43,11 +51,13 @@ const Header = ({onPress, centerText, rightText, leftIcon}) => {
 Header.defaultProps = {
   centerText: '',
   rightText: '',
+  bottomText: '',
 };
 Header.propTypes = {
   centerText: PropTypes.string,
   rightText: PropTypes.string,
   leftIcon: PropTypes.string,
   onPress: PropTypes.func,
+  bottomText: PropTypes.string,
 };
 export default Header;

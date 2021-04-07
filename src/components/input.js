@@ -46,6 +46,7 @@ const Input = ({
   editable = true,
   center,
   placeholderTextColor,
+  transparent,
   ...rest
 }) => {
   const styles = componentStyles();
@@ -124,7 +125,7 @@ const Input = ({
   return (
     <Block
       padding={[t1]}
-      color={'#F5F7FA'}
+      color={transparent ? 'transparent' : '#F5F7FA'}
       flex={false}
       borderColor={error ? 'red' : 'transparent'}
       borderWidth={error ? 1 : 0}

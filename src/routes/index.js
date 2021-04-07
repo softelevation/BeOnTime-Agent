@@ -13,6 +13,7 @@ import MissionReport from '../screen/mission-report';
 import NewSupport from '../screen/message-center/new-support';
 import EditProfile from '../screen/profile/edit-profile';
 import ChangePassword from '../screen/auth/change-password';
+import Chat from '../screen/message-center/chat';
 
 const Stack = createStackNavigator();
 
@@ -32,6 +33,7 @@ function Routes() {
         <Stack.Screen name="NewSupport" component={NewSupport} />
         <Stack.Screen name="EditProfile" component={EditProfile} />
         <Stack.Screen name="ChangePassword" component={ChangePassword} />
+        <Stack.Screen name="Chat" component={Chat} />
       </Stack.Navigator>
     </NavigationContainer>
   );

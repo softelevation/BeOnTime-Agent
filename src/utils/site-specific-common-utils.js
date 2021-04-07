@@ -1,3 +1,4 @@
+import moment from 'moment';
 import {images} from '../assets/index';
 import {strictValidNumber} from './commonUtils';
 
@@ -125,4 +126,7 @@ export const formatPrice = (price) => {
     return 'Price is invalid number';
   }
   return price === 0 ? 'Free' : `$${price}`;
+};
+export const formatTime = (d) => {
+  return moment(d).format('HH:mm');
 };

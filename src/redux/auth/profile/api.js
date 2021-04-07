@@ -31,7 +31,7 @@ export const updateApi = async (data) => {
   };
   return axios({
     method: 'post',
-    url: `${config.Api_Url}/customer/profile`,
+    url: `${config.Api_Url}/agent/profile`,
     headers,
     data: formData,
   });

@@ -5,7 +5,8 @@ import common from './common/reducer';
 import payment from './payments/reducer';
 import mission from './missions/reducer';
 import socket from './socket/reducer';
-
+import notifications from './notifications/reducer';
+import messages from './messages/reducer';
 const rootreducer = combineReducers({
   user,
   request,
@@ -13,5 +14,7 @@ const rootreducer = combineReducers({
   payment,
   mission,
   socket,
+  notifications,
+  messages,
 });
 export default rootreducer;

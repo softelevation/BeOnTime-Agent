@@ -59,7 +59,7 @@ const ChatMeesage = ({data, handleDelete, handlePress}) => {
         flex={false}>
         <Block flex={false}>
           <Text size={16} semibold>
-            {data.mission_title}
+            {data.title}
           </Text>
           <Text margin={[hp(0.5), 0, 0]} grey size={14}>
             {data.message}

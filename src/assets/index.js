@@ -43,4 +43,5 @@ export const images = {
   amex: require('./icons/amex.png'),
   default_card: require('./icons/credit-card.png'),
   empty_icon: require('./icons/empty.png'),
+  message_send_icon: require('./icons/arrow-up.png'),
 };

@@ -22,9 +22,7 @@ import {ProfileData} from '../../utils/data';
 
 const Profile = () => {
   const navigation = useNavigation();
-  // const profile = useSelector((state) => state.user.profile.user.data);
-  const [profile, setProfileData] = useState({});
-
+  const profile = useSelector((state) => state.user.profile.user.data);
   const onLogout = async () => {
     const keys = await AsyncStorage.getAllKeys();
     await AsyncStorage.multiRemove(keys);
@@ -33,15 +31,15 @@ const Profile = () => {
     });
   };
 
-  useEffect(() => {
-    CommonApi.fetchAppCommon('/profile', 'GET', '')
-      .then((response) => {
-        if (response.status == 1) {
-          setProfileData(response.data);
-        }
-      })
-      .catch((err) => {});
-  }, []);
+  // useEffect(() => {
+  //   CommonApi.fetchAppCommon('/profile', 'GET', '')
+  //     .then((response) => {
+  //       if (response.status === 1) {
+  //         setProfileData(response.data);
+  //       }
+  //     })
+  //     .catch((err) => {});
+  // }, []);
 
   const _renderItem = ({item}) => {
     return (

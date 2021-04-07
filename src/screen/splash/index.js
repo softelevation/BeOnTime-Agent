@@ -14,6 +14,7 @@ import io from 'socket.io-client';
 import Geolocation from '@react-native-community/geolocation';
 import {t2, t4} from '../../components/theme/fontsize';
 import messaging from '@react-native-firebase/messaging';
+import {Alert} from 'react-native';
 
 const Splash = () => {
   const navigation = useNavigation();
@@ -69,9 +70,11 @@ const Splash = () => {
 
   const requestUserPermission = async () => {
     const authStatus = await messaging().requestPermission();
+    console.log(authStatus);
     const enabled =
       authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
       authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+    console.log(authStatus, enabled);
     if (enabled) {
       getFcmToken();
       console.log('Authorization status:', authStatus);
