@@ -13,7 +13,7 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		246F7EDB261D89B2000CCA51 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 246F7EDA261D89B1000CCA51 /* GoogleService-Info.plist */; };
+		24C537652628238D0025FA8C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 24C537642628238D0025FA8C /* GoogleService-Info.plist */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
@@ -65,7 +65,7 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = BeonTimeAgent/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = BeonTimeAgent/main.m; sourceTree = "<group>"; };
 		246F7ED1261D83B5000CCA51 /* BeonTimeAgent.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = BeonTimeAgent.entitlements; path = BeonTimeAgent/BeonTimeAgent.entitlements; sourceTree = "<group>"; };
-		246F7EDA261D89B1000CCA51 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		24C537642628238D0025FA8C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		2B320EF5E7B04D96901DF74E /* Roboto-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Medium.ttf"; path = "../src/assets/fonts/Roboto-Medium.ttf"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* BeonTimeAgent-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "BeonTimeAgent-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* BeonTimeAgent-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BeonTimeAgent-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -152,6 +152,7 @@
 		13B07FAE1A68108700A75B9A /* BeonTimeAgent */ = {
 			isa = PBXGroup;
 			children = (
+				24C537642628238D0025FA8C /* GoogleService-Info.plist */,
 				246F7ED1261D83B5000CCA51 /* BeonTimeAgent.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -206,7 +207,6 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				246F7EDA261D89B1000CCA51 /* GoogleService-Info.plist */,
 				13B07FAE1A68108700A75B9A /* BeonTimeAgent */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* BeonTimeAgentTests */,
@@ -392,7 +392,7 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				246F7EDB261D89B2000CCA51 /* GoogleService-Info.plist in Resources */,
+				24C537652628238D0025FA8C /* GoogleService-Info.plist in Resources */,
 				0779B2984EC94A22B9DD8C50 /* Roboto-Black.ttf in Resources */,
 				00B72710F5084789B51944FE /* Roboto-BlackItalic.ttf in Resources */,
 				D14ABA1A6DD24AECB2D46E2B /* Roboto-Bold.ttf in Resources */,
@@ -737,7 +737,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = BeonTimeAgent/BeonTimeAgent.entitlements;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = Q8935WFJQ5;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = BeonTimeAgent/Info.plist;
@@ -762,7 +762,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = BeonTimeAgent/BeonTimeAgent.entitlements;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = Q8935WFJQ5;
 				INFOPLIST_FILE = BeonTimeAgent/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

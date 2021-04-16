@@ -1,5 +1,5 @@
-import { Formik } from 'formik';
-import React, { useState, useEffect, useRef } from 'react';
+import {Formik} from 'formik';
+import React, {useState, useEffect, useRef} from 'react';
 import Toast from 'react-native-simple-toast';
 import {
   ActivityIndicator,
@@ -10,12 +10,12 @@ import {
   View,
 } from 'react-native';
 import ImageCropPicker from 'react-native-image-crop-picker';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {
   heightPercentageToDP,
   widthPercentageToDP,
 } from 'react-native-responsive-screen';
-import { images } from '../../../assets';
+import {images} from '../../../assets';
 import {
   Block,
   CustomButton,
@@ -26,19 +26,23 @@ import {
   Button,
 } from '../../../components';
 import Header from '../../../components/common/header';
-import { t1, t2, t4, w1, w2, w3, w4 } from '../../../components/theme/fontsize';
+import {t1, t2, t4, w1, w2, w3, w4} from '../../../components/theme/fontsize';
 import * as yup from 'yup';
-import { useNavigation } from '@react-navigation/native';
-import { useDispatch, useSelector } from 'react-redux';
-import { loginRequest, registerRequest } from '../../../redux/action';
+import {useNavigation} from '@react-navigation/native';
+import {useDispatch, useSelector} from 'react-redux';
+import {loginRequest, registerRequest} from '../../../redux/action';
 import AlertCompnent from '../../../components/AlertCompnent';
 import AgentType from './agent-type';
 import ImagePicker from './imagePicker';
-import { Modalize } from 'react-native-modalize';
-import { strictValidArrayWithLength } from '../../../utils/commonUtils';
+import {Modalize} from 'react-native-modalize';
+import {strictValidArrayWithLength} from '../../../utils/commonUtils';
 import GooglePlacesTextInput from '../../../components/googlePlaces';
-import { config } from '../../../utils/config';
+import {config} from '../../../utils/config';
 import AsyncStorage from '@react-native-community/async-storage';
+import {UPLOAD, uploadMedia} from '../../../utils/site-specific-common-utils';
+import RNFetchBlob from 'rn-fetch-blob';
+
+import RNFS from 'react-native-fs';
 
 const Signup = () => {
   const navigation = useNavigation();
@@ -56,7 +60,7 @@ const Signup = () => {
     uploading: false,
     profileData: '',
   });
-  const { profileImage, profileData, uploading } = userProfileDetails;
+  const {profileImage, profileData, uploading} = userProfileDetails;
 
   const [userIDCardDetails, setUserIDCardDetails] = useState({
     idCardImage: '',
@@ -64,7 +68,7 @@ const Signup = () => {
     idCardData: '',
   });
 
-  const { idCardImage, idCardData, uploadings } = userIDCardDetails;
+  const {idCardImage, idCardData, uploadings} = userIDCardDetails;
 
   const [userAcvCardDetails, setUserAcvCardDetails] = useState({
     AcvCardImage: '',
@@ -72,7 +76,7 @@ const Signup = () => {
     AcvCardData: '',
   });
 
-  const { AcvCardImage, AcvCardData, uploadingss } = userAcvCardDetails;
+  const {AcvCardImage, AcvCardData, uploadingss} = userAcvCardDetails;
 
   const [userSocialSec, setUserSocialSec] = useState({
     socialSecImage: '',
@@ -80,7 +84,7 @@ const Signup = () => {
     socialSecData: '',
   });
 
-  const { socialSecImage, socialSecData, uploadingSS } = userSocialSec;
+  const {socialSecImage, socialSecData, uploadingSS} = userSocialSec;
 
   // useEffect(() => {
   //   if (isSuccess) {
@@ -123,13 +127,13 @@ const Signup = () => {
     });
   };
 
-  const uploadDocumentIdCard = (type) => {
-    if (type == 'gallary') {
+  const uploadDocumentIdCard = async (type) => {
+    if (type === 'gallary') {
       ImageCropPicker.openPicker({
         width: 300,
         height: 400,
         cropping: true,
-      }).then((image) => {
+      }).then(async (image) => {
         setUserIDCardDetails({
           ...userIDCardDetails,
           uploading: true,
@@ -137,6 +141,7 @@ const Signup = () => {
         const uri = image.path;
         const uriParts = uri.split('.');
         const filename = uriParts[uriParts.length - 1];
+        console.log(image, 'image');
         // {uri: photo.uri, name: 'image.jpg', type: 'image/jpeg'}
         setTimeout(() => {
           setUserIDCardDetails({
@@ -153,6 +158,16 @@ const Signup = () => {
             },
           });
         }, 2000);
+        const res = await UPLOAD(
+          '',
+          image.filename,
+          Platform.OS === 'ios'
+            ? image.sourceURL
+            : image.path.replace('file://', ''),
+          image.mime,
+          'identity_card',
+        );
+        console.log(JSON.parse(res.data));
       });
     } else {
       ImageCropPicker.openCamera({
@@ -330,14 +345,14 @@ const Signup = () => {
 
   const renderProfileImagePath = () => {
     if (profileImage) {
-      return { uri: profileImage };
+      return {uri: profileImage};
     }
     return images.default_profile_icon;
   };
 
   const renderIdCardImage = () => {
     if (idCardImage) {
-      return { uri: idCardImage };
+      return {uri: idCardImage};
     }
     return images.default_profile_icon;
   };
@@ -352,7 +367,7 @@ const Signup = () => {
         <>
           <ImageBackground
             source={renderProfileImagePath()}
-            imageStyle={{ borderRadius: 80 }}
+            imageStyle={{borderRadius: 80}}
             style={BackgroundStyle}>
             <TouchableOpacity onPress={() => uploadPhoto()}>
               <ImageComponent name="plus_icon" height="55" width="55" />
@@ -374,7 +389,7 @@ const Signup = () => {
         <>
           <ImageBackground
             source={renderIdCardImage()}
-            imageStyle={{ borderRadius: 80 }}
+            imageStyle={{borderRadius: 80}}
             style={BackgroundStyle}
           />
         </>
@@ -383,7 +398,7 @@ const Signup = () => {
   };
   const renderAcvImagePath = () => {
     if (AcvCardImage) {
-      return { uri: AcvCardImage };
+      return {uri: AcvCardImage};
     }
     return images.default_profile_icon;
   };
@@ -399,7 +414,7 @@ const Signup = () => {
         <>
           <ImageBackground
             source={renderAcvImagePath()}
-            imageStyle={{ borderRadius: 80 }}
+            imageStyle={{borderRadius: 80}}
             style={BackgroundStyle}>
             {/* <TouchableOpacity onPress={() => uploadPhoto()}>
               <ImageComponent name="plus_icon" height="55" width="55" />
@@ -412,7 +427,7 @@ const Signup = () => {
 
   const renderSocialSecImagePath = () => {
     if (socialSecImage) {
-      return { uri: socialSecImage };
+      return {uri: socialSecImage};
     }
     return images.default_profile_icon;
   };
@@ -428,7 +443,7 @@ const Signup = () => {
         <>
           <ImageBackground
             source={renderSocialSecImagePath()}
-            imageStyle={{ borderRadius: 80 }}
+            imageStyle={{borderRadius: 80}}
             style={BackgroundStyle}>
             {/* <TouchableOpacity onPress={() => uploadPhoto()}>
               <ImageComponent name="plus_icon" height="55" width="55" />
@@ -460,9 +475,8 @@ const Signup = () => {
     });
     console.log(agentTypeArray, 'agentTypeArray');
     if (profileData === '') {
-      Toast.show('Please Upload Profile Picture')
-    }
-    else if (values.firstName === '') {
+      Toast.show('Please Upload Profile Picture');
+    } else if (values.firstName === '') {
       Toast.show('Please Enter First Name');
     } else if (values.lastName === '') {
       Toast.show('Please Enter Last  Name');
@@ -528,48 +542,37 @@ const Signup = () => {
         cv: AcvCardData,
       };
 
-
-      console.log("====>>>>>>>", JSON.stringify(data))
+      console.log('====>>>>>>>', JSON.stringify(data));
 
       // dispatch(registerRequest(data));
 
-      uploadDocument(profileData, idCardData, socialSecData, AcvCardData)
+      uploadDocument(profileData, idCardData, socialSecData, AcvCardData);
     }
   };
 
-
   const uploadDocument = (profileDetail, identityCard, socialSecurity, cv) => {
-
     const token = AsyncStorage.getItem('token');
 
     var formData = new FormData();
-
-    // formData.append('name', identityCard);
-    // formData.append('name', socialSecurity);
-    // formData.append('name', cv);
     formData.append('image', profileDetail);
 
-
-    fetch(config.Api_Url + "/agent/upload-media", {
+    fetch(config.Api_Url + '/agent/upload-media', {
       method: 'POST',
       headers: {
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'Content-Type': 'application/json',
         // 'Authorization': token,
       },
-      body: JSON.stringify(formData)
+      body: JSON.stringify(formData),
     })
       .then((response) => response.json())
       .then((responseJson) => {
         console.log(responseJson);
-
       })
       .catch((error) => {
         console.error(error);
       });
-
-  }
-
+  };
 
   const onOpen = (type) => {
     modalizeRef.current?.open();
@@ -707,38 +710,7 @@ const Signup = () => {
           lat: '',
           lng: '',
         }}
-        onSubmit={onSubmit}
-      //   validationSchema={yup.object().shape({
-      //     firstName: yup.string().min(1).required(),
-      //     lastName: yup.string().min(1).required(),
-      //     email: yup.string().email().required(),
-      //     phone: yup.string().min(10).required(),
-      //     address: yup.string().min(3).required(),
-      //     agent_type: yup.string().required(),
-      //     iban: yup.string().required(),
-      //     cnaps:yup.string().required(),
-      //     company:yup.string.required(),
-      //  //  work_location:yup.string.required(),
-      //     terms: yup
-      //       .bool()
-      //       .oneOf([true], 'Accept Terms & Conditions is required'),
-      //     privacy: yup
-      //       .bool()
-      //       .oneOf([true], 'Accept Privacy Policy is required'),
-      //     // confirm_password: yup
-      //     //   .string()
-      //     //   .when('password', {
-      //     //     is: (val) => (val && val.length > 0 ? true : false),
-      //     //     then: yup
-      //     //       .string()
-      //     //       .oneOf(
-      //     //         [yup.ref('password')],
-      //     //         'Both password need to be the same',
-      //     //       ),
-      //     //   })
-      //     //   .required(),
-      //   })}
-      >
+        onSubmit={onSubmit}>
         {({
           values,
           handleChange,
@@ -754,7 +726,7 @@ const Signup = () => {
             <>
               <KeyboardAwareScrollView
                 keyboardShouldPersistTaps="always"
-                contentContainerStyle={{ paddingBottom: t4 }}>
+                contentContainerStyle={{paddingBottom: t4}}>
                 <Block flex={false} padding={[0, w3]}>
                   <Input
                     value={values.firstName}
@@ -830,7 +802,7 @@ const Signup = () => {
                     onBlur={() => setFieldTouched('cnaps')}
                     error={touched.cnaps && errors.cnaps}
                   />
-                  <View style={{ marginTop: t1 }}>
+                  <View style={{marginTop: t1}}>
                     <GooglePlacesTextInput
                       placeholder="Enter home address"
                       label="Home address"
@@ -849,7 +821,7 @@ const Signup = () => {
                       }}
                     />
                   </View>
-                  <View style={{ marginTop: t2 }}>
+                  <View style={{marginTop: t2}}>
                     <GooglePlacesTextInput
                       label="Work Location"
                       placeholder="Work Location"
@@ -896,13 +868,13 @@ const Signup = () => {
                     flex={false}>
                     <Text
                       size={16}
-                      style={{ width: widthPercentageToDP(40) }}
+                      style={{width: widthPercentageToDP(40)}}
                       regular>
                       Do you possess a vehicle?
                     </Text>
                     <Block
                       flex={false}
-                      style={{ width: widthPercentageToDP(15) }}
+                      style={{width: widthPercentageToDP(15)}}
                     />
                     <Block
                       primary
@@ -919,9 +891,9 @@ const Signup = () => {
                         padding={
                           values.typeVehicle === 'yes'
                             ? [
-                              heightPercentageToDP(1.5),
-                              widthPercentageToDP(8),
-                            ]
+                                heightPercentageToDP(1.5),
+                                widthPercentageToDP(8),
+                              ]
                             : [0, widthPercentageToDP(6)]
                         }
                         color={
@@ -941,9 +913,9 @@ const Signup = () => {
                         padding={
                           values.typeVehicle === 'no'
                             ? [
-                              heightPercentageToDP(1.5),
-                              widthPercentageToDP(8),
-                            ]
+                                heightPercentageToDP(1.5),
+                                widthPercentageToDP(8),
+                              ]
                             : [0, widthPercentageToDP(6)]
                         }
                         color={
@@ -966,13 +938,13 @@ const Signup = () => {
                     flex={false}>
                     <Text
                       size={16}
-                      style={{ width: widthPercentageToDP(40) }}
+                      style={{width: widthPercentageToDP(40)}}
                       regular>
                       Are you a sub-contractor?
                     </Text>
                     <Block
                       flex={false}
-                      style={{ width: widthPercentageToDP(15) }}
+                      style={{width: widthPercentageToDP(15)}}
                     />
                     <Block
                       primary
@@ -989,9 +961,9 @@ const Signup = () => {
                         padding={
                           values.typeContractor === 'yes'
                             ? [
-                              heightPercentageToDP(1.5),
-                              widthPercentageToDP(8),
-                            ]
+                                heightPercentageToDP(1.5),
+                                widthPercentageToDP(8),
+                              ]
                             : [0, widthPercentageToDP(6)]
                         }
                         color={
@@ -1013,9 +985,9 @@ const Signup = () => {
                         padding={
                           values.typeContractor === 'no'
                             ? [
-                              heightPercentageToDP(1.5),
-                              widthPercentageToDP(8),
-                            ]
+                                heightPercentageToDP(1.5),
+                                widthPercentageToDP(8),
+                              ]
                             : [0, widthPercentageToDP(6)]
                         }
                         color={
@@ -1043,13 +1015,13 @@ const Signup = () => {
                   <Block row center>
                     <Checkbox
                       onChange={() => setFieldValue('privacy', !values.privacy)}
-                      checkboxStyle={{ height: 25, width: 25 }}
+                      checkboxStyle={{height: 25, width: 25}}
                       label=""
                       checked={values.privacy}
                     />
                     <Text size={16}>
                       I accept{' '}
-                      <Text style={{ textDecorationLine: 'underline' }} size={16}>
+                      <Text style={{textDecorationLine: 'underline'}} size={16}>
                         Privacy Policy.
                       </Text>
                     </Text>
@@ -1057,13 +1029,13 @@ const Signup = () => {
                   <Block margin={[t1, 0]} row center>
                     <Checkbox
                       onChange={() => setFieldValue('terms', !values.terms)}
-                      checkboxStyle={{ height: 25, width: 25 }}
+                      checkboxStyle={{height: 25, width: 25}}
                       label=""
                       checked={values.terms}
                     />
                     <Text size={16}>
                       I accept{' '}
-                      <Text style={{ textDecorationLine: 'underline' }} size={16}>
+                      <Text style={{textDecorationLine: 'underline'}} size={16}>
                         Terms & Conditions.
                       </Text>
                     </Text>
@@ -1073,7 +1045,7 @@ const Signup = () => {
                     //  disabled={!isValid || !dirty}
                     isLoading={loading}
                     onPress={handleSubmit}
-                    style={{ marginTop: t2 }}
+                    style={{marginTop: t2}}
                     color="secondary">
                     Finish registration
                   </Button>

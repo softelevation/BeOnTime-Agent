@@ -1,6 +1,12 @@
+import AsyncStorage from '@react-native-community/async-storage';
+import axios from 'axios';
 import moment from 'moment';
 import {images} from '../assets/index';
 import {strictValidNumber} from './commonUtils';
+import {config} from './config';
+import RNFS from 'react-native-fs';
+import RNFetchBlob from 'rn-fetch-blob';
+import {Alert} from 'react-native';
 
 export const cc_format = (value) => {
   const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
@@ -129,4 +135,103 @@ export const formatPrice = (price) => {
 };
 export const formatTime = (d) => {
   return moment(d).format('HH:mm');
+};
+
+export const uploadMedia = async (path, image) => {
+  //   console.log(path, image, 'uploadMedia');
+  //   const token = await AsyncStorage.getItem('token');
+  //   const headers = {
+  //     name: path,
+  //   };
+  //   var formData = new FormData();
+  //   formData.append('image', JSON.stringify(image));
+  //   return axios({
+  //     method: 'post',
+  //     url: `${config.Api_Url}/agent/upload-media`,
+  //     headers,
+  //     data: formData,
+  //   });
+  const uploadUrl = `${config.Api_Url}/agent/upload-media`;
+  const headers = {
+    name: path,
+  };
+  const formData = new FormData();
+  formData.append('image', JSON.stringify(image));
+
+  // return fetch(uploadUrl, {
+  //   method: 'POST',
+  //   headers: headers,
+  //   body: formData,
+  // })
+  //   .then((response) => response)
+  //   .catch((error) => error);
+};
+
+// export const uploadMedia = async (path, image) => {
+//   const uploadUrl = `${config.Api_Url}/agent/upload-media`;
+
+//   RNFS.uploadFiles({
+//     toUrl: uploadUrl,
+//     files: JSON.stringify(image),
+//     method: 'POST',
+//     headers: {
+//       name: path,
+//     },
+//     fields: {
+//       hello: 'world',
+//     },
+//     // begin: uploadBegin,
+//     // progress: uploadProgress,
+//   })
+//     .promise.then((response) => {
+//       console.log(response, 'response');
+//       if (response.statusCode === 200) {
+//         console.log('FILES UPLOADED!'); // response.statusCode, response.headers, response.body
+//       } else {
+//         console.log('SERVER ERROR');
+//       }
+//     })
+//     .catch((err) => {
+//       if (err.description === 'cancelled') {
+//         // cancelled by user
+//       }
+//       console.log(err);
+//     });
+// };
+export const UPLOAD = async (api, fileName, filePath, filetype, uploadType) => {
+  console.log(api, fileName, filePath, filetype, uploadType);
+  const date = new Date();
+
+  const tempPath =
+    RNFS.DocumentDirectoryPath + '/' + date.getMilliseconds() + date.getHours();
+
+  await RNFS.copyFile(filePath, tempPath);
+
+  const fileExist = await RNFS.exists(tempPath);
+
+  if (!fileExist) {
+    Alert.alert('does not exist!');
+    return false;
+  }
+  const _headers = {
+    'Content-Type': 'multipart/form-data',
+    name: uploadType,
+  };
+  let res = {};
+
+  res = await RNFetchBlob.fetch(
+    'POST',
+    `${config.Api_Url}/agent/upload-media`,
+    _headers,
+    [
+      {
+        name: 'image',
+        filename: fileName,
+        type: filetype,
+        data: RNFetchBlob.wrap(tempPath),
+      },
+    ],
+  );
+  console.log(res, 'res');
+  return res;
 };
