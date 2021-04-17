@@ -17,6 +17,7 @@ import {connect, useDispatch} from 'react-redux';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {updateProfileRequest} from '../../../redux/auth/profile/action';
 import GooglePlacesTextInput from '../../../components/googlePlaces';
+import {UPLOAD} from '../../../utils/site-specific-common-utils';
 const EditProfile = ({user, isLoad}) => {
   const dispatch = useDispatch();
   const [userProfileDetails, setUserDetails] = useState({
@@ -34,7 +35,7 @@ const EditProfile = ({user, isLoad}) => {
       width: 300,
       height: 400,
       cropping: true,
-    }).then((image) => {
+    }).then(async (image) => {
       setUserDetails({
         ...userProfileDetails,
         uploading: true,
@@ -50,18 +51,25 @@ const EditProfile = ({user, isLoad}) => {
           uploading: false,
           profileImage: Platform.OS === 'ios' ? image.sourceURL : image.path,
           profileData: {
-            filename: image.filename ? image.filename : `photo.${filename}`,
-            mimetype: image.mime,
-            originalname: image.filename ? image.filename : `photo.${filename}`,
-            encoding: '7bit',
-            size: image.size,
-            path:
+            name: image.filename ? image.filename : `photo.${filename}`,
+            type: image.mime,
+            uri:
               Platform.OS === 'ios'
                 ? image.sourceURL
                 : image.path.replace('file://', ''),
           },
         });
       }, 2000);
+      // const res = await UPLOAD(
+      //   '',
+      //   image.filename,
+      //   Platform.OS === 'ios'
+      //     ? image.sourceURL
+      //     : image.path.replace('file://', ''),
+      //   image.mime,
+      //   'identity_card',
+      // );
+      // console.log(JSON.parse(res.data));
     });
   };
   console.log(profileData, 'profileData');

@@ -544,9 +544,9 @@ const Signup = () => {
 
       console.log('====>>>>>>>', JSON.stringify(data));
 
-      // dispatch(registerRequest(data));
+      dispatch(registerRequest(data));
 
-      uploadDocument(profileData, idCardData, socialSecData, AcvCardData);
+      // uploadDocument(profileData, idCardData, socialSecData, AcvCardData);
     }
   };
 
