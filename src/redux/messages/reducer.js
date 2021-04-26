@@ -61,6 +61,10 @@ export function chatById(state = initialMessageState, action) {
         error: action.error,
         isSuccess: false,
       };
+    case ActionConstants.GET_CHAT_BY_ID_FLUSH:
+      return {
+        initialMessageState,
+      };
     default:
       return state;
   }

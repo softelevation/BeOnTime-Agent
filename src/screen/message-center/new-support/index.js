@@ -70,7 +70,53 @@ const NewSupport = () => {
     <Block primary>
       <Header centerText="New Support Chat" />
       {loading && <ActivityLoader />}
-
+      <Block margin={[t1]} flex={false}>
+        <Text size={14} grey semibold>
+          Others Helps
+        </Text>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <Block
+            borderColorDeafult
+            margin={[t1, 0, 0]}
+            borderWidth={[0, 0, 1, 0]}
+            flex={false}
+          />
+          <FlatList
+            scrollEnabled={false}
+            data={[
+              {
+                title: 'Need Support with Operator',
+              },
+            ]}
+            renderItem={({item}) => {
+              return (
+                <CustomButton
+                  onPress={() =>
+                    navigation.navigate('ChatOperator', {
+                      name: item.title,
+                    })
+                  }
+                  row
+                  space="between"
+                  borderColorDeafult
+                  borderWidth={[0, 0, 1, 0]}
+                  margin={[0, 0, 0]}
+                  padding={[hp(1.5), w1]}
+                  flex={false}>
+                  <Text size={16} semibold>
+                    {item.title}
+                  </Text>
+                  <ImageComponent
+                    name="right_arrow_icon"
+                    height={20}
+                    width={20}
+                  />
+                </CustomButton>
+              );
+            }}
+          />
+        </ScrollView>
+      </Block>
       <Block margin={[t1]} flex={1}>
         <Text size={14} grey semibold>
           Select the mission for which you need support help.

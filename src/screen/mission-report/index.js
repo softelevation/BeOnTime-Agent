@@ -1,9 +1,5 @@
 import React, {useState, useRef, useEffect} from 'react';
-import {
-  StackActions,
-  useNavigation,
-  NavigationAction,
-} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import {
   Block,
   Button,
@@ -14,9 +10,8 @@ import {
 } from '../../components';
 import Header from '../../components/common/header';
 import {Modalize} from 'react-native-modalize';
-import {t1, t2, w3, t5} from '../../components/theme/fontsize';
+import {t1, w3} from '../../components/theme/fontsize';
 import {
-  AgentType,
   allumeeData,
   circulationData,
   EffractionData,
@@ -24,18 +19,14 @@ import {
   meteoData,
   MissionType,
   ouvertesData,
-  PaymentStatus,
   RemiseData,
   systemData,
   verificationData,
 } from '../../utils/data';
-import Rating from '../../components/ratings';
 import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
-import {divider} from '../../utils/commonView';
 import moment from 'moment';
-import ImagePicker from 'react-native-image-crop-picker';
 import CommonApi from '../../utils/CommonApi';
-import {ActivityIndicator, FlatList, ScrollView, View} from 'react-native';
+import {ActivityIndicator, ScrollView, View} from 'react-native';
 import SignatureScreen from 'react-native-signature-canvas';
 import {Formik} from 'formik';
 import TypeForm from '../../common/types';
@@ -50,7 +41,8 @@ import {
   missionReportSubmitFlush,
   missionReportSubmitRequest,
 } from '../../redux/request/action';
-import AlertCompnent from '../../components/AlertCompnent';
+import {styles} from '../../utils/common-styles';
+import Modal from 'react-native-modal';
 
 const MissionReport = ({
   route: {
@@ -592,14 +584,25 @@ const MissionReport = ({
             </>
           )}
         </Formik>
-        <AlertCompnent
-          visible={modal}
-          title={'Success'}
-          onPress={() => setmodal(false)}
-          description="Mission is finished."
-          buttonTitle="Close"
-          onRequestClose={() => setmodal(false)}
-        />
+        <Modal
+          style={styles.modalStyle}
+          isVisible={modal}
+          onBackdropPress={() => setmodal(false)}>
+          <View style={styles.modalView}>
+            <Text semibold style={styles.modalText}>
+              {'Success !'}
+            </Text>
+            <Text style={styles.textStyle} center>
+              Mission is finished.
+            </Text>
+            <Button
+              style={styles.button}
+              onPress={() => setmodal(false)}
+              color="secondary">
+              Close
+            </Button>
+          </View>
+        </Modal>
       </Block>
     );
   }

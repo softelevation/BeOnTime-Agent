@@ -14,16 +14,6 @@ export const Api = async (data) => {
   });
 };
 export const updateApi = async (data) => {
-  const {first_name, last_name, phone, home_address, image} = data;
-  var formData = new FormData();
-
-  formData.append('first_name', first_name);
-  formData.append('last_name', last_name);
-
-  formData.append('phone', phone);
-  formData.append('home_address', home_address);
-  formData.append('image', image);
-
   const token = await AsyncStorage.getItem('token');
   const headers = {
     'Content-Type': 'application/json',
@@ -33,6 +23,6 @@ export const updateApi = async (data) => {
     method: 'post',
     url: `${config.Api_Url}/agent/profile`,
     headers,
-    data: formData,
+    data: data,
   });
 };

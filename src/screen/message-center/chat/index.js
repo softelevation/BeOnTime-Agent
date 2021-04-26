@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useRef, useState} from 'react';
 import {
   ActivityIndicator,
@@ -5,7 +6,10 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import {
+  heightPercentageToDP,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
 import Header from '../../../components/common/header';
 import {
   Block,
@@ -16,7 +20,10 @@ import {
 } from '../../../components';
 import {t1, t2, w3} from '../../../components/theme/fontsize';
 import {connect, useDispatch} from 'react-redux';
-import {getChatByIdRequest} from '../../../redux/messages/action';
+import {
+  getChatByIdFlush,
+  getChatByIdRequest,
+} from '../../../redux/messages/action';
 import AsyncStorage from '@react-native-community/async-storage';
 import {strictValidString} from '../../../utils/commonUtils';
 const Chat = ({
@@ -32,15 +39,15 @@ const Chat = ({
 
   useEffect(() => {
     dispatch(getChatByIdRequest(id));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => {
+      dispatch(getChatByIdFlush());
+    };
   }, []);
 
   useEffect(() => {
     socket.on(`message_center_${id}`, (msg) => {
-      console.log(msg, 'msg');
       dispatch(getChatByIdRequest(id));
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const sendMessage = async () => {
@@ -82,7 +89,9 @@ const Chat = ({
   };
   return (
     <KeyboardAvoidingView
-      // keyboardVerticalOffset={t4}
+      keyboardVerticalOffset={
+        Platform.OS === 'ios' ? heightPercentageToDP(0) : t2
+      }
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{flexGrow: 1, backgroundColor: '#fff'}}>
       <Header centerText={name} bottomText={`Misn0${id}`} />

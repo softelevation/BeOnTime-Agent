@@ -10,7 +10,7 @@ import Header from '../../components/common/header';
 import {t1, t2, w3} from '../../components/theme/fontsize';
 import ItemBox from '../../components/swipeable';
 import {useNavigation} from '@react-navigation/core';
-import ChatMeesage from '../../components/swipeableCopy';
+import ChatMeesage from '../../components/swipeable';
 import {connect} from 'react-redux';
 import {getChatRequest} from '../../redux/messages/action';
 import {
@@ -25,6 +25,12 @@ const MessageCenter = ({callGetChatApi, chat, isLoad}) => {
 
   useEffect(() => {
     callGetChatApi();
+    const unsubscribe = navigation.addListener('focus', () => {
+      callGetChatApi();
+    });
+
+    // Return the function to unsubscribe from the event so it gets removed on unmount
+    return unsubscribe;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

@@ -6,17 +6,17 @@ import {
   TouchableOpacity,
   Animated,
 } from 'react-native';
-import Swipeable from 'react-native-gesture-handler/Swipeable';
+import {Swipeable} from 'react-native-gesture-handler';
 import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
-import {CustomButton, Text} from '.';
 import {formatTime} from '../utils/site-specific-common-utils';
+import {CustomButton, Text} from './';
 import Block from './Block';
 import ImageComponent from './ImageComponent';
 import {w1} from './theme/fontsize';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
-const ChatMeesage = ({data, handleDelete, handlePress}) => {
+const ItemBox = ({data, handleDelete, handlePress}) => {
   const leftSwipe = (progress, dragX) => {
     const scale = dragX.interpolate({
       inputRange: [0, 100],
@@ -25,7 +25,7 @@ const ChatMeesage = ({data, handleDelete, handlePress}) => {
     });
     return (
       <TouchableOpacity
-        onPress={() => handleDelete(data.mission_id)}
+        onPress={() => handleDelete(data.id)}
         activeOpacity={0.6}
         borderColorDeafult
         borderWidth={[0, 0, 1, 0]}
@@ -59,7 +59,7 @@ const ChatMeesage = ({data, handleDelete, handlePress}) => {
         flex={false}>
         <Block flex={false}>
           <Text size={16} semibold>
-            {data.mission_title}
+            {data.mission_title || data.title}
           </Text>
           <Text margin={[hp(0.5), 0, 0]} grey size={14}>
             {data.message}
@@ -73,7 +73,7 @@ const ChatMeesage = ({data, handleDelete, handlePress}) => {
   );
 };
 
-export default ChatMeesage;
+export default ItemBox;
 
 const styles = StyleSheet.create({
   container: {

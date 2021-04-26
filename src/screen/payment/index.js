@@ -30,7 +30,6 @@ import {
   getCardColor,
 } from '../../utils/site-specific-common-utils';
 import {divider} from '../../utils/commonView';
-import AlertCompnent from '../../components/AlertCompnent';
 import {makePaymentRequest} from '../../redux/action';
 import {useNavigation} from '@react-navigation/native';
 import {makePaymentFlush} from '../../redux/payments/action';
@@ -273,18 +272,6 @@ const Payment = () => {
                   </Block>
                 )}
               </KeyboardAwareScrollView>
-
-              <AlertCompnent
-                visible={visible}
-                title="Mission request sent "
-                description="You will receive the notification when the agent accepts and begins the mission."
-                buttonTitle="Check Missions"
-                onPress={() => {
-                  navigation.navigate('Missions');
-                  setvisible(false);
-                  dispatch(makePaymentFlush());
-                }}
-              />
               <Block
                 row
                 space="between"

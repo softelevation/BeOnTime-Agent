@@ -59,9 +59,11 @@ const Home = () => {
 
   useEffect(() => {
     ApiRequest();
-    socket.on('refresh_feed', (msg) => {
-      ApiRequest();
-    });
+    if (strictValidObjectWithKeys(profile)) {
+      socket.on(`refresh_feed_${profile.id}`, (msg) => {
+        ApiRequest();
+      });
+    }
   }, []);
 
   useEffect(() => {
@@ -100,7 +102,10 @@ const Home = () => {
     setloader(val);
     const mission_id = id;
     socket.emit('agent_mission_request', {mission_id, status});
-    ApiRequest();
+    console.log(mission_id, status, 'mission_id, status');
+    setTimeout(() => {
+      ApiRequest();
+    }, 2000);
   };
   const renderAgentDetails = (item) => {
     return (

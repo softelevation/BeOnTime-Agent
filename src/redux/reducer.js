@@ -7,6 +7,8 @@ import mission from './missions/reducer';
 import socket from './socket/reducer';
 import notifications from './notifications/reducer';
 import messages from './messages/reducer';
+import {languageReducer} from './language/reducer';
+
 const rootreducer = combineReducers({
   user,
   request,
@@ -16,5 +18,6 @@ const rootreducer = combineReducers({
   socket,
   notifications,
   messages,
+  languageReducer,
 });
 export default rootreducer;

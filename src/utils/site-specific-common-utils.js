@@ -1,12 +1,12 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 import moment from 'moment';
-import { images } from '../assets/index';
-import { strictValidNumber } from './commonUtils';
-import { config } from './config';
+import {images} from '../assets/index';
+import {strictValidNumber} from './commonUtils';
+import {config} from './config';
 import RNFS from 'react-native-fs';
 import RNFetchBlob from 'rn-fetch-blob';
-import { Alert } from 'react-native';
+import {Alert} from 'react-native';
 
 export const cc_format = (value) => {
   const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
@@ -199,7 +199,6 @@ export const uploadMedia = async (path, image) => {
 //     });
 // };
 export const UPLOAD = async (api, fileName, filePath, filetype, uploadType) => {
-  console.log("=====>>>>>", api, fileName, filePath, filetype, uploadType);
   const date = new Date();
 
   const tempPath =
@@ -232,9 +231,6 @@ export const UPLOAD = async (api, fileName, filePath, filetype, uploadType) => {
       },
     ],
   );
-
-  console.log("======>>>", res )
-
   console.log(res, 'res');
   return res;
 };

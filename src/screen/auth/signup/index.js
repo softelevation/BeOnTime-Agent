@@ -1,5 +1,5 @@
-import { Formik } from 'formik';
-import React, { useState, useEffect, useRef } from 'react';
+import {Formik} from 'formik';
+import React, {useState, useEffect, useRef} from 'react';
 import Toast from 'react-native-simple-toast';
 import {
   ActivityIndicator,
@@ -10,12 +10,12 @@ import {
   View,
 } from 'react-native';
 import ImageCropPicker from 'react-native-image-crop-picker';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {
   heightPercentageToDP,
   widthPercentageToDP,
 } from 'react-native-responsive-screen';
-import { images } from '../../../assets';
+import {images} from '../../../assets';
 import {
   Block,
   CustomButton,
@@ -26,23 +26,51 @@ import {
   Button,
 } from '../../../components';
 import Header from '../../../components/common/header';
-import { t1, t2, t4, w1, w2, w3, w4 } from '../../../components/theme/fontsize';
+import {t1, t2, t4, w1, w2, w3, w4} from '../../../components/theme/fontsize';
 import * as yup from 'yup';
-import { useNavigation } from '@react-navigation/native';
-import { useDispatch, useSelector } from 'react-redux';
-import { loginRequest, registerRequest } from '../../../redux/action';
-import AlertCompnent from '../../../components/AlertCompnent';
+import {useNavigation} from '@react-navigation/native';
+import {useDispatch, useSelector} from 'react-redux';
+import {loginRequest, registerRequest} from '../../../redux/action';
 import AgentType from './agent-type';
 import ImagePicker from './imagePicker';
-import { Modalize } from 'react-native-modalize';
-import { strictValidArrayWithLength } from '../../../utils/commonUtils';
+import {Modalize} from 'react-native-modalize';
+import {
+  strictValidArrayWithLength,
+  strictValidObjectWithKeys,
+} from '../../../utils/commonUtils';
 import GooglePlacesTextInput from '../../../components/googlePlaces';
-import { config } from '../../../utils/config';
+import {config} from '../../../utils/config';
 import AsyncStorage from '@react-native-community/async-storage';
-import { UPLOAD, uploadMedia } from '../../../utils/site-specific-common-utils';
-import RNFetchBlob from 'rn-fetch-blob';
+import {UPLOAD, uploadMedia} from '../../../utils/site-specific-common-utils';
+import {styles} from '../../../utils/common-styles';
+import Modal from 'react-native-modal';
 
-import RNFS from 'react-native-fs';
+const imageData = {
+  profileUrl: {},
+  identityUrl: {},
+  socialUrl: {},
+  acvUrl: {},
+};
+const userProfileData = {
+  profileImage: '',
+  uploading: false,
+  profileData: '',
+};
+const IdentityCardData = {
+  idCardImage: '',
+  uploadings: false,
+  idCardData: '',
+};
+const ACVCardData = {
+  AcvCardImage: '',
+  uploadingss: false,
+  AcvCardData: '',
+};
+const SocialSecurityData = {
+  socialSecImage: '',
+  uploadingSS: false,
+  socialSecData: '',
+};
 
 const Signup = () => {
   const navigation = useNavigation();
@@ -55,49 +83,30 @@ const Signup = () => {
   const dispatch = useDispatch();
   const [action, setAction] = useState('');
   const [modal, setmodal] = useState(false);
-  const [userProfileDetails, setUserDetails] = useState({
-    profileImage: '',
-    uploading: false,
-    profileData: '',
-  });
-  const { profileImage, profileData, uploading } = userProfileDetails;
+  // Profile State
+  const [userProfileDetails, setUserDetails] = useState(userProfileData);
+  const {profileImage, uploading} = userProfileDetails;
+  // Identity Card State
+  const [userIDCardDetails, setUserIDCardDetails] = useState(IdentityCardData);
+  const {idCardImage, uploadings} = userIDCardDetails;
+  // ACV Card State
+  const [userAcvCardDetails, setUserAcvCardDetails] = useState(ACVCardData);
+  const {AcvCardImage, uploadingss} = userAcvCardDetails;
+  // Social Security State
+  const [userSocialSec, setUserSocialSec] = useState(SocialSecurityData);
+  const {socialSecImage, uploadingSS} = userSocialSec;
+  // Url's of Image
+  const [docData, setDocData] = useState(imageData);
+  const {profileUrl, identityUrl, socialUrl, acvUrl} = docData;
 
-  const [userIDCardDetails, setUserIDCardDetails] = useState({
-    idCardImage: '',
-    uploadings: false,
-    idCardData: '',
-  });
-
-  const { idCardImage, idCardData, uploadings } = userIDCardDetails;
-
-  const [userAcvCardDetails, setUserAcvCardDetails] = useState({
-    AcvCardImage: '',
-    uploadings: false,
-    AcvCardData: '',
-  });
-
-  const { AcvCardImage, AcvCardData, uploadingss } = userAcvCardDetails;
-
-  const [userSocialSec, setUserSocialSec] = useState({
-    socialSecImage: '',
-    uploadingSS: false,
-    socialSecData: '',
-  });
-
-  const { socialSecImage, socialSecData, uploadingSS } = userSocialSec;
-
-  // useEffect(() => {
-  //   if (isSuccess) {
-  //     setmodal(true);
-  //   }
-  // }, [isSuccess]);
+  console.log(docData, 'docData');
 
   const uploadPhoto = (type) => {
     ImageCropPicker.openPicker({
       width: 300,
       height: 400,
       cropping: true,
-    }).then((image) => {
+    }).then(async (image) => {
       setUserDetails({
         ...userProfileDetails,
         uploading: true,
@@ -105,25 +114,31 @@ const Signup = () => {
       const uri = image.path;
       const uriParts = uri.split('.');
       const filename = uriParts[uriParts.length - 1];
-      // {uri: photo.uri, name: 'image.jpg', type: 'image/jpeg'}
-      setTimeout(() => {
+      setUserDetails({
+        ...userProfileDetails,
+        uploading: true,
+        profileImage: Platform.OS === 'ios' ? image.sourceURL : image.path,
+      });
+      const res = await UPLOAD(
+        '',
+        image.filename ? image.filename : `photo.${filename}`,
+        Platform.OS === 'ios'
+          ? image.sourceURL
+          : image.path.replace('file://', ''),
+        image.mime,
+        'image',
+      );
+      if (res) {
         setUserDetails({
           ...userProfileDetails,
           uploading: false,
           profileImage: Platform.OS === 'ios' ? image.sourceURL : image.path,
-          profileData: {
-            name: image.path.split('/').pop(),
-
-            //  name: image.filename ? image.filename : `photo.${filename}`,
-            type: 'image/jpeg',
-            //type: image.mime,
-            uri:
-              Platform.OS === 'ios'
-                ? image.sourceURL
-                : image.path.replace('file:///', ''),
-          },
         });
-      }, 2000);
+        setDocData({
+          ...docData,
+          profileUrl: JSON.parse(res.data),
+        });
+      }
     });
   };
 
@@ -143,31 +158,26 @@ const Signup = () => {
         const filename = uriParts[uriParts.length - 1];
         console.log(image, 'image');
         // {uri: photo.uri, name: 'image.jpg', type: 'image/jpeg'}
-        setTimeout(() => {
-          setUserIDCardDetails({
-            ...userIDCardDetails,
-            uploadings: false,
-            idCardImage: Platform.OS === 'ios' ? image.sourceURL : image.path,
-            idCardData: {
-              name: image.filename ? image.filename : `photo.${filename}`,
-              type: image.mime,
-              uri:
-                Platform.OS === 'ios'
-                  ? image.sourceURL
-                  : image.path.replace('file://', ''),
-            },
-          });
-        }, 2000);
+        setUserIDCardDetails({
+          ...userIDCardDetails,
+          uploadings: false,
+          idCardImage: Platform.OS === 'ios' ? image.sourceURL : image.path,
+        });
         const res = await UPLOAD(
           '',
-          image.filename,
+          image.filename ? image.filename : `photo.${filename}`,
           Platform.OS === 'ios'
             ? image.sourceURL
             : image.path.replace('file://', ''),
           image.mime,
           'identity_card',
         );
-        console.log(JSON.parse(res.data));
+        if (res) {
+          setDocData({
+            ...docData,
+            identityUrl: JSON.parse(res.data),
+          });
+        }
       });
     } else {
       ImageCropPicker.openCamera({
@@ -183,32 +193,26 @@ const Signup = () => {
         const uriParts = uri.split('.');
         const filename = uriParts[uriParts.length - 1];
         // {uri: photo.uri, name: 'image.jpg', type: 'image/jpeg'}
-        setTimeout(() => {
-          setUserIDCardDetails({
-            ...userIDCardDetails,
-            uploadings: false,
-            idCardImage: Platform.OS === 'ios' ? image.sourceURL : image.path,
-            idCardData: {
-              name: image.filename ? image.filename : `photo.${filename}`,
-              type: image.mime,
-              uri:
-                Platform.OS === 'ios'
-                  ? image.sourceURL
-                  : image.path.replace('file://', ''),
-            },
-          });
-        }, 2000);
-
+        setUserIDCardDetails({
+          ...userIDCardDetails,
+          uploadings: false,
+          idCardImage: Platform.OS === 'ios' ? image.sourceURL : image.path,
+        });
         const res = await UPLOAD(
           '',
-          image.filename,
+          image.filename ? image.filename : `photo.${filename}`,
           Platform.OS === 'ios'
             ? image.sourceURL
             : image.path.replace('file://', ''),
           image.mime,
           'identity_card',
         );
-        console.log(JSON.parse(res.data));
+        if (res) {
+          setDocData({
+            ...docData,
+            identityUrl: JSON.parse(res.data),
+          });
+        }
       });
     }
   };
@@ -220,48 +224,35 @@ const Signup = () => {
         height: 400,
         cropping: true,
       }).then(async (image) => {
-        setUserIDCardDetails({
-          ...userIDCardDetails,
-          uploading: true,
+        setUserAcvCardDetails({
+          ...userAcvCardDetails,
+          uploadingss: true,
         });
-
-        // const [userAcvCardDetails, setUserAcvCardDetails] = useState({
-        //   AcvCardImage: '',
-        //   uploadings: false,
-        //   AvCardData: '',
-        // });
-
-        // const { idCardImage, idCardData, uploadings } = userAcvCardDetails;
-
         const uri = image.path;
         const uriParts = uri.split('.');
         const filename = uriParts[uriParts.length - 1];
         // {uri: photo.uri, name: 'image.jpg', type: 'image/jpeg'}
-        setTimeout(() => {
-          setUserAcvCardDetails({
-            ...userAcvCardDetails,
-            uploadings: false,
-            AcvCardImage: Platform.OS === 'ios' ? image.sourceURL : image.path,
-            AcvCardData: {
-              name: image.filename ? image.filename : `photo.${filename}`,
-              type: image.mime,
-              uri:
-                Platform.OS === 'ios'
-                  ? image.sourceURL
-                  : image.path.replace('file://', ''),
-            },
-          });
-        }, 2000);
+        setUserAcvCardDetails({
+          ...userAcvCardDetails,
+          uploadingss: false,
+          AcvCardImage: Platform.OS === 'ios' ? image.sourceURL : image.path,
+        });
         const res = await UPLOAD(
           '',
-          image.filename,
+          image.filename ? image.filename : `photo.${filename}`,
           Platform.OS === 'ios'
             ? image.sourceURL
             : image.path.replace('file://', ''),
           image.mime,
-          'social_security_number',
+          'cv',
         );
-        console.log(JSON.parse(res.data));
+        console.log(res, 'res');
+        if (res) {
+          setDocData({
+            ...docData,
+            acvUrl: JSON.parse(res.data),
+          });
+        }
       });
     } else {
       ImageCropPicker.openCamera({
@@ -269,7 +260,7 @@ const Signup = () => {
         height: 400,
         cropping: true,
       }).then(async (image) => {
-        setUserIDCardDetails({
+        setUserAcvCardDetails({
           ...userIDCardDetails,
           uploading: true,
         });
@@ -277,45 +268,48 @@ const Signup = () => {
         const uriParts = uri.split('.');
         const filename = uriParts[uriParts.length - 1];
         // {uri: photo.uri, name: 'image.jpg', type: 'image/jpeg'}
-        setTimeout(() => {
-          setUserAcvCardDetails({
-            ...userAcvCardDetails,
-            uploadings: false,
-            AcvCardImage: Platform.OS === 'ios' ? image.sourceURL : image.path,
-            AcvCardData: {
-              name: image.filename ? image.filename : `photo.${filename}`,
-              type: image.mime,
-              uri:
-                Platform.OS === 'ios'
-                  ? image.sourceURL
-                  : image.path.replace('file://', ''),
-            },
-          });
-        }, 2000);
-
-        const res = await UPLOAD(
+        setUserAcvCardDetails({
+          ...userAcvCardDetails,
+          uploadings: false,
+          AcvCardImage: Platform.OS === 'ios' ? image.sourceURL : image.path,
+        });
+        console.log(
           '',
-          image.filename,
+          image.filename ? image.filename : `photo.${filename}`,
           Platform.OS === 'ios'
             ? image.sourceURL
             : image.path.replace('file://', ''),
           image.mime,
-          'social_security_number',
+          'cv',
         );
-        console.log(JSON.parse(res.data));
-
+        const res = await UPLOAD(
+          '',
+          image.filename ? image.filename : `photo.${filename}`,
+          Platform.OS === 'ios'
+            ? image.sourceURL
+            : image.path.replace('file://', ''),
+          image.mime,
+          'cv',
+        );
+        console.log(res, 'res');
+        if (res) {
+          setDocData({
+            ...docData,
+            acvUrl: JSON.parse(res.data),
+          });
+        }
       });
     }
   };
 
   const uploadDocumentSocial = async (type) => {
-    if (type == 'gallary') {
+    if (type === 'gallary') {
       ImageCropPicker.openPicker({
         width: 300,
         height: 400,
         cropping: true,
       }).then(async (image) => {
-        setUserIDCardDetails({
+        setUserSocialSec({
           ...userIDCardDetails,
           uploading: true,
         });
@@ -330,27 +324,23 @@ const Signup = () => {
             uploadings: false,
             socialSecImage:
               Platform.OS === 'ios' ? image.sourceURL : image.path,
-            socialSecData: {
-              name: image.path.split('/').pop(),
-              //  name: image.filename ? image.filename : `photo.${filename}`,
-              type: 'image/jpeg',
-              uri:
-                Platform.OS === 'ios'
-                  ? image.sourceURL
-                  : image.path.replace('file://', ''),
-            },
           });
         }, 2000);
         const res = await UPLOAD(
           '',
-          image.filename,
+          image.filename ? image.filename : `photo.${filename}`,
           Platform.OS === 'ios'
             ? image.sourceURL
             : image.path.replace('file://', ''),
           image.mime,
-          'cv',
+          'social_security_number',
         );
-        console.log(JSON.parse(res.data));
+        if (res) {
+          setDocData({
+            ...docData,
+            socialUrl: JSON.parse(res.data),
+          });
+        }
       });
     } else {
       ImageCropPicker.openCamera({
@@ -367,47 +357,44 @@ const Signup = () => {
         const filename = uriParts[uriParts.length - 1];
         // {uri: photo.uri, name: 'image.jpg', type: 'image/jpeg'}
         setTimeout(() => {
-          setUserAcvCardDetails({
+          setUserSocialSec({
             ...userAcvCardDetails,
             uploadings: false,
             socialSecImage:
               Platform.OS === 'ios' ? image.sourceURL : image.path,
-            socialSecImage: {
-              name: image.path.split('/').pop(),
-              type: 'image/jpeg',
-              uri:
-                Platform.OS === 'ios'
-                  ? image.sourceURL
-                  : image.path.replace('file://', ''),
-            },
           });
         }, 2000);
 
         const res = await UPLOAD(
           '',
-          image.filename,
+          image.filename ? image.filename : `photo.${filename}`,
           Platform.OS === 'ios'
             ? image.sourceURL
             : image.path.replace('file://', ''),
           image.mime,
-          'cv',
+          'social_security_number',
         );
-        console.log(JSON.parse(res.data));
-
+        if (res) {
+          setDocData({
+            ...docData,
+            socialUrl: JSON.parse(res.data),
+          });
+        }
       });
     }
   };
+  console.log(userAcvCardDetails, 'userAcvCardDetails');
 
   const renderProfileImagePath = () => {
     if (profileImage) {
-      return { uri: profileImage };
+      return {uri: profileImage};
     }
     return images.default_profile_icon;
   };
 
   const renderIdCardImage = () => {
     if (idCardImage) {
-      return { uri: idCardImage };
+      return {uri: idCardImage};
     }
     return images.default_profile_icon;
   };
@@ -422,7 +409,7 @@ const Signup = () => {
         <>
           <ImageBackground
             source={renderProfileImagePath()}
-            imageStyle={{ borderRadius: 80 }}
+            imageStyle={{borderRadius: 80}}
             style={BackgroundStyle}>
             <TouchableOpacity onPress={() => uploadPhoto()}>
               <ImageComponent name="plus_icon" height="55" width="55" />
@@ -444,7 +431,7 @@ const Signup = () => {
         <>
           <ImageBackground
             source={renderIdCardImage()}
-            imageStyle={{ borderRadius: 80 }}
+            imageStyle={{borderRadius: 80}}
             style={BackgroundStyle}
           />
         </>
@@ -453,7 +440,7 @@ const Signup = () => {
   };
   const renderAcvImagePath = () => {
     if (AcvCardImage) {
-      return { uri: AcvCardImage };
+      return {uri: AcvCardImage};
     }
     return images.default_profile_icon;
   };
@@ -469,7 +456,7 @@ const Signup = () => {
         <>
           <ImageBackground
             source={renderAcvImagePath()}
-            imageStyle={{ borderRadius: 80 }}
+            imageStyle={{borderRadius: 80}}
             style={BackgroundStyle}>
             {/* <TouchableOpacity onPress={() => uploadPhoto()}>
               <ImageComponent name="plus_icon" height="55" width="55" />
@@ -482,7 +469,7 @@ const Signup = () => {
 
   const renderSocialSecImagePath = () => {
     if (socialSecImage) {
-      return { uri: socialSecImage };
+      return {uri: socialSecImage};
     }
     return images.default_profile_icon;
   };
@@ -498,7 +485,7 @@ const Signup = () => {
         <>
           <ImageBackground
             source={renderSocialSecImagePath()}
-            imageStyle={{ borderRadius: 80 }}
+            imageStyle={{borderRadius: 80}}
             style={BackgroundStyle}>
             {/* <TouchableOpacity onPress={() => uploadPhoto()}>
               <ImageComponent name="plus_icon" height="55" width="55" />
@@ -529,9 +516,7 @@ const Signup = () => {
       agentTypeArray.push(v.value);
     });
     console.log(agentTypeArray, 'agentTypeArray');
-    if (profileData === '') {
-      Toast.show('Please Upload Profile Picture');
-    } else if (values.firstName === '') {
+    if (values.firstName === '') {
       Toast.show('Please Enter First Name');
     } else if (values.lastName === '') {
       Toast.show('Please Enter Last  Name');
@@ -575,16 +560,15 @@ const Signup = () => {
         company,
         lat,
         lng,
+        cnaps,
       } = values;
 
       const data = {
-        profile: profileData,
         first_name: firstName,
         last_name: lastName,
         email: email,
         phone: phone,
         iban: iban,
-        agent_type: agentTypeArray,
         home_address: address,
         work_location_address: work_location,
         lat: lat,
@@ -592,41 +576,23 @@ const Signup = () => {
         is_vehicle: values.typeVehicle === 'yes' ? 1 : 0,
         is_subc: values.typeContractor === 'yes' ? 1 : 0,
         supplier_company: company,
-        identity_card: idCardData,
-        social_security_number: socialSecData,
-        cv: AcvCardData,
+        identity_card: strictValidObjectWithKeys(identityUrl)
+          ? identityUrl.value
+          : '',
+        social_security_number: strictValidObjectWithKeys(identityUrl)
+          ? identityUrl.value
+          : '',
+        cv: strictValidObjectWithKeys(identityUrl) ? identityUrl.value : '',
+        agent_type: agentTypeArray,
+        cnaps_number: cnaps,
       };
 
-      console.log('====>>>>>>>', JSON.stringify(data));
+      console.log('====>>>>>>>', data);
 
       dispatch(registerRequest(data));
 
       // uploadDocument(profileData, idCardData, socialSecData, AcvCardData);
     }
-  };
-
-  const uploadDocument = (profileDetail, identityCard, socialSecurity, cv) => {
-    const token = AsyncStorage.getItem('token');
-
-    var formData = new FormData();
-    formData.append('image', profileDetail);
-
-    fetch(config.Api_Url + '/agent/upload-media', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        // 'Authorization': token,
-      },
-      body: JSON.stringify(formData),
-    })
-      .then((response) => response.json())
-      .then((responseJson) => {
-        console.log(responseJson);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
   };
 
   const onOpen = (type) => {
@@ -781,7 +747,7 @@ const Signup = () => {
             <>
               <KeyboardAwareScrollView
                 keyboardShouldPersistTaps="always"
-                contentContainerStyle={{ paddingBottom: t4 }}>
+                contentContainerStyle={{paddingBottom: t4}}>
                 <Block flex={false} padding={[0, w3]}>
                   <Input
                     value={values.firstName}
@@ -798,6 +764,8 @@ const Signup = () => {
                     onChangeText={handleChange('lastName')}
                     onBlur={() => setFieldTouched('lastName')}
                     error={touched.lastName && errors.lastName}
+                    blurOnSubmit={false}
+                    autoCorrect={false}
                   />
                   <Input
                     label="Email address"
@@ -857,7 +825,7 @@ const Signup = () => {
                     onBlur={() => setFieldTouched('cnaps')}
                     error={touched.cnaps && errors.cnaps}
                   />
-                  <View style={{ marginTop: t1 }}>
+                  <View style={{marginTop: t1}}>
                     <GooglePlacesTextInput
                       placeholder="Enter home address"
                       label="Home address"
@@ -876,7 +844,7 @@ const Signup = () => {
                       }}
                     />
                   </View>
-                  <View style={{ marginTop: t2 }}>
+                  <View style={{marginTop: t2}}>
                     <GooglePlacesTextInput
                       label="Work Location"
                       placeholder="Work Location"
@@ -923,13 +891,13 @@ const Signup = () => {
                     flex={false}>
                     <Text
                       size={16}
-                      style={{ width: widthPercentageToDP(40) }}
+                      style={{width: widthPercentageToDP(40)}}
                       regular>
                       Do you possess a vehicle?
                     </Text>
                     <Block
                       flex={false}
-                      style={{ width: widthPercentageToDP(15) }}
+                      style={{width: widthPercentageToDP(15)}}
                     />
                     <Block
                       primary
@@ -946,9 +914,9 @@ const Signup = () => {
                         padding={
                           values.typeVehicle === 'yes'
                             ? [
-                              heightPercentageToDP(1.5),
-                              widthPercentageToDP(8),
-                            ]
+                                heightPercentageToDP(1.5),
+                                widthPercentageToDP(8),
+                              ]
                             : [0, widthPercentageToDP(6)]
                         }
                         color={
@@ -968,9 +936,9 @@ const Signup = () => {
                         padding={
                           values.typeVehicle === 'no'
                             ? [
-                              heightPercentageToDP(1.5),
-                              widthPercentageToDP(8),
-                            ]
+                                heightPercentageToDP(1.5),
+                                widthPercentageToDP(8),
+                              ]
                             : [0, widthPercentageToDP(6)]
                         }
                         color={
@@ -993,13 +961,13 @@ const Signup = () => {
                     flex={false}>
                     <Text
                       size={16}
-                      style={{ width: widthPercentageToDP(40) }}
+                      style={{width: widthPercentageToDP(40)}}
                       regular>
                       Are you a sub-contractor?
                     </Text>
                     <Block
                       flex={false}
-                      style={{ width: widthPercentageToDP(15) }}
+                      style={{width: widthPercentageToDP(15)}}
                     />
                     <Block
                       primary
@@ -1016,9 +984,9 @@ const Signup = () => {
                         padding={
                           values.typeContractor === 'yes'
                             ? [
-                              heightPercentageToDP(1.5),
-                              widthPercentageToDP(8),
-                            ]
+                                heightPercentageToDP(1.5),
+                                widthPercentageToDP(8),
+                              ]
                             : [0, widthPercentageToDP(6)]
                         }
                         color={
@@ -1040,9 +1008,9 @@ const Signup = () => {
                         padding={
                           values.typeContractor === 'no'
                             ? [
-                              heightPercentageToDP(1.5),
-                              widthPercentageToDP(8),
-                            ]
+                                heightPercentageToDP(1.5),
+                                widthPercentageToDP(8),
+                              ]
                             : [0, widthPercentageToDP(6)]
                         }
                         color={
@@ -1070,13 +1038,13 @@ const Signup = () => {
                   <Block row center>
                     <Checkbox
                       onChange={() => setFieldValue('privacy', !values.privacy)}
-                      checkboxStyle={{ height: 25, width: 25 }}
+                      checkboxStyle={{height: 25, width: 25}}
                       label=""
                       checked={values.privacy}
                     />
                     <Text size={16}>
                       I accept{' '}
-                      <Text style={{ textDecorationLine: 'underline' }} size={16}>
+                      <Text style={{textDecorationLine: 'underline'}} size={16}>
                         Privacy Policy.
                       </Text>
                     </Text>
@@ -1084,13 +1052,13 @@ const Signup = () => {
                   <Block margin={[t1, 0]} row center>
                     <Checkbox
                       onChange={() => setFieldValue('terms', !values.terms)}
-                      checkboxStyle={{ height: 25, width: 25 }}
+                      checkboxStyle={{height: 25, width: 25}}
                       label=""
                       checked={values.terms}
                     />
                     <Text size={16}>
                       I accept{' '}
-                      <Text style={{ textDecorationLine: 'underline' }} size={16}>
+                      <Text style={{textDecorationLine: 'underline'}} size={16}>
                         Terms & Conditions.
                       </Text>
                     </Text>
@@ -1100,7 +1068,7 @@ const Signup = () => {
                     //  disabled={!isValid || !dirty}
                     isLoading={loading}
                     onPress={handleSubmit}
-                    style={{ marginTop: t2 }}
+                    style={{marginTop: t2}}
                     color="secondary">
                     Finish registration
                   </Button>
@@ -1157,15 +1125,25 @@ const Signup = () => {
           );
         }}
       </Formik>
-      <AlertCompnent
-        visible={modal}
-        title={'Registration Success !'}
-        description="Welcome to BeOnTime."
-        buttonTitle="Ok"
-        onPress={() => onLogin()}
-        isLoading={isLoad}
-        onRequestClose={() => setmodal(false)}
-      />
+      <Modal
+        style={styles.modalStyle}
+        isVisible={modal}
+        onBackdropPress={() => setmodal(false)}>
+        <View style={styles.modalView}>
+          <Text semibold style={styles.modalText}>
+            Registration Success !
+          </Text>
+          <Text style={styles.textStyle} center>
+            Welcome to BeOnTime.
+          </Text>
+          <Button
+            style={styles.button}
+            onPress={() => onLogin()}
+            color="secondary">
+            Ok
+          </Button>
+        </View>
+      </Modal>
     </Block>
   );
 };

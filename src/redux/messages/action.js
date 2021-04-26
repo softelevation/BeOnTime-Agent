@@ -43,3 +43,10 @@ export const getChatByIdError = (error) => {
     res: false,
   };
 };
+export const getChatByIdFlush = (error) => {
+  return {
+    type: ActionConstants.GET_CHAT_BY_ID_FLUSH,
+    error,
+    res: false,
+  };
+};

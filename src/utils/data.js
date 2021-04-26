@@ -170,17 +170,3 @@ export const presenceData = [
   {name: 'Gendarmerie', value: 'Gendarmerie'},
   {name: 'Pompiers', value: 'Pompiers'},
 ];
-export const ProfileData = [
-  {
-    name: 'Edit profile',
-    nav: 'EditProfile',
-  },
-  {
-    name: 'Change email',
-    nav: '',
-  },
-  {
-    name: 'Change password',
-    nav: 'ChangePassword',
-  },
-];

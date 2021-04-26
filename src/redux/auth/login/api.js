@@ -1,7 +1,11 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
+import messaging from '@react-native-firebase/messaging';
 import {config} from '../../../utils/config';
+
 export const Api = async (data) => {
+  const fcmToken = await messaging().getToken();
+
   const {email, password, role_id} = data;
   const headers = {
     'Content-Type': 'application/json',
@@ -14,6 +18,7 @@ export const Api = async (data) => {
       email: `${email}`,
       password: `${password}`,
       role_id: role_id,
+      device_token: fcmToken,
     },
   });
 };

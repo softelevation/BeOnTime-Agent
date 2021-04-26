@@ -13,71 +13,87 @@ import {Block, Button, ImageComponent, Input} from '../../../components';
 import Header from '../../../components/common/header';
 import {t1, w3} from '../../../components/theme/fontsize';
 import * as yup from 'yup';
-import {connect, useDispatch} from 'react-redux';
+import {connect, useDispatch, useSelector} from 'react-redux';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {updateProfileRequest} from '../../../redux/auth/profile/action';
 import GooglePlacesTextInput from '../../../components/googlePlaces';
 import {UPLOAD} from '../../../utils/site-specific-common-utils';
+import {
+  strictValidObjectWithKeys,
+  strictValidString,
+} from '../../../utils/commonUtils';
+import {config} from '../../../utils/config';
 const EditProfile = ({user, isLoad}) => {
   const dispatch = useDispatch();
   const [userProfileDetails, setUserDetails] = useState({
-    profileImage: '',
     uploading: false,
     profileData: '',
   });
-  const {profileImage, profileData, uploading} = userProfileDetails;
-  const placesRef = useRef();
-  useEffect(() => {
-    placesRef.current?.setAddressText('Some Text');
-  }, [user]);
+  const {profileData, uploading} = userProfileDetails;
+  const [ProfileImage, setProfileImage] = useState(null);
+  const [imageVal, setimage] = useState({});
+  const languageMode = useSelector((state) => state.languageReducer.language);
+  const {
+    FirstName,
+    LastName,
+    PhoneNumber,
+    HomeAddress,
+    EditProfileLanguage,
+    SaveChanges,
+  } = languageMode;
   const uploadPhoto = () => {
     ImageCropPicker.openPicker({
       width: 300,
       height: 400,
       cropping: true,
+      cropperCircleOverlay: true,
+      freeStyleCropEnabled: true,
     }).then(async (image) => {
       setUserDetails({
         ...userProfileDetails,
         uploading: true,
       });
-      console.log(image, 'image');
       const uri = image.path;
       const uriParts = uri.split('.');
       const filename = uriParts[uriParts.length - 1];
-      // {uri: photo.uri, name: 'image.jpg', type: 'image/jpeg'}
-      setTimeout(() => {
+
+      setUserDetails({
+        ...userProfileDetails,
+        profileImage: Platform.OS === 'ios' ? image.sourceURL : image.path,
+        uploading: true,
+      });
+      setProfileImage(Platform.OS === 'ios' ? image.sourceURL : image.path);
+      const res = await UPLOAD(
+        '',
+        image.filename ? image.filename : `photo.${filename}`,
+        Platform.OS === 'ios'
+          ? image.sourceURL
+          : image.path.replace('file://', ''),
+        image.mime,
+        'image',
+      );
+      if (res) {
+        console.log(res.data);
         setUserDetails({
           ...userProfileDetails,
           uploading: false,
-          profileImage: Platform.OS === 'ios' ? image.sourceURL : image.path,
-          profileData: {
-            name: image.filename ? image.filename : `photo.${filename}`,
-            type: image.mime,
-            uri:
-              Platform.OS === 'ios'
-                ? image.sourceURL
-                : image.path.replace('file://', ''),
-          },
         });
-      }, 2000);
-      // const res = await UPLOAD(
-      //   '',
-      //   image.filename,
-      //   Platform.OS === 'ios'
-      //     ? image.sourceURL
-      //     : image.path.replace('file://', ''),
-      //   image.mime,
-      //   'identity_card',
-      // );
-      // console.log(JSON.parse(res.data));
+        setimage(JSON.parse(res.data));
+      }
     });
   };
   console.log(profileData, 'profileData');
 
   const renderProfileImagePath = () => {
-    if (profileImage) {
-      return {uri: profileImage};
+    if (ProfileImage) {
+      return {uri: ProfileImage};
+    } else if (
+      strictValidObjectWithKeys(user) &&
+      strictValidString(user.image)
+    ) {
+      return {uri: `${config.Api_Url}/${user.image}`};
     }
+
     return images.default_profile_icon;
   };
 
@@ -109,7 +125,7 @@ const EditProfile = ({user, isLoad}) => {
       last_name: values.last_name,
       phone: values.phone,
       home_address: values.home_address,
-      image: JSON.stringify(profileData),
+      image: strictValidObjectWithKeys(imageVal) ? imageVal.value : '',
     };
     console.log(data, 'data');
     dispatch(updateProfileRequest(data));
@@ -117,7 +133,7 @@ const EditProfile = ({user, isLoad}) => {
 
   return (
     <Block primary>
-      <Header centerText="Edit Profile" />
+      <Header centerText={EditProfileLanguage} />
       <KeyboardAwareScrollView keyboardShouldPersistTaps="always">
         {renderProfileImage()}
         <Formik
@@ -148,7 +164,7 @@ const EditProfile = ({user, isLoad}) => {
           }) => (
             <Block padding={[0, w3]}>
               <Input
-                label="First Name"
+                label={FirstName}
                 placeholder="Enter First Name"
                 value={values.first_name}
                 onChangeText={handleChange('first_name')}
@@ -156,7 +172,7 @@ const EditProfile = ({user, isLoad}) => {
                 error={touched.first_name && errors.first_name}
               />
               <Input
-                label="Last Name"
+                label={LastName}
                 placeholder="Enter Last Name"
                 value={values.last_name}
                 onChangeText={handleChange('last_name')}
@@ -164,7 +180,7 @@ const EditProfile = ({user, isLoad}) => {
                 error={touched.last_name && errors.last_name}
               />
               <Input
-                label="Phone Number"
+                label={PhoneNumber}
                 placeholder="Enter Phone Number"
                 value={values.phone}
                 onChangeText={handleChange('phone')}
@@ -172,38 +188,19 @@ const EditProfile = ({user, isLoad}) => {
                 error={touched.phone && errors.phone}
               />
               <Input
-                label="Home Address"
+                label={HomeAddress}
                 placeholder="Enter Home Address"
                 value={values.home_address}
                 onChangeText={handleChange('home_address')}
                 onBlur={() => setFieldTouched('home_address')}
                 error={touched.home_address && errors.home_address}
               />
-              {/* <Block flex={false} margin={[t1, 0, 0]}>
-                <GooglePlacesTextInput
-                  ref={placesRef}
-                  placeholder="Enter home address"
-                  label="Home address"
-                  value={values.home_address}
-                  onPress={(data, details) => {
-                    const description = data.description;
-                    setFieldValue('home_address', description);
-                  }}
-                  error={touched.home_address && errors.home_address}
-                  textInputProps={{
-                    placeholderTextColor: '#8A8E99',
-                    onblur: () => setFieldTouched('home_address'),
-                    value: values.home_address,
-                    onChangeText: handleChange('home_address'),
-                  }}
-                />
-              </Block> */}
               <Button
                 isLoading={isLoad}
-                disabled={!isValid || !dirty}
+                disabled={!isValid}
                 onPress={handleSubmit}
                 color="secondary">
-                Save Changes
+                {SaveChanges}
               </Button>
             </Block>
           )}

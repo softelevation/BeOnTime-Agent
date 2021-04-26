@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import React from 'react';
-import {ScrollView} from 'react-native';
+import {Dimensions, ScrollView} from 'react-native';
 import {widthPercentageToDP} from 'react-native-responsive-screen';
 import {Block, Button, ImageComponent, Text} from '../../../components';
 import {t1, t2, t3} from '../../../components/theme/fontsize';
@@ -9,7 +9,11 @@ const WelcomeLogin = () => {
   const navigation = useNavigation();
   return (
     <ScrollView primary>
-      <ImageComponent name="welcomeMap" height="400" width="420" />
+      <ImageComponent
+        name="welcomeMap"
+        height="360"
+        width={Dimensions.get('screen').width}
+      />
       <Block margin={[t3, widthPercentageToDP(10)]} flex={false}>
         <Text semibold size={26}>
           Request security agent in

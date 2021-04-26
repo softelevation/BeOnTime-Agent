@@ -1,10 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage';
-import {
-  StackActions,
-  useNavigation,
-  NavigationAction,
-} from '@react-navigation/native';
-import React, {useEffect, useState} from 'react';
+import {useNavigation} from '@react-navigation/native';
+import React from 'react';
 import {FlatList, ScrollView} from 'react-native';
 import {heightPercentageToDP} from 'react-native-responsive-screen';
 import {useSelector} from 'react-redux';
@@ -17,12 +13,30 @@ import {
 } from '../../components';
 import Header from '../../components/common/header';
 import {t1, t5, w3} from '../../components/theme/fontsize';
-import CommonApi from '../../utils/CommonApi';
-import {ProfileData} from '../../utils/data';
+import {
+  strictValidObjectWithKeys,
+  strictValidString,
+} from '../../utils/commonUtils';
+import {config} from '../../utils/config';
 
 const Profile = () => {
   const navigation = useNavigation();
   const profile = useSelector((state) => state.user.profile.user.data);
+  const languageMode = useSelector((state) => state.languageReducer.language);
+  const {
+    ProfileLanguage,
+    Customer,
+    CompletedMissions,
+    EditProfileLanguage,
+    Email,
+    HomeAddress,
+    PhoneNumber,
+    BillingLanguage,
+    ChangeLanguage,
+    ChangePassword,
+    Logout,
+    HoursClocked,
+  } = languageMode;
   const onLogout = async () => {
     const keys = await AsyncStorage.getAllKeys();
     await AsyncStorage.multiRemove(keys);
@@ -31,15 +45,24 @@ const Profile = () => {
     });
   };
 
-  // useEffect(() => {
-  //   CommonApi.fetchAppCommon('/profile', 'GET', '')
-  //     .then((response) => {
-  //       if (response.status === 1) {
-  //         setProfileData(response.data);
-  //       }
-  //     })
-  //     .catch((err) => {});
-  // }, []);
+  const ProfileData = [
+    {
+      name: BillingLanguage,
+      nav: 'Billing',
+    },
+    {
+      name: EditProfileLanguage,
+      nav: 'EditProfile',
+    },
+    {
+      name: ChangeLanguage,
+      nav: 'Language',
+    },
+    {
+      name: ChangePassword,
+      nav: 'ChangePassword',
+    },
+  ];
 
   const _renderItem = ({item}) => {
     return (
@@ -50,7 +73,6 @@ const Profile = () => {
         space="between"
         padding={[t1]}
         borderWidth={1}
-        // margin={[t1, 0]}
         borderColorDeafult>
         <Text semibold size={16}>
           {item.name}
@@ -62,13 +84,24 @@ const Profile = () => {
   return (
     <Block white>
       <Header leftIcon={true} menu centerText={'Profile'} />
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <Block margin={[t1, 0]} flex={false} center>
-          <ImageComponent
-            name="default_profile_icon"
-            height="150"
-            width="150"
-          />
+          {strictValidObjectWithKeys(profile) &&
+          strictValidString(profile.image) ? (
+            <ImageComponent
+              isURL
+              name={`${config.Api_Url}/${profile.image}`}
+              height="150"
+              width="150"
+              radius={150}
+            />
+          ) : (
+            <ImageComponent
+              name="default_profile_icon"
+              height="150"
+              width="150"
+            />
+          )}
           <Text transform="capitalize" semibold margin={[t1, 0]}>
             {profile.first_name} {profile.last_name}
           </Text>
@@ -83,7 +116,7 @@ const Profile = () => {
           margin={[t1, 0]}
           padding={[0, w3]}
           center>
-          <Text size={16}>Email</Text>
+          <Text size={16}>{Email}</Text>
           <Text grey size={16}>
             {profile.email}
           </Text>
@@ -95,7 +128,7 @@ const Profile = () => {
           margin={[t1, 0]}
           padding={[0, w3]}
           center>
-          <Text size={16}>Phone number</Text>
+          <Text size={16}>{PhoneNumber}</Text>
           <Text grey size={16}>
             {profile.phone}
           </Text>
@@ -107,7 +140,7 @@ const Profile = () => {
           margin={[t1, 0]}
           padding={[0, w3]}
           center>
-          <Text size={16}>Address</Text>
+          <Text size={16}>{HomeAddress}</Text>
           <Text grey size={16}>
             {profile.home_address}
           </Text>
@@ -119,7 +152,7 @@ const Profile = () => {
           margin={[t1, 0]}
           padding={[0, w3]}
           center>
-          <Text size={16}>Completed missions</Text>
+          <Text size={16}>{CompletedMissions}</Text>
           <Text grey size={16}>
             {profile.mission_completed}
           </Text>
@@ -131,7 +164,7 @@ const Profile = () => {
           margin={[t1, 0]}
           padding={[0, w3]}
           center>
-          <Text size={16}>Hours clocked</Text>
+          <Text size={16}>{HoursClocked}</Text>
           <Text grey size={16}>
             {profile.mission_time}
           </Text>
@@ -147,7 +180,7 @@ const Profile = () => {
             renderItem={_renderItem}
           />
           <Button onPress={() => onLogout()} color="secondary">
-            Log Out
+            {Logout}
           </Button>
         </Block>
       </ScrollView>

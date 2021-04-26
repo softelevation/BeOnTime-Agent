@@ -52,7 +52,13 @@ const Notifications = ({
     );
   };
   const _renderItem = ({item, index}) => {
-    return <ItemBox data={item} handleDelete={(value) => deleteItem(value)} />;
+    return (
+      <ItemBox
+        handlePress={() => console.log('click')}
+        data={item}
+        handleDelete={(value) => deleteItem(value)}
+      />
+    );
   };
   return (
     <Block primary>

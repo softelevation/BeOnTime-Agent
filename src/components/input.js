@@ -47,6 +47,8 @@ const Input = ({
   center,
   placeholderTextColor,
   transparent,
+  ref,
+  onSubmitEditing,
   ...rest
 }) => {
   const styles = componentStyles();
@@ -132,6 +134,7 @@ const Input = ({
       margin={[heightPercentageToDP(1), 0]}>
       {renderLabel()}
       <TextInput
+        ref={ref}
         placeholder={placeholder}
         style={inputStyles}
         secureTextEntry={isSecure}
@@ -140,6 +143,8 @@ const Input = ({
         editable={editable}
         autoCorrect={false}
         keyboardType={inputType}
+        keyboardAppearance="light"
+        onSubmitEditing={onSubmitEditing}
         placeholderTextColor={
           placeholderTextColor ? placeholderTextColor : '#8A8E99'
         }
