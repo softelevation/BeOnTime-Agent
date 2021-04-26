@@ -17,7 +17,7 @@ import {
 import {t1, t2, w1, w3, w4, w5} from '../../components/theme/fontsize';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
-import {missionListRequest} from '../../redux/action';
+import {missionListRequest, profileRequest} from '../../redux/action';
 import Header from '../../components/common/header';
 import EmptyFile from '../../components/emptyFile';
 import CommonMap from '../common/Map';
@@ -64,6 +64,7 @@ const Home = () => {
         ApiRequest();
       });
     }
+    dispatch(profileRequest());
   }, []);
 
   useEffect(() => {

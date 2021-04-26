@@ -110,7 +110,12 @@ const MissionDetails = ({
                 </Text>
                 <ImageComponent name="vehicle_icon" height="25" width="25" />
               </Block>
-              <Text margin={[hp(0.5), 0, 0]} size={16} grey>
+              <Text
+                style={{width: wp(60)}}
+                numberOfLines={1}
+                margin={[hp(0.5), 0, 0]}
+                size={16}
+                grey>
                 {location}
               </Text>
             </Block>

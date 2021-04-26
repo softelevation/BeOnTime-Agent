@@ -59,14 +59,16 @@ const ItemBox = ({data, handleDelete, handlePress}) => {
         flex={false}>
         <Block flex={false}>
           <Text size={16} semibold>
-            {data.mission_title || data.title}
+            {data.mission_id !== 0
+              ? data.mission_title || data.title
+              : 'Need support with operator'}
           </Text>
           <Text margin={[hp(0.5), 0, 0]} grey size={14}>
             {data.message}
           </Text>
         </Block>
         <Text grey size={14}>
-          {formatTime(data.createdAt)}
+          {formatTime(data.created_at)}
         </Text>
       </CustomButton>
     </Swipeable>

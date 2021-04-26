@@ -94,7 +94,7 @@ const Requested = () => {
   const renderAgentDetails = (item) => {
     return (
       <Block margin={[0, w3, t1]} flex={false} row center space="between">
-        <Block flex={false} row center>
+        <Block style={{width: wp(70)}} flex={false} row center>
           <ImageComponent name="blurAvatar_icon" height="50" width="50" />
           <Block margin={[0, w3]} flex={false}>
             <Text
@@ -104,7 +104,12 @@ const Requested = () => {
               margin={[0, w3, 0, 0]}>
               {item.first_name} {item.last_name}
             </Text>
-            <Text margin={[hp(0.5), 0, 0]} size={16} grey>
+            <Text
+              numberOfLines={1}
+              style={{width: wp(55)}}
+              margin={[hp(0.5), 0, 0]}
+              size={16}
+              grey>
               {item.location}
             </Text>
           </Block>
