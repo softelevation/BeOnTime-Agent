@@ -26,7 +26,7 @@ import {
 import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import moment from 'moment';
 import CommonApi from '../../utils/CommonApi';
-import {ActivityIndicator, ScrollView, View, Image} from 'react-native';
+import {ActivityIndicator, ScrollView, View} from 'react-native';
 import SignatureScreen from 'react-native-signature-canvas';
 import {Formik} from 'formik';
 import TypeForm from '../../common/types';
@@ -35,7 +35,6 @@ import {
   Alerts,
   strictValidNumber,
   strictValidObjectWithKeys,
-  strictValidString,
 } from '../../utils/commonUtils';
 import {light} from '../../components/theme/colors';
 import {
@@ -44,7 +43,6 @@ import {
 } from '../../redux/request/action';
 import {styles} from '../../utils/common-styles';
 import Modal from 'react-native-modal';
-import {config} from '../../utils/config';
 
 const MissionReport = ({
   route: {
@@ -370,7 +368,7 @@ const MissionReport = ({
                   {renderType(
                     'Constat meteo',
                     '',
-                    () => onOpen('meteo'),
+                    () => values.meteo.name && onOpen('meteo'),
                     values.meteo.name,
                     report.constat_meteo,
                   )}
@@ -440,65 +438,44 @@ const MissionReport = ({
                   )}
                 </View>
 
-                {!strictValidString(report.signature) && (
-                  <View style={{padding: 16}}>
-                    <Text margin={[0, 0, hp(2)]} color="black" size={20}>
-                      Signature
-                    </Text>
-                    {addSignature ? (
-                      <View
-                        onStartShouldSetResponderCapture={() =>
-                          setScroll(false)
+                <View style={{padding: 16}}>
+                  <Text margin={[0, 0, hp(2)]} color="black" size={20}>
+                    Signature
+                  </Text>
+                  {addSignature ? (
+                    <View
+                      onStartShouldSetResponderCapture={() => setScroll(false)}
+                      style={{height: 300}}>
+                      <SignatureScreen
+                        ref={ref}
+                        onEnd={handleEnd}
+                        onOK={handleSignature}
+                        onEmpty={handleEmpty}
+                        onClear={handleClear}
+                        dataURL={
+                          strictValidObjectWithKeys(report) && report.signature
                         }
-                        style={{height: 300}}>
-                        <SignatureScreen
-                          ref={ref}
-                          onEnd={handleEnd}
-                          onOK={handleSignature}
-                          onEmpty={handleEmpty}
-                          onClear={handleClear}
-                          dataURL={
-                            strictValidObjectWithKeys(report) &&
-                            report.signature
-                          }
-                        />
-                      </View>
-                    ) : null}
-
-                    {strictValidObjectWithKeys(report) &&
-                      !strictValidNumber(report.id) && (
-                        <>
-                          <Button
-                            onPress={() => onDrawSignature()}
-                            color="primary">
-                            Draw signature
-                          </Button>
-                          <Button
-                            isLoading={loader}
-                            onPress={handleSubmit}
-                            color="secondary">
-                            Finish Mission
-                          </Button>
-                        </>
-                      )}
-                  </View>
-                )}
-
-                {strictValidString(report.signature) && (
-                  <View style={{padding: 16}}>
-                    <Text margin={[t1, 0]} black semibold>
-                      Signature
-                    </Text>
-                    <Block center middle color="#F7F8FA" flex={false}>
-                      <Image
-                        source={{
-                          uri: `${config.Api_Url}/${report.signature}`,
-                        }}
-                        style={{height: 200, width: 300}}
                       />
-                    </Block>
-                  </View>
-                )}
+                    </View>
+                  ) : null}
+
+                  {strictValidObjectWithKeys(report) &&
+                    !strictValidNumber(report.id) && (
+                      <>
+                        <Button
+                          onPress={() => onDrawSignature()}
+                          color="primary">
+                          Draw signature
+                        </Button>
+                        <Button
+                          isLoading={loader}
+                          onPress={handleSubmit}
+                          color="secondary">
+                          Finish Mission
+                        </Button>
+                      </>
+                    )}
+                </View>
               </ScrollView>
 {/*            
               <Modalize
@@ -621,10 +598,7 @@ const MissionReport = ({
             </Text>
             <Button
               style={styles.button}
-              onPress={() => {
-                setmodal(false);
-                navigation.goBack();
-              }}
+              onPress={() => setmodal(false)}
               color="secondary">
               Close
             </Button>
