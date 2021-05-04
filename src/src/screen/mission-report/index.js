@@ -477,6 +477,7 @@ const MissionReport = ({
                     )}
                 </View>
               </ScrollView>
+{/*            
               <Modalize
                 adjustToContentHeight={true}
                 handlePosition="inside"
@@ -580,7 +581,7 @@ const MissionReport = ({
                     }}
                   />
                 )}
-              </Modalize>
+              </Modalize> */}
             </>
           )}
         </Formik>

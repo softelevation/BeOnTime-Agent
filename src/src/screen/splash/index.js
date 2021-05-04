@@ -35,6 +35,32 @@ const Splash = () => {
     return () => Geolocation.clearWatch(watchId);
   }, []);
 
+  useEffect(() => {
+
+    messaging().onMessage(remoteMessage => {
+      console.log(
+        'Notification caused app to open from background state:',
+        remoteMessage,
+      );
+      // navigation.navigate(remoteMessage.data.type);
+    });
+
+
+
+    // Check whether an initial notification is available
+    messaging()
+      .getInitialNotification()
+      .then(remoteMessage => {
+        if (remoteMessage) {
+         console.log(
+            'Notification caused app to open from quit state:',
+            remoteMessage.notification,
+          );
+          // setInitialRoute(remoteMessage.data.type); // e.g. "Settings"
+        }
+      });
+  }, []);
+
   const callAuthApi = async () => {
     const token = await AsyncStorage.getItem('token');
     const user = await AsyncStorage.getItem('user');
