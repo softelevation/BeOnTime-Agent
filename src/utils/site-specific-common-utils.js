@@ -2,11 +2,13 @@ import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 import moment from 'moment';
 import {images} from '../assets/index';
-import {strictValidNumber} from './commonUtils';
+import {strictValidNumber, strictValidObjectWithKeys} from './commonUtils';
 import {config} from './config';
 import RNFS from 'react-native-fs';
 import RNFetchBlob from 'rn-fetch-blob';
 import {Alert} from 'react-native';
+import {showMessage} from 'react-native-flash-message';
+import {navigationRef} from '../routes/NavigationService';
 
 export const cc_format = (value) => {
   const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
@@ -233,4 +235,21 @@ export const UPLOAD = async (api, fileName, filePath, filetype, uploadType) => {
   );
   console.log(res, 'res');
   return res;
+};
+
+export const onDisplayNotification = async (obj) => {
+  if (strictValidObjectWithKeys(obj)) {
+    showMessage({
+      message: obj.type,
+      description: obj.message,
+      type: 'default',
+      backgroundColor: '#000', // background color
+      color: '#fff', // text color
+      onPress: () => {
+        navigationRef.current?.navigate('Notifications');
+      },
+    });
+  } else {
+    return null;
+  }
 };

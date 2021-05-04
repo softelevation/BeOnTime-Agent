@@ -7,14 +7,11 @@ import {
   locationSuccess,
   loginSuccess,
   profileRequest,
-  socketConnection,
 } from '../../redux/action';
 import {strictValidString} from '../../utils/commonUtils';
-import io from 'socket.io-client';
 import Geolocation from '@react-native-community/geolocation';
-import {t2, t4} from '../../components/theme/fontsize';
+import {t4} from '../../components/theme/fontsize';
 import messaging from '@react-native-firebase/messaging';
-import {Alert} from 'react-native';
 
 const Splash = () => {
   const navigation = useNavigation();
@@ -36,8 +33,7 @@ const Splash = () => {
   }, []);
 
   useEffect(() => {
-
-    messaging().onMessage(remoteMessage => {
+    messaging().onMessage((remoteMessage) => {
       console.log(
         'Notification caused app to open from background state:',
         remoteMessage,
@@ -45,14 +41,12 @@ const Splash = () => {
       // navigation.navigate(remoteMessage.data.type);
     });
 
-
-
     // Check whether an initial notification is available
     messaging()
       .getInitialNotification()
-      .then(remoteMessage => {
+      .then((remoteMessage) => {
         if (remoteMessage) {
-         console.log(
+          console.log(
             'Notification caused app to open from quit state:',
             remoteMessage.notification,
           );
@@ -85,12 +79,6 @@ const Splash = () => {
   useEffect(() => {
     requestUserPermission();
     callAuthApi();
-    const socket = io('http://51.68.139.99:3000');
-    console.log('Connecting socket...');
-    socket.on('connect', (a) => {
-      dispatch(socketConnection(socket));
-      console.log('true', socket.connected); // true
-    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
