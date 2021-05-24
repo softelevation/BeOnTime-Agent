@@ -258,6 +258,7 @@
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
 				01C0EDFEA038F36DFFCA37F4 /* [CP] Copy Pods Resources */,
+				20EFD0BAF0CEA09C70BC7EAA /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -281,6 +282,7 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				D55871ECC8372D24BB4EF1CA /* [CP] Copy Pods Resources */,
 				82314A9830313E3C0B7F50F3 /* [CP-User] [RNFB] Core Configuration */,
+				5ECBF9C309E811508333A320 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -462,6 +464,24 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BeonTimeAgent-BeonTimeAgentTests/Pods-BeonTimeAgent-BeonTimeAgentTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		20EFD0BAF0CEA09C70BC7EAA /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BeonTimeAgent-BeonTimeAgentTests/Pods-BeonTimeAgent-BeonTimeAgentTests-frameworks.sh",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OpenSSL/OpenSSL.framework/OpenSSL",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OpenSSL.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BeonTimeAgent-BeonTimeAgentTests/Pods-BeonTimeAgent-BeonTimeAgentTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		2D02E4CB1E0B4B27006451C7 /* Bundle React Native Code And Images */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -496,6 +516,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		5ECBF9C309E811508333A320 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BeonTimeAgent/Pods-BeonTimeAgent-frameworks.sh",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OpenSSL/OpenSSL.framework/OpenSSL",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OpenSSL.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BeonTimeAgent/Pods-BeonTimeAgent-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		82314A9830313E3C0B7F50F3 /* [CP-User] [RNFB] Core Configuration */ = {

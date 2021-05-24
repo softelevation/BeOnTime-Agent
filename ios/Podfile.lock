@@ -1,7 +1,6 @@
 PODS:
   - boost-for-react-native (1.63.0)
   - CocoaAsyncSocket (7.6.5)
-  - CocoaLibEvent (1.0.0)
   - DoubleConversion (1.1.6)
   - FBLazyVector (0.63.4)
   - FBReactNativeSpec (0.63.4):
@@ -20,17 +19,17 @@ PODS:
     - FirebaseCoreDiagnostics (~> 7.4)
     - GoogleUtilities/Environment (~> 7.0)
     - GoogleUtilities/Logger (~> 7.0)
-  - FirebaseCoreDiagnostics (7.10.0):
+  - FirebaseCoreDiagnostics (7.11.0):
     - GoogleDataTransport (~> 8.4)
     - GoogleUtilities/Environment (~> 7.0)
     - GoogleUtilities/Logger (~> 7.0)
     - nanopb (~> 2.30908.0)
-  - FirebaseInstallations (7.10.0):
+  - FirebaseInstallations (7.11.0):
     - FirebaseCore (~> 7.0)
     - GoogleUtilities/Environment (~> 7.0)
     - GoogleUtilities/UserDefaults (~> 7.0)
     - PromisesObjC (~> 1.2)
-  - FirebaseInstanceID (7.10.0):
+  - FirebaseInstanceID (7.11.0):
     - FirebaseCore (~> 7.0)
     - FirebaseInstallations (~> 7.0)
     - GoogleUtilities/Environment (~> 7.0)
@@ -45,17 +44,20 @@ PODS:
   - Flipper (0.54.0):
     - Flipper-Folly (~> 2.2)
     - Flipper-RSocket (~> 1.1)
+  - Flipper-Boost-iOSX (1.76.0.1.10)
   - Flipper-DoubleConversion (1.1.7)
-  - Flipper-Folly (2.3.0):
-    - boost-for-react-native
-    - CocoaLibEvent (~> 1.0)
+  - Flipper-Fmt (7.1.7)
+  - Flipper-Folly (2.6.7):
+    - Flipper-Boost-iOSX
     - Flipper-DoubleConversion
+    - Flipper-Fmt (= 7.1.7)
     - Flipper-Glog
-    - OpenSSL-Universal (= 1.0.2.20)
+    - libevent (~> 2.1.12)
+    - OpenSSL-Universal (= 1.1.180)
   - Flipper-Glog (0.3.6)
   - Flipper-PeerTalk (0.0.4)
-  - Flipper-RSocket (1.1.0):
-    - Flipper-Folly (~> 2.2)
+  - Flipper-RSocket (1.4.3):
+    - Flipper-Folly (~> 2.6)
   - FlipperKit (0.54.0):
     - FlipperKit/Core (= 0.54.0)
   - FlipperKit/Core (0.54.0):
@@ -102,31 +104,30 @@ PODS:
     - GoogleUtilities/Environment (~> 7.2)
     - nanopb (~> 2.30908.0)
     - PromisesObjC (~> 1.2)
-  - GoogleUtilities/AppDelegateSwizzler (7.3.1):
+  - GoogleUtilities/AppDelegateSwizzler (7.4.1):
     - GoogleUtilities/Environment
     - GoogleUtilities/Logger
     - GoogleUtilities/Network
-  - GoogleUtilities/Environment (7.3.1):
+  - GoogleUtilities/Environment (7.4.1):
     - PromisesObjC (~> 1.2)
-  - GoogleUtilities/Logger (7.3.1):
+  - GoogleUtilities/Logger (7.4.1):
     - GoogleUtilities/Environment
-  - GoogleUtilities/Network (7.3.1):
+  - GoogleUtilities/Network (7.4.1):
     - GoogleUtilities/Logger
     - "GoogleUtilities/NSData+zlib"
     - GoogleUtilities/Reachability
-  - "GoogleUtilities/NSData+zlib (7.3.1)"
-  - GoogleUtilities/Reachability (7.3.1):
+  - "GoogleUtilities/NSData+zlib (7.4.1)"
+  - GoogleUtilities/Reachability (7.4.1):
     - GoogleUtilities/Logger
-  - GoogleUtilities/UserDefaults (7.3.1):
+  - GoogleUtilities/UserDefaults (7.4.1):
     - GoogleUtilities/Logger
+  - libevent (2.1.12)
   - nanopb (2.30908.0):
     - nanopb/decode (= 2.30908.0)
     - nanopb/encode (= 2.30908.0)
   - nanopb/decode (2.30908.0)
   - nanopb/encode (2.30908.0)
-  - OpenSSL-Universal (1.0.2.20):
-    - OpenSSL-Universal/Static (= 1.0.2.20)
-  - OpenSSL-Universal/Static (1.0.2.20)
+  - OpenSSL-Universal (1.1.180)
   - PromisesObjC (1.2.12)
   - RCTRequired (0.63.4)
   - RCTTypeSafety (0.63.4):
@@ -475,7 +476,6 @@ SPEC REPOS:
   trunk:
     - boost-for-react-native
     - CocoaAsyncSocket
-    - CocoaLibEvent
     - Firebase
     - FirebaseCore
     - FirebaseCoreDiagnostics
@@ -483,7 +483,9 @@ SPEC REPOS:
     - FirebaseInstanceID
     - FirebaseMessaging
     - Flipper
+    - Flipper-Boost-iOSX
     - Flipper-DoubleConversion
+    - Flipper-Fmt
     - Flipper-Folly
     - Flipper-Glog
     - Flipper-PeerTalk
@@ -491,6 +493,7 @@ SPEC REPOS:
     - FlipperKit
     - GoogleDataTransport
     - GoogleUtilities
+    - libevent
     - nanopb
     - OpenSSL-Universal
     - PromisesObjC
@@ -589,29 +592,31 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
-  CocoaLibEvent: 2fab71b8bd46dd33ddb959f7928ec5909f838e3f
   DoubleConversion: cde416483dac037923206447da6e1454df403714
   FBLazyVector: 3bb422f41b18121b71783a905c10e58606f7dc3e
   FBReactNativeSpec: f2c97f2529dd79c083355182cc158c9f98f4bd6e
   Firebase: d8bd6bd34b4c7ed57bfdd056c66ff5adcdde53ab
   FirebaseCore: 0798738ad1ae0fda67e17c7b9081241c431c6859
-  FirebaseCoreDiagnostics: 5662a3823ffcc0acbaa9a21ba5ed302fac634705
-  FirebaseInstallations: bf2ec8dbf36ff4c91af6b9a003d15855757680c1
-  FirebaseInstanceID: 5ad92c898e1328b66e8dd58811964d6fe4d334c3
+  FirebaseCoreDiagnostics: 68ad972f99206cef818230f3f3179d52ccfb7f8c
+  FirebaseInstallations: a58d4f72ec5861840b84df489f2668d970df558a
+  FirebaseInstanceID: ad5135045a498d7775903efd39762d2cdfa1be27
   FirebaseMessaging: 5f83f200a251c44f647f36cb43e557be09889e8d
   Flipper: be611d4b742d8c87fbae2ca5f44603a02539e365
+  Flipper-Boost-iOSX: df3765e7e26b44bc3e68a250ef1fa0afa15963bc
   Flipper-DoubleConversion: 38631e41ef4f9b12861c67d17cb5518d06badc41
-  Flipper-Folly: e4493b013c02d9347d5e0cb4d128680239f6c78a
+  Flipper-Fmt: 60cbdd92fc254826e61d669a5d87ef7015396a9b
+  Flipper-Folly: 83af37379faa69497529e414bd43fbfc7cae259a
   Flipper-Glog: 1dfd6abf1e922806c52ceb8701a3599a79a200a6
   Flipper-PeerTalk: 116d8f857dc6ef55c7a5a75ea3ceaafe878aadc9
-  Flipper-RSocket: 64e7431a55835eb953b0bf984ef3b90ae9fdddd7
+  Flipper-RSocket: d9d9ade67cbecf6ac10730304bf5607266dd2541
   FlipperKit: ab353d41aea8aae2ea6daaf813e67496642f3d7d
   Folly: b73c3869541e86821df3c387eb0af5f65addfab4
   glog: 40a13f7840415b9a77023fbcae0f1e6f43192af3
   GoogleDataTransport: cd9db2180fcecd8da1b561aea31e3e56cf834aa7
-  GoogleUtilities: e1d9ed4e544fc32a93e00e721400cbc3f377200d
+  GoogleUtilities: f8a43108b38a68eebe8b3540e1f4f2d28843ce20
+  libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
-  OpenSSL-Universal: ff34003318d5e1163e9529b08470708e389ffcdd
+  OpenSSL-Universal: 1aa4f6a6ee7256b83db99ec1ccdaa80d10f9af9b
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
   RCTRequired: 082f10cd3f905d6c124597fd1c14f6f2655ff65e
   RCTTypeSafety: 8c9c544ecbf20337d069e4ae7fd9a377aadf504b
@@ -657,4 +662,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: c90548e1dfaeeb9b9954d779c2bb84608b7c5b0e
 
-COCOAPODS: 1.10.0
+COCOAPODS: 1.10.1
