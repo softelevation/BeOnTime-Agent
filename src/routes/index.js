@@ -25,6 +25,7 @@ import {
 } from '../redux/action';
 import {strictValidObjectWithKeys} from '../utils/commonUtils';
 import {onDisplayNotification} from '../utils/site-specific-common-utils';
+import {config} from '../utils/config';
 
 const Stack = createStackNavigator();
 
@@ -32,7 +33,7 @@ function Routes() {
   const userId = useSelector((state) => state.user.profile.user.data);
   const dispatch = useDispatch();
   React.useEffect(() => {
-    const socket = io('http://51.68.139.99:3000');
+    const socket = io(config.Api_Url);
     socket.on('connect', (a) => {
       dispatch(socketConnection(socket));
     });
@@ -48,6 +49,7 @@ function Routes() {
         dispatch(getMissionsRequest());
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <NavigationContainer ref={navigationRef}>
