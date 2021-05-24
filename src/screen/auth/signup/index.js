@@ -524,17 +524,13 @@ const Signup = () => {
       Toast.show('Please enter email');
     } else if (values.phone === '') {
       Toast.show('Please enter phone number');
-    }
-    // else if (idCardData === '') {
-    //   Toast.show('Please Upload Identity Card Document')
-    // }
-    // else if (AcvCardData === '') {
-    //   Toast.show('Please Upload Anonymous Curriculum Vitae document')
-    // }
-    // else if (socialSecData === '') {
-    //   Toast.show('Please Upload Social Security Number document')
-    // }
-    else if (values.iban === '') {
+    } else if (!strictValidObjectWithKeys(identityUrl) && identityUrl.value) {
+      Toast.show('Please Upload Identity Card Document');
+    } else if (!strictValidObjectWithKeys(acvUrl) && acvUrl.value) {
+      Toast.show('Please Upload Anonymous Curriculum Vitae document');
+    } else if (!strictValidObjectWithKeys(socialUrl) && socialUrl.value) {
+      Toast.show('Please Upload Social Security Number document');
+    } else if (values.iban === '') {
       Toast.show('Please enter IBAN number');
     } else if (values.cnaps === '') {
       Toast.show('Please enter CNAPS Number');
@@ -542,7 +538,7 @@ const Signup = () => {
       Toast.show('Please Enter Home Address');
     } else if (values.work_location === '') {
       Toast.show('Please Enter Work Location Address');
-    } else if (values.company === '') {
+    } else if (values.typeContractor === 'yes' && values.company === '') {
       Toast.show('Please Enter Company Name');
     } else if (values.privacy === false) {
       Toast.show('Please accept Privacy Policy');
@@ -579,12 +575,13 @@ const Signup = () => {
         identity_card: strictValidObjectWithKeys(identityUrl)
           ? identityUrl.value
           : '',
-        social_security_number: strictValidObjectWithKeys(identityUrl)
-          ? identityUrl.value
+        social_security_number: strictValidObjectWithKeys(socialUrl)
+          ? socialUrl.value
           : '',
-        cv: strictValidObjectWithKeys(identityUrl) ? identityUrl.value : '',
+        cv: strictValidObjectWithKeys(acvUrl) ? acvUrl.value : '',
         agent_type: agentTypeArray,
         cnaps_number: cnaps,
+        image: strictValidObjectWithKeys(profileUrl) ? profileUrl.value : '',
       };
 
       console.log('====>>>>>>>', data);
@@ -865,22 +862,6 @@ const Signup = () => {
                       }}
                     />
                   </View>
-                  {/* <Input
-                  label="Home address"
-                  placeholder="Enter home address"
-                  value={values.address}
-                  onChangeText={handleChange('address')}
-                  onBlur={() => setFieldTouched('address')}
-                  error={touched.address && errors.address}
-                />
-                <Input
-                  label="Work Location"
-                  placeholder="Work Location"
-                  value={values.work_location}
-                  onChangeText={handleChange('work_location')}
-                  onBlur={() => setFieldTouched('work_location')}
-                  error={touched.work_location && errors.work_location}
-                /> */}
                 </Block>
                 <Block flex={false} padding={[0, w2]}>
                   <Block
@@ -1025,16 +1006,16 @@ const Signup = () => {
                   </Block>
                 </Block>
                 <Block flex={false} padding={[0, w3]}>
-                  {/* {values.type === 'company' && ( */}
-                  <Input
-                    label="Company name"
-                    placeholder="Enter company name"
-                    value={values.company}
-                    onChangeText={handleChange('company')}
-                    onBlur={() => setFieldTouched('company')}
-                    error={touched.company && errors.company}
-                  />
-                  {/* )} */}
+                  {values.typeContractor === 'yes' && (
+                    <Input
+                      label="Company name"
+                      placeholder="Enter company name"
+                      value={values.company}
+                      onChangeText={handleChange('company')}
+                      onBlur={() => setFieldTouched('company')}
+                      error={touched.company && errors.company}
+                    />
+                  )}
                   <Block row center>
                     <Checkbox
                       onChange={() => setFieldValue('privacy', !values.privacy)}

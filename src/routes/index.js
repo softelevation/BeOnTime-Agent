@@ -16,10 +16,39 @@ import ChangePassword from '../screen/auth/change-password';
 import Chat from '../screen/message-center/chat';
 import ChatOperator from '../screen/message-center/chat/chat-operator';
 import Language from '../screen/common/language/language';
+import {useDispatch, useSelector} from 'react-redux';
+import io from 'socket.io-client';
+import {
+  getMissionsRequest,
+  getNotificationRequest,
+  socketConnection,
+} from '../redux/action';
+import {strictValidObjectWithKeys} from '../utils/commonUtils';
+import {onDisplayNotification} from '../utils/site-specific-common-utils';
 
 const Stack = createStackNavigator();
 
 function Routes() {
+  const userId = useSelector((state) => state.user.profile.user.data);
+  const dispatch = useDispatch();
+  React.useEffect(() => {
+    const socket = io('http://51.68.139.99:3000');
+    socket.on('connect', (a) => {
+      dispatch(socketConnection(socket));
+    });
+    if (strictValidObjectWithKeys(userId) && userId.id) {
+      console.log('right', userId);
+      socket.on(`notification_${userId.id}`, (msg) => {
+        console.log(msg, `notification_${userId.id}`);
+        onDisplayNotification(msg);
+        dispatch(getNotificationRequest());
+      });
+      socket.on(`refresh_feed_${userId.id}`, (msg) => {
+        console.log(msg, `refresh_feed_${userId.id}`);
+        dispatch(getMissionsRequest());
+      });
+    }
+  }, []);
   return (
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator headerMode="none">

@@ -123,18 +123,14 @@ const CommonMap = () => {
     );
   };
   useEffect(() => {
-    const watchId = Geolocation.getCurrentPosition(
+    const watchId = Geolocation.watchPosition(
       (position) => {
         let region = {
-          // latitude: position.coords.latitude,
-          // longitude: position.coords.longitude,
-          // latitudeDelta: 0.00922 * 1.5,
-          // longitudeDelta: 0.00421 * 1.5,
-          // angle: position.coords.heading,
-          latitude: 48.864716,
-          longitude: 2.349014,
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
           latitudeDelta: 0.00922 * 1.5,
           longitudeDelta: 0.00421 * 1.5,
+          angle: position.coords.heading,
         };
         setlocation(region);
       },
