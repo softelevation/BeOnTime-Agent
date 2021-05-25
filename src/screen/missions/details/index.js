@@ -51,7 +51,7 @@ const MissionDetails = ({
     status,
     intervention,
   } = item;
-
+  console.log(item, 'item');
   useEffect(() => {
     modalizeRef.current?.open();
   }, []);
