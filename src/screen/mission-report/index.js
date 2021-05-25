@@ -328,7 +328,9 @@ const MissionReport = ({
                       onChangeText={handleChange('description')}
                       onBlur={() => setFieldTouched('description')}
                       error={touched.description && errors.description}
-                      editable={true}
+                      editable={
+                        strictValidObjectWithKeys(report) && !report.description
+                      }
                     />
                   </Block>
 
@@ -500,7 +502,7 @@ const MissionReport = ({
                   </View>
                 )}
               </ScrollView>
-{/*            
+              {/*
               <Modalize
                 adjustToContentHeight={true}
                 handlePosition="inside"

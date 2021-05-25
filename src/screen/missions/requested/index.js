@@ -8,7 +8,6 @@ import {
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import {useDispatch, useSelector} from 'react-redux';
-import {Socket} from 'socket.io-client';
 import {
   Block,
   Button,
@@ -20,7 +19,6 @@ import ActivityLoader from '../../../components/activityLoader';
 import EmptyFile from '../../../components/emptyFile';
 import {t1, t2, w3, w5} from '../../../components/theme/fontsize';
 import {getMissionsRequest} from '../../../redux/action';
-import {strictValidArrayWithLength} from '../../../utils/commonUtils';
 import {divider} from '../../../utils/commonView';
 import CommonMap from '../../common/Map';
 

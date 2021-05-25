@@ -9,11 +9,12 @@ import {
   profileRequest,
   socketConnection,
 } from '../../redux/action';
-import {Alerts, strictValidString} from '../../utils/commonUtils';
+import {strictValidString} from '../../utils/commonUtils';
 import io from 'socket.io-client';
 import Geolocation from '@react-native-community/geolocation';
 import {t4} from '../../components/theme/fontsize';
 import messaging from '@react-native-firebase/messaging';
+import {config} from '../../utils/config';
 
 const Splash = () => {
   const navigation = useNavigation();
@@ -33,33 +34,6 @@ const Splash = () => {
 
     return () => Geolocation.clearWatch(watchId);
   }, []);
-
-  // useEffect(() => {
-  //   messaging().onMessage((remoteMessage) => {
-  //     const {notification} = remoteMessage;
-  //     const {body, title} = notification;
-  //     console.log(
-  //       'Notification caused app to open from background state:',
-  //       remoteMessage,
-  //     );
-  //     Alerts(body, title, '#000');
-  //     // Alerts('body', 'title', '#000');
-  //     // navigation.navigate(remoteMessage.data.type);
-  //   });
-
-  //   // Check whether an initial notification is available
-  //   messaging()
-  //     .getInitialNotification()
-  //     .then((remoteMessage) => {
-  //       if (remoteMessage) {
-  //         console.log(
-  //           'Notification caused app to open from quit state:',
-  //           remoteMessage.notification,
-  //         );
-  //         // setInitialRoute(remoteMessage.data.type); // e.g. "Settings"
-  //       }
-  //     });
-  // }, []);
 
   const callAuthApi = async () => {
     const token = await AsyncStorage.getItem('token');
@@ -85,7 +59,7 @@ const Splash = () => {
   useEffect(() => {
     requestUserPermission();
     callAuthApi();
-    const socket = io('http://51.68.139.99:3000');
+    const socket = io(config.Api_Url);
     console.log('Connecting socket...');
     socket.on('connect', (a) => {
       dispatch(socketConnection(socket));
