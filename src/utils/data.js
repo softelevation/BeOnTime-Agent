@@ -67,8 +67,8 @@ export const MissionType = (type) => {
     case 'Intervention':
       return 'Intervention';
 
-    case 'Security_parol':
-      return 'Security Parol';
+    case 'Security_patrol':
+      return 'Security Patrol';
     default:
       return 'Not Sure';
   }

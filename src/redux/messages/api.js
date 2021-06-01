@@ -25,3 +25,15 @@ export const chatApiById = async (id) => {
     headers,
   });
 };
+export const operatorChatApiById = async (id) => {
+  const token = await AsyncStorage.getItem('token');
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization: `${token}`,
+  };
+  return axios({
+    method: 'get',
+    url: `${config.Api_Url}/agent/operator-message`,
+    headers,
+  });
+};

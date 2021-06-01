@@ -70,8 +70,46 @@ export function chatById(state = initialMessageState, action) {
   }
 }
 
+const initialOperatorState = {
+  loading: false,
+  data: [],
+  error: '',
+  isSuccess: false,
+};
+export function operator(state = initialOperatorState, action) {
+  switch (action.type) {
+    case ActionConstants.OPERATOR_CHAT_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        isSuccess: false,
+      };
+    case ActionConstants.OPERATOR_CHAT_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        data: action.data,
+        isSuccess: true,
+      };
+    case ActionConstants.OPERATOR_CHAT_ERROR:
+      return {
+        ...state,
+        loading: false,
+        error: action.error,
+        isSuccess: false,
+      };
+    case ActionConstants.OPERATOR_CHAT_FLUSH:
+      return {
+        initialOperatorState,
+      };
+    default:
+      return state;
+  }
+}
+
 const message_center = combineReducers({
   chat,
   chatById,
+  operator,
 });
 export default message_center;

@@ -80,6 +80,15 @@ const InProgress = () => {
         {renderAgentDetails(item)}
         {renderRequestReview(item)}
         <Block flex={false} padding={[0, w3]}>
+          <Button
+            onPress={() =>
+              navigation.navigate('TravelMission', {
+                item: item,
+              })
+            }
+            color="primary">
+            Travel To Mission
+          </Button>
           <Button onPress={() => finishMission(item.id)} color="secondary">
             Finish mission
           </Button>

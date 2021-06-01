@@ -1,6 +1,6 @@
-import React from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
-// import {TouchableOpacity} from 'react-native-gesture-handler';
+import React, {useEffect, useState} from 'react';
+import {View, StyleSheet} from 'react-native';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -9,7 +9,14 @@ import ResponsiveImage from 'react-native-responsive-image';
 import PropTypes from 'prop-types';
 
 import Text from './Text';
-import { images } from '../assets';
+import {images} from '../assets';
+import {
+  strictValidArrayWithLength,
+  strictValidNumber,
+  strictValidObjectWithKeys,
+} from '../utils/commonUtils';
+import {connect, useDispatch, useSelector} from 'react-redux';
+import {getNotificationRequest} from '../redux/action';
 
 const styles = StyleSheet.create({
   ButtonContainer: {
@@ -76,11 +83,18 @@ const renderWidth = (type) => {
   }
 };
 
-const BottomTab = ({ state, descriptors, navigation }) => {
+const BottomTab = ({
+  state,
+  descriptors,
+  navigation,
+  callNotificationApi,
+  notifications,
+  chat,
+}) => {
   return (
     <View style={styles.ButtonContainer}>
       {state.routes.map((route, index) => {
-        const { options } = descriptors[route.key];
+        const {options} = descriptors[route.key];
         const label = route.name;
         const isFocused = state.index === index;
 
@@ -108,12 +122,12 @@ const BottomTab = ({ state, descriptors, navigation }) => {
             testID={options.tabBarTestID}
             onLongPress={onLongPress}
             accessibilityStates={isFocused ? ['selected'] : []}
-            style={[{ alignItems: 'center', width: wp(18) }]}
+            style={[{alignItems: 'center', width: wp(18)}]}
             onPress={onPress}>
             <View
               style={[
-                isFocused && { borderTopWidth: 3 },
-                { width: wp(6), alignItems: 'center' },
+                isFocused && {borderTopWidth: 3},
+                {width: wp(6), alignItems: 'center'},
               ]}
             />
             <ResponsiveImage
@@ -125,8 +139,49 @@ const BottomTab = ({ state, descriptors, navigation }) => {
               // initHeight={renderHeight(isFocused, tabImages[label])}
               initHeight={renderHeight(tabImages[label])}
               initWidth={renderWidth(tabImages[label])}
-              style={{ marginTop: hp(1.5) }}
+              style={{marginTop: hp(1.5)}}
             />
+            {strictValidObjectWithKeys(notifications) &&
+            notifications.all_count > 0 &&
+            tabImages[label] === 'notification' ? (
+              <View
+                style={{
+                  backgroundColor: '#000',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderRadius: 20,
+                  position: 'absolute',
+                  width: 20,
+                  height: 20,
+                  right: wp(4),
+                  top: hp(1),
+                }}>
+                <Text center color={'white'} size={10}>
+                  {notifications.all_count}
+                </Text>
+              </View>
+            ) : null}
+            {strictValidObjectWithKeys(chat) &&
+            chat.all_count > 0 &&
+            tabImages[label] === 'message' ? (
+              <View
+                style={{
+                  backgroundColor: '#000',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderRadius: 20,
+                  position: 'absolute',
+                  width: 20,
+                  height: 20,
+                  right: wp(4),
+                  top: hp(1),
+                }}>
+                <Text center color={'white'} size={10}>
+                  {chat.all_count}
+                </Text>
+              </View>
+            ) : null}
+
             {isFocused ? (
               <Text
                 semibold
@@ -139,17 +194,17 @@ const BottomTab = ({ state, descriptors, navigation }) => {
                 {label}
               </Text>
             ) : (
-                <Text
-                  size={13}
-                  center
-                  regular
-                  style={{
-                    marginTop: hp(1),
-                    color: '#000',
-                    width: wp(7),
-                  }}
-                />
-              )}
+              <Text
+                size={13}
+                center
+                regular
+                style={{
+                  marginTop: hp(1),
+                  color: '#000',
+                  width: wp(7),
+                }}
+              />
+            )}
           </TouchableOpacity>
         );
       })}
@@ -164,4 +219,18 @@ BottomTab.defaultProps = {
   state: 'Search here',
 };
 
-export default BottomTab;
+const mapStateToProps = (state) => {
+  return {
+    notifications: state.notifications.notifications.data,
+    chat: state.messages.chat.data,
+    isLoad: state.notifications.notifications.loading,
+  };
+};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    // dispatching plain actions
+    callNotificationApi: (...params) =>
+      dispatch(getNotificationRequest(...params)),
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(BottomTab);

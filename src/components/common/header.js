@@ -35,7 +35,7 @@ const Header = ({onPress, centerText, rightText, leftIcon, bottomText}) => {
         <Block center flex={false}>
           <Text semibold>{centerText}</Text>
           {strictValidString(bottomText) && (
-            <Text size={16} semibold grey>
+            <Text uppercase size={16} semibold grey>
               {bottomText}
             </Text>
           )}

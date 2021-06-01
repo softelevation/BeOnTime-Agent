@@ -80,8 +80,14 @@ const Finished = () => {
               : 'Submit Report'}
           </Button>
         </Block>
-        <CustomButton center>
-          <Text size={14}>Archive</Text>
+        <CustomButton
+          onPress={() =>
+            navigation.navigate('MissionDetails', {
+              item: item,
+            })
+          }
+          center>
+          <Text size={14}>Mission Details</Text>
         </CustomButton>
       </Block>
     );

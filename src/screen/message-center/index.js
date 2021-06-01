@@ -42,12 +42,16 @@ const MessageCenter = ({callGetChatApi, chat, isLoad}) => {
   const _renderItem = ({item, index}) => {
     return (
       <ChatMeesage
-        handlePress={() =>
-          navigation.navigate('Chat', {
-            id: item.mission_id,
-            name: item.title,
-          })
-        }
+        handlePress={() => {
+          item.mission_id !== 0
+            ? navigation.navigate('Chat', {
+                id: item.mission_id,
+                name: item.title,
+              })
+            : navigation.navigate('ChatOperator', {
+                name: 'Need Support with Operator',
+              });
+        }}
         data={item}
         handleDelete={() => deleteItem(index)}
       />

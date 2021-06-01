@@ -11,7 +11,11 @@ import {
 } from 'react-native-responsive-screen';
 import {divider} from '../../../utils/commonView';
 import {CountdownCircleTimer} from 'react-native-countdown-circle-timer';
-import {format} from '../../../utils/commonUtils';
+import {
+  format,
+  strictValidNumber,
+  strictValidString,
+} from '../../../utils/commonUtils';
 import AsyncStorage from '@react-native-community/async-storage';
 import {getMissionsRequest, missionListRequest} from '../../../redux/action';
 import {useDispatch, useSelector} from 'react-redux';
@@ -50,6 +54,9 @@ const MissionDetails = ({
     total_hours,
     status,
     intervention,
+    mission_finish_time,
+    time_intervel,
+    repetitive_mission,
   } = item;
   console.log(item, 'item');
   useEffect(() => {
@@ -155,8 +162,8 @@ const MissionDetails = ({
               middle
               style={{height: 50, width: 50}}
               borderRadius={30}>
-              <Text bold size={12}>
-                20%
+              <Text size={12} bold>
+                0%
               </Text>
             </Block>
           )}
@@ -169,7 +176,7 @@ const MissionDetails = ({
               style={{height: 50, width: 50}}
               borderRadius={30}>
               <Text white bold size={12}>
-                20%
+                100%
               </Text>
             </Block>
           )}
@@ -264,6 +271,13 @@ const MissionDetails = ({
           'Vehicle required',
           vehicle_required === 1 ? 'Yes' : 'No',
         )}
+        {strictValidString(mission_finish_time) &&
+          renderDetails('Mission finished time', mission_finish_time)}
+        {strictValidString(time_intervel) ||
+          (strictValidNumber(time_intervel) &&
+            renderDetails('Time interval', time_intervel))}
+        {strictValidString(repetitive_mission) &&
+          renderDetails('Repetitive mission', repetitive_mission)}
       </Block>
       {divider()}
     </Block>

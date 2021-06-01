@@ -26,6 +26,7 @@ import {
 import {strictValidObjectWithKeys} from '../utils/commonUtils';
 import {onDisplayNotification} from '../utils/site-specific-common-utils';
 import {config} from '../utils/config';
+import TravelMission from '../screen/missions/travel-mission';
 
 const Stack = createStackNavigator();
 
@@ -62,6 +63,7 @@ function Routes() {
         <Stack.Screen name="ReviewDetails" component={ReviewDetails} />
         <Stack.Screen name="Payment" component={Payment} />
         <Stack.Screen name="MissionDetails" component={MissionDetails} />
+        <Stack.Screen name="TravelMission" component={TravelMission} />
         <Stack.Screen name="MissionReport" component={MissionReport} />
         <Stack.Screen name="NewSupport" component={NewSupport} />
         <Stack.Screen name="EditProfile" component={EditProfile} />

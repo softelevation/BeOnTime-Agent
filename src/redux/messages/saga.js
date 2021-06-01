@@ -6,9 +6,10 @@ import {
   getChatByIdSuccess,
 } from '../action';
 import {put, call, all, takeLatest} from 'redux-saga/effects';
-import {chatApi, chatApiById} from './api';
+import {chatApi, chatApiById, operatorChatApiById} from './api';
 import {Alerts} from '../../utils/commonUtils';
 import {light} from '../../components/theme/colors';
+import {operatorChatError, operatorChatSuccess} from './action';
 
 export function* request(action) {
   try {
@@ -37,10 +38,26 @@ export function* chatByIdRequest(action) {
     yield put(getChatByIdError());
   }
 }
+export function* operatorRequest(action) {
+  try {
+    const response = yield call(operatorChatApiById, action.payload);
+    if (response.data.status === 1) {
+      yield put(operatorChatSuccess(response.data.data));
+    } else {
+      yield put(operatorChatError(response));
+      Alerts('Error', response.data.data.code, light.danger);
+    }
+  } catch (err) {
+    yield put(operatorChatError());
+  }
+}
 export function* messageWatcher() {
   yield all([takeLatest(ActionConstants.GET_CHAT_REQUEST, request)]);
   yield all([
     takeLatest(ActionConstants.GET_CHAT_BY_ID_REQUEST, chatByIdRequest),
+  ]);
+  yield all([
+    takeLatest(ActionConstants.OPERATOR_CHAT_REQUEST, operatorRequest),
   ]);
 }
 export default messageWatcher;

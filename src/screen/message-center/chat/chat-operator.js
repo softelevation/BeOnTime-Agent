@@ -1,11 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useRef, useState} from 'react';
-import {
-  ActivityIndicator,
-  FlatList,
-  KeyboardAvoidingView,
-  Platform,
-} from 'react-native';
+import {ActivityIndicator, KeyboardAvoidingView, Platform} from 'react-native';
 import {
   heightPercentageToDP,
   widthPercentageToDP as wp,
@@ -18,51 +13,31 @@ import {
   Input,
   Text,
 } from '../../../components';
-import {t1, t2, w3} from '../../../components/theme/fontsize';
-import {connect, useSelector} from 'react-redux';
+import {t1, t2, t4, w3} from '../../../components/theme/fontsize';
+import {connect, useDispatch, useSelector} from 'react-redux';
 import AsyncStorage from '@react-native-community/async-storage';
 import {strictValidString} from '../../../utils/commonUtils';
-import axios from 'axios';
-import {config} from '../../../utils/config';
-const initialState = {
-  loading: false,
-  newChat: [],
-};
-const ChatOperator = ({route: {params: {id, name} = {}} = {}, socket}) => {
+import {AutoScrollFlatList} from 'react-native-autoscroll-flatlist';
+import {operatorChatRequest} from '../../../redux/action';
+
+const ChatOperator = ({
+  route: {params: {id, name} = {}} = {},
+  socket,
+  chatMessages,
+}) => {
   const flatlistRef = useRef();
   const [messages, setMessages] = useState('');
   const [loader, setloader] = useState(false);
-  const [state, setstate] = useState(initialState);
-  const {newChat} = state;
   const profile = useSelector((v) => v.user.profile.user.data);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    callApi();
+    dispatch(operatorChatRequest());
   }, []);
-
-  const callApi = async () => {
-    const token = await AsyncStorage.getItem('token');
-    const headers = {
-      'Content-Type': 'application/json',
-      Authorization: token,
-    };
-    const response = await axios({
-      method: 'get',
-      url: `${config.Api_Url}/agent/operator-message`,
-      headers,
-    });
-
-    if (response.data.status === 1) {
-      setstate({
-        ...state,
-        newChat: response.data.data,
-      });
-    }
-  };
 
   useEffect(() => {
     socket.on(`refresh_feed_${profile.id}`, (msg) => {
-      callApi();
+      dispatch(operatorChatRequest());
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -103,20 +78,19 @@ const ChatOperator = ({route: {params: {id, name} = {}} = {}, socket}) => {
   return (
     <KeyboardAvoidingView
       keyboardVerticalOffset={
-        Platform.OS === 'ios' ? heightPercentageToDP(0) : t2
+        Platform.OS === 'ios' ? heightPercentageToDP(0) : t4
       }
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{flexGrow: 1, backgroundColor: '#fff'}}>
       <Header centerText={name} />
-      {/* {loading && <ActivityLoader />} */}
-
       <Block primary>
-        <FlatList
+        <AutoScrollFlatList
           ref={flatlistRef}
           showsVerticalScrollIndicator={false}
-          // onContentSizeChange={() => flatlistRef.current.scrollToEnd()}
-          data={newChat}
+          data={chatMessages}
           renderItem={_renderItem}
+          threshold={20}
+          keyExtractor={(item) => item.id}
         />
       </Block>
       <Block
@@ -159,7 +133,7 @@ const buttonStyle = {
 };
 const mapStateToProps = (state) => {
   return {
-    chatMessages: state.messages.chatById.data,
+    chatMessages: state.messages.operator.data,
     isLoad: state.messages.chatById.loading,
     socket: state.socket.data,
   };

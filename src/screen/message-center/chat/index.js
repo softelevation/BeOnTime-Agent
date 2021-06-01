@@ -26,6 +26,7 @@ import {
 } from '../../../redux/messages/action';
 import AsyncStorage from '@react-native-community/async-storage';
 import {strictValidString} from '../../../utils/commonUtils';
+import {AutoScrollFlatList} from 'react-native-autoscroll-flatlist';
 const Chat = ({
   route: {params: {id, name} = {}} = {},
   callGetChatByIdApi,
@@ -96,12 +97,13 @@ const Chat = ({
       style={{flexGrow: 1, backgroundColor: '#fff'}}>
       <Header centerText={name} bottomText={`Misn0${id}`} />
       <Block primary>
-        <FlatList
+        <AutoScrollFlatList
           ref={flatlistRef}
           showsVerticalScrollIndicator={false}
-          // onContentSizeChange={() => flatlistRef.current.scrollToEnd()}
           data={chatMessages}
           renderItem={_renderItem}
+          threshold={20}
+          keyExtractor={(item) => item.id}
         />
       </Block>
       <Block

@@ -67,5 +67,9 @@ export {
   getChatByIdError,
   getChatByIdRequest,
   getChatByIdSuccess,
+  operatorChatError,
+  operatorChatFlush,
+  operatorChatRequest,
+  operatorChatSuccess,
 } from './messages/action';
 export {languageError, languageSuccess} from './language/action';

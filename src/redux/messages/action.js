@@ -50,3 +50,29 @@ export const getChatByIdFlush = (error) => {
     res: false,
   };
 };
+export const operatorChatRequest = (payload) => {
+  return {
+    type: ActionConstants.OPERATOR_CHAT_REQUEST,
+    res: false,
+    payload,
+  };
+};
+export const operatorChatSuccess = (data) => {
+  return {
+    type: ActionConstants.OPERATOR_CHAT_SUCCESS,
+    data,
+    res: true,
+  };
+};
+export const operatorChatError = (error) => {
+  return {
+    type: ActionConstants.OPERATOR_CHAT_ERROR,
+    error,
+    res: false,
+  };
+};
+export const operatorChatFlush = () => {
+  return {
+    type: ActionConstants.OPERATOR_CHAT_FLUSH,
+  };
+};
