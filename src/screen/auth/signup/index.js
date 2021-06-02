@@ -515,11 +515,17 @@ const Signup = () => {
     values.agent_type.map((v) => {
       agentTypeArray.push(v.value);
     });
+    var pattern = new RegExp(
+      /^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i,
+    );
+
     console.log(agentTypeArray, 'agentTypeArray');
     if (values.firstName === '') {
       Toast.show('Please Enter First Name');
     } else if (values.lastName === '') {
       Toast.show('Please Enter Last  Name');
+    } else if (!pattern.test(values.email)) {
+      Toast.show('Please enter valid email-ID.');
     } else if (values.email === '') {
       Toast.show('Please enter email');
     } else if (values.phone === '') {
