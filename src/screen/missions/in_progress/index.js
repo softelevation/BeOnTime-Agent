@@ -2,6 +2,9 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {FlatList, RefreshControl} from 'react-native';
+import axios from 'axios';
+import {config} from '../../../utils/config';
+
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -48,7 +51,33 @@ const InProgress = () => {
       dispatch(getMissionsRequest());
     });
   };
-
+  
+  const TravelMission =async (item) => {
+    const token = await AsyncStorage.getItem('token');
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization: 'Bearer ' + token,
+  };
+  
+ navigation.navigate('TravelMission', {
+   item: item,
+  })
+  
+fetch(`${config.Api_Url}/agent/track-to-mission`, {
+            method: 'PUT',
+            headers: headers,
+            body: JSON.stringify({
+              mission: item.id,
+            })
+        })
+            .then((response) => response.json())
+            .then((responseData) => {
+                console.log("RESULTS HERE:", responseData)
+      })
+      .catch((error) =>{
+        console.error(error);
+      }) 
+  }
   const onRefresh = () => {
     setRefreshing(true);
     setTimeout(() => {
@@ -65,9 +94,9 @@ const InProgress = () => {
         margin={[0, w5, t2]}
         padding={[0, 0, t2, 0]}
         borderRadius={10}>
-        <Block margin={[0, 0, t2]} style={{height: hp(15)}} secondary>
+        {/* <Block margin={[0, 0, t2]} style={{height: hp(15)}} secondary>
           <CommonMap />
-        </Block>
+        </Block> */}
         <Block padding={[0, w3]}>
           <Text semibold grey size={14}>
             MISN0{item.id}
@@ -81,11 +110,7 @@ const InProgress = () => {
         {renderRequestReview(item)}
         <Block flex={false} padding={[0, w3]}>
           <Button
-            onPress={() =>
-              navigation.navigate('TravelMission', {
-                item: item,
-              })
-            }
+            onPress={TravelMission.bind(this, item)}
             color="primary">
             Travel To Mission
           </Button>

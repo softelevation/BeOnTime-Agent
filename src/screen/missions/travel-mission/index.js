@@ -161,8 +161,8 @@ const TravelMission = ({
             <MapViewDirections
               origin={location}
               destination={{
-                latitude: latitude,
-                longitude: longitude,
+                latitude: JSON.parse(latitude),
+                longitude: JSON.parse(longitude),
                 latitudeDelta: 0.00922 * 1.5,
                 longitudeDelta: 0.00421 * 1.5,
               }}
@@ -172,9 +172,11 @@ const TravelMission = ({
           )}
 
           <Marker
+          tracksViewChanges={false}
+          key={latitude} 
             coordinate={{
-              latitude: latitude,
-              longitude: longitude,
+              latitude: JSON.parse(latitude),
+              longitude: JSON.parse(longitude),
               latitudeDelta: 0.00922 * 1.5,
               longitudeDelta: 0.00421 * 1.5,
             }}>
