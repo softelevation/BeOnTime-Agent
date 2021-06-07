@@ -39,7 +39,6 @@ function Routes() {
       dispatch(socketConnection(socket));
     });
     if (strictValidObjectWithKeys(userId) && userId.id) {
-      console.log('right', userId);
       socket.on(`notification_${userId.id}`, (msg) => {
         console.log(msg, `notification_${userId.id}`);
         onDisplayNotification(msg);

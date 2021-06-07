@@ -123,7 +123,7 @@ const CommonMap = () => {
     );
   };
   useEffect(() => {
-    const watchId = Geolocation.watchPosition(
+    const watchId = Geolocation.getCurrentPosition(
       (position) => {
         let region = {
           latitude: position.coords.latitude,

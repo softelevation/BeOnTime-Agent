@@ -33,7 +33,18 @@ const ChatOperator = ({
 
   useEffect(() => {
     dispatch(operatorChatRequest());
+    clearBadge();
   }, []);
+
+  const clearBadge = async () => {
+    const token = await AsyncStorage.getItem('token');
+
+    const data = {
+      mission_id: 0,
+      token: token,
+    };
+    socket.emit('clear_message_badge', data);
+  };
 
   useEffect(() => {
     socket.on(`refresh_feed_${profile.id}`, (msg) => {

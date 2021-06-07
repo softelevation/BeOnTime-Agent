@@ -31,6 +31,7 @@ import CommonMap from '../../common/Map';
 import CommonApi from '../../../utils/CommonApi';
 import ActivityLoader from '../../../components/activityLoader';
 import AsyncStorage from '@react-native-community/async-storage';
+import {showMessage} from 'react-native-flash-message';
 
 const InProgress = () => {
   const navigation = useNavigation();
@@ -51,33 +52,34 @@ const InProgress = () => {
       dispatch(getMissionsRequest());
     });
   };
-  
-  const TravelMission =async (item) => {
+
+  const TravelMission = async (item) => {
     const token = await AsyncStorage.getItem('token');
-  const headers = {
-    'Content-Type': 'application/json',
-    Authorization: 'Bearer ' + token,
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: token,
+    };
+    const res = await axios({
+      method: 'post',
+      url: `${config.Api_Url}/agent/track-to-mission`,
+      headers,
+      data: {
+        mission_id: item.id,
+      },
+    });
+    if (res.data.status === 1) {
+      navigation.navigate('TravelMission', {
+        item: item,
+      });
+    } else {
+      showMessage({
+        message: '',
+        description: res.data.message,
+        type: 'danger',
+      });
+    }
   };
-  
- navigation.navigate('TravelMission', {
-   item: item,
-  })
-  
-fetch(`${config.Api_Url}/agent/track-to-mission`, {
-            method: 'PUT',
-            headers: headers,
-            body: JSON.stringify({
-              mission: item.id,
-            })
-        })
-            .then((response) => response.json())
-            .then((responseData) => {
-                console.log("RESULTS HERE:", responseData)
-      })
-      .catch((error) =>{
-        console.error(error);
-      }) 
-  }
+
   const onRefresh = () => {
     setRefreshing(true);
     setTimeout(() => {
@@ -92,7 +94,7 @@ fetch(`${config.Api_Url}/agent/track-to-mission`, {
         shadow
         primary
         margin={[0, w5, t2]}
-        padding={[0, 0, t2, 0]}
+        padding={[t2, 0, t2, 0]}
         borderRadius={10}>
         {/* <Block margin={[0, 0, t2]} style={{height: hp(15)}} secondary>
           <CommonMap />
@@ -110,7 +112,13 @@ fetch(`${config.Api_Url}/agent/track-to-mission`, {
         {renderRequestReview(item)}
         <Block flex={false} padding={[0, w3]}>
           <Button
-            onPress={TravelMission.bind(this, item)}
+            onPress={() =>
+              item.tracking === 0
+                ? TravelMission(item)
+                : navigation.navigate('TravelMission', {
+                    item: item,
+                  })
+            }
             color="primary">
             Travel To Mission
           </Button>

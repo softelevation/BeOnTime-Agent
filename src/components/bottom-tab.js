@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {View, StyleSheet} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {
@@ -10,12 +10,8 @@ import PropTypes from 'prop-types';
 
 import Text from './Text';
 import {images} from '../assets';
-import {
-  strictValidArrayWithLength,
-  strictValidNumber,
-  strictValidObjectWithKeys,
-} from '../utils/commonUtils';
-import {connect, useDispatch, useSelector} from 'react-redux';
+import {strictValidObjectWithKeys} from '../utils/commonUtils';
+import {connect} from 'react-redux';
 import {getNotificationRequest} from '../redux/action';
 
 const styles = StyleSheet.create({

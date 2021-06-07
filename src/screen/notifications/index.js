@@ -1,7 +1,9 @@
-import {useNavigation} from '@react-navigation/core';
-import React, {useEffect} from 'react';
+import AsyncStorage from '@react-native-community/async-storage';
+import {useFocusEffect} from '@react-navigation/core';
+import React from 'react';
 import {Alert, FlatList, ScrollView} from 'react-native';
 import {connect} from 'react-redux';
+import {io} from 'socket.io-client';
 import {Block, Text} from '../../components';
 import ActivityLoader from '../../components/activityLoader';
 import Header from '../../components/common/header';
@@ -13,6 +15,7 @@ import {
   getNotificationRequest,
 } from '../../redux/notifications/action';
 import {strictValidArrayWithLength} from '../../utils/commonUtils';
+import {config} from '../../utils/config';
 
 const Notifications = ({
   callNotificationApi,
@@ -20,21 +23,30 @@ const Notifications = ({
   isLoad,
   callDeleteNotificationApi,
 }) => {
-  const navigation = useNavigation();
-  useEffect(() => {
-    callNotificationApi();
-    const unsubscribe = navigation.addListener('focus', () => {
-      callNotificationApi();
-    });
+  const socket = io(config.Api_Url);
 
-    return unsubscribe;
-  }, []);
+  const clearNotification = async () => {
+    const token = await AsyncStorage.getItem('token');
+
+    const data = {
+      token: token,
+      type: 'notification',
+    };
+    socket.emit('clear_badge', data);
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      clearNotification();
+      callNotificationApi();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []),
+  );
 
   const onhandleDelete = async (mission_id) => {
     callDeleteNotificationApi(mission_id);
   };
   const deleteItem = (id) => {
-    console.log(id, 'id');
     Alert.alert(
       'Are you sure?',
       'You want to remove this notification',

@@ -1,4 +1,4 @@
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import React, {useEffect} from 'react';
 import {FlatList} from 'react-native';
 import {
@@ -26,9 +26,11 @@ const Missions = ({navigationState}) => {
     return 'Finished';
   };
 
-  useEffect(() => {
-    dispatch(getMissionsRequest());
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      dispatch(getMissionsRequest());
+    }, []),
+  );
 
   return (
     <Block primary flex={false}>

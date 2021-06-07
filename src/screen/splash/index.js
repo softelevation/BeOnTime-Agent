@@ -10,7 +10,7 @@ import {
   socketConnection,
 } from '../../redux/action';
 import {strictValidString} from '../../utils/commonUtils';
-import io from 'socket.io-client';
+import {io} from 'socket.io-client';
 import Geolocation from '@react-native-community/geolocation';
 import {t4} from '../../components/theme/fontsize';
 import messaging from '@react-native-firebase/messaging';

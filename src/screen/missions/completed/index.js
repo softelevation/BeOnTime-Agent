@@ -51,7 +51,7 @@ const Finished = () => {
         shadow
         primary
         margin={[0, w5, t2]}
-        padding={[0, 0, t2, 0]}
+        padding={[t2, 0, t2, 0]}
         borderRadius={10}>
         {/* <Block margin={[0, 0, t2]} style={{height: hp(15)}} secondary>
           <CommonMap />

@@ -40,10 +40,21 @@ const Chat = ({
 
   useEffect(() => {
     dispatch(getChatByIdRequest(id));
+    clearBadge();
     return () => {
       dispatch(getChatByIdFlush());
     };
   }, []);
+
+  const clearBadge = async () => {
+    const token = await AsyncStorage.getItem('token');
+
+    const data = {
+      mission_id: id,
+      token: token,
+    };
+    socket.emit('clear_message_badge', data);
+  };
 
   useEffect(() => {
     socket.on(`message_center_${id}`, (msg) => {
@@ -151,11 +162,5 @@ const mapStateToProps = (state) => {
     socket: state.socket.data,
   };
 };
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     // dispatching plain actions
-//     callGetChatByIdApi: (...params) => dispatch(getChatByIdRequest(...params)),
-//   };
-// };
 
 export default connect(mapStateToProps)(Chat);

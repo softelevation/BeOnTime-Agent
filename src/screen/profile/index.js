@@ -46,10 +46,10 @@ const Profile = () => {
   };
 
   const ProfileData = [
-    {
-      name: BillingLanguage,
-      nav: 'Billing',
-    },
+    // {
+    //   name: BillingLanguage,
+    //   nav: 'Billing',
+    // },
     {
       name: EditProfileLanguage,
       nav: 'EditProfile',

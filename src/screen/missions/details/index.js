@@ -285,9 +285,9 @@ const MissionDetails = ({
   return (
     <Block primary>
       <Header centerText="Mission-Details" />
-      {/* <Block flex={1}>
+      <Block flex={1}>
         <CommonMap />
-      </Block> */}
+      </Block>
 
       <Modalize
         ref={modalizeRef}
