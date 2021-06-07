@@ -1,15 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import {useNavigation} from '@react-navigation/native';
-import React, {useEffect, useState} from 'react';
-import {FlatList, RefreshControl} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import { FlatList, RefreshControl } from 'react-native';
 import axios from 'axios';
-import {config} from '../../../utils/config';
+import { config } from '../../../utils/config';
 
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
   Block,
@@ -19,18 +19,20 @@ import {
   Text,
 } from '../../../components';
 import EmptyFile from '../../../components/emptyFile';
-import {t1, t2, w3, w5} from '../../../components/theme/fontsize';
-import {getMissionsRequest} from '../../../redux/action';
+import { t1, t2, w3, w5 } from '../../../components/theme/fontsize';
+import { getMissionsRequest } from '../../../redux/action';
 import {
+  Alerts,
   strictValidArrayWithLength,
   strictValidObject,
 } from '../../../utils/commonUtils';
-import {divider} from '../../../utils/commonView';
-import {AgentType} from '../../../utils/data';
+import { divider } from '../../../utils/commonView';
+import { AgentType } from '../../../utils/data';
 import CommonMap from '../../common/Map';
 import CommonApi from '../../../utils/CommonApi';
 import ActivityLoader from '../../../components/activityLoader';
 import AsyncStorage from '@react-native-community/async-storage';
+import { light } from '../../../components/theme/colors';
 
 const InProgress = () => {
   const navigation = useNavigation();
@@ -38,46 +40,68 @@ const InProgress = () => {
   const dispatch = useDispatch();
   const MissionData = useSelector((state) => state.mission.missions.data);
   const isLoad = useSelector((state) => state.mission.missions.loading);
-  const {missionInProgress} = MissionData;
+  const { missionInProgress } = MissionData;
   const socket = useSelector((state) => state.socket.data);
 
   const finishMission = async (id) => {
     const token = await AsyncStorage.getItem('token');
     const mission_id = id;
-    socket.emit('finish_mission', {mission_id, token});
+    socket.emit('finish_mission', { mission_id, token });
 
     socket.on(`finish_mission_${mission_id}`, (msg) => {
       console.log(msg, `finish_mission_${mission_id}`);
       dispatch(getMissionsRequest());
     });
   };
-  
-  const TravelMission =async (item) => {
-    const token = await AsyncStorage.getItem('token');
-  const headers = {
-    'Content-Type': 'application/json',
-    Authorization: 'Bearer ' + token,
-  };
-  
- navigation.navigate('TravelMission', {
-   item: item,
-  })
-  
-fetch(`${config.Api_Url}/agent/track-to-mission`, {
-            method: 'PUT',
-            headers: headers,
-            body: JSON.stringify({
-              mission: item.id,
-            })
-        })
-            .then((response) => response.json())
-            .then((responseData) => {
-                console.log("RESULTS HERE:", responseData)
+
+  const TravelMission = (item) => {
+    const token = AsyncStorage.getItem('token');
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + token,
+    };
+
+
+    fetch(`${config.Api_Url}/agent/track-to-mission`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify({
+        mission: item.id,
       })
-      .catch((error) =>{
-        console.error(error);
-      }) 
+    }).then((response) => response.json())
+      .then((responseJson) => {
+        if (responseJson.status === 1) {
+          Alerts(responseJson.message, '', light.danger);
+        }
+        else {
+          navigation.navigate('TravelMission', {
+            item: item,
+          })
+        }
+      });
+
+
+
+    // const reposnse= axios({
+    //   method: 'post',
+    //   url: `${config.Api_Url}/agent/track-to-mission`,
+    //   headers,
+    //   data: {
+    //     mission: item.id,
+
+    //   },
+    // });
+    // alert(JSON.stringify(reposnse))
+    //  navigation.navigate('TravelMission', {
+    //    item: item,
+    //   })  
   }
+
+
+
   const onRefresh = () => {
     setRefreshing(true);
     setTimeout(() => {
@@ -86,7 +110,7 @@ fetch(`${config.Api_Url}/agent/track-to-mission`, {
     dispatch(getMissionsRequest());
   };
 
-  const renderCards = ({item, index}) => {
+  const renderCards = ({ item, index }) => {
     return (
       <Block
         shadow
@@ -190,7 +214,7 @@ fetch(`${config.Api_Url}/agent/track-to-mission`, {
               onRefresh={onRefresh}
             />
           }
-          contentContainerStyle={{flexGrow: 1}}
+          contentContainerStyle={{ flexGrow: 1 }}
           ListEmptyComponent={<EmptyFile />}
           data={missionInProgress}
           renderItem={renderCards}
@@ -199,6 +223,6 @@ fetch(`${config.Api_Url}/agent/track-to-mission`, {
     </Block>
   );
 };
-const circle = {height: 50, width: 50};
+const circle = { height: 50, width: 50 };
 
 export default InProgress;
