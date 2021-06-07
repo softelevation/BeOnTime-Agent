@@ -1,14 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {useNavigation} from '@react-navigation/native';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {FlatList, RefreshControl} from 'react-native';
 import axios from 'axios';
 import {config} from '../../../utils/config';
-
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
+import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {
@@ -21,14 +17,7 @@ import {
 import EmptyFile from '../../../components/emptyFile';
 import {t1, t2, w3, w5} from '../../../components/theme/fontsize';
 import {getMissionsRequest} from '../../../redux/action';
-import {
-  strictValidArrayWithLength,
-  strictValidObject,
-} from '../../../utils/commonUtils';
 import {divider} from '../../../utils/commonView';
-import {AgentType} from '../../../utils/data';
-import CommonMap from '../../common/Map';
-import CommonApi from '../../../utils/CommonApi';
 import ActivityLoader from '../../../components/activityLoader';
 import AsyncStorage from '@react-native-community/async-storage';
 import {showMessage} from 'react-native-flash-message';
