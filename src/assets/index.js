@@ -45,4 +45,6 @@ export const images = {
   empty_icon: require('./icons/empty.png'),
   message_send_icon: require('./icons/arrow-up.png'),
   tick_icon: require('./icons/tick.png'),
+  map_icon: require('./icons/google-maps.png'),
+  user_map_icon: require('./icons/user-map.png'),
 };

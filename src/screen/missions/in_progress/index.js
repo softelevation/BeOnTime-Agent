@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {useNavigation} from '@react-navigation/native';
 import React, {useState} from 'react';
-import {FlatList, RefreshControl} from 'react-native';
+import {FlatList, Linking, Platform, RefreshControl} from 'react-native';
 import axios from 'axios';
 import {config} from '../../../utils/config';
 import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
