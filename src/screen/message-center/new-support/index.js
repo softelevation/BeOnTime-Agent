@@ -28,7 +28,6 @@ const NewSupport = () => {
     CommonApi.fetchAppCommon('/agent/support-chat', 'get')
       .then((response) => {
         if (response.status === 1) {
-          console.log(response.data);
           setstate({
             loading: false,
             newChat: response.data,

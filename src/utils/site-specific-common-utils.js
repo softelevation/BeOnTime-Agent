@@ -140,66 +140,13 @@ export const formatTime = (d) => {
 };
 
 export const uploadMedia = async (path, image) => {
-  //   console.log(path, image, 'uploadMedia');
-  //   const token = await AsyncStorage.getItem('token');
-  //   const headers = {
-  //     name: path,
-  //   };
-  //   var formData = new FormData();
-  //   formData.append('image', JSON.stringify(image));
-  //   return axios({
-  //     method: 'post',
-  //     url: `${config.Api_Url}/agent/upload-media`,
-  //     headers,
-  //     data: formData,
-  //   });
   const uploadUrl = `${config.Api_Url}/agent/upload-media`;
   const headers = {
     name: path,
   };
   const formData = new FormData();
   formData.append('image', JSON.stringify(image));
-
-  // return fetch(uploadUrl, {
-  //   method: 'POST',
-  //   headers: headers,
-  //   body: formData,
-  // })
-  //   .then((response) => response)
-  //   .catch((error) => error);
 };
-
-// export const uploadMedia = async (path, image) => {
-//   const uploadUrl = `${config.Api_Url}/agent/upload-media`;
-
-//   RNFS.uploadFiles({
-//     toUrl: uploadUrl,
-//     files: JSON.stringify(image),
-//     method: 'POST',
-//     headers: {
-//       name: path,
-//     },
-//     fields: {
-//       hello: 'world',
-//     },
-//     // begin: uploadBegin,
-//     // progress: uploadProgress,
-//   })
-//     .promise.then((response) => {
-//       console.log(response, 'response');
-//       if (response.statusCode === 200) {
-//         console.log('FILES UPLOADED!'); // response.statusCode, response.headers, response.body
-//       } else {
-//         console.log('SERVER ERROR');
-//       }
-//     })
-//     .catch((err) => {
-//       if (err.description === 'cancelled') {
-//         // cancelled by user
-//       }
-//       console.log(err);
-//     });
-// };
 export const UPLOAD = async (api, fileName, filePath, filetype, uploadType) => {
   const date = new Date();
 
@@ -233,7 +180,6 @@ export const UPLOAD = async (api, fileName, filePath, filetype, uploadType) => {
       },
     ],
   );
-  console.log(res, 'res');
   return res;
 };
 

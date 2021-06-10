@@ -73,7 +73,6 @@ const EditProfile = ({user, isLoad}) => {
         'image',
       );
       if (res) {
-        console.log(res.data);
         setUserDetails({
           ...userProfileDetails,
           uploading: false,
@@ -82,7 +81,6 @@ const EditProfile = ({user, isLoad}) => {
       }
     });
   };
-  console.log(profileData, 'profileData');
 
   const renderProfileImagePath = () => {
     if (ProfileImage) {
@@ -127,7 +125,7 @@ const EditProfile = ({user, isLoad}) => {
       home_address: values.home_address,
       image: strictValidObjectWithKeys(imageVal) ? imageVal.value : '',
     };
-    console.log(data, 'data');
+
     dispatch(updateProfileRequest(data));
   };
 

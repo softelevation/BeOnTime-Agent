@@ -135,7 +135,6 @@ const MissionReport = ({
         remise,
         effraction,
       } = values;
-
       const data = {
         mission_id: item.id,
         intervention: MissionType(report.intervention),
@@ -155,7 +154,6 @@ const MissionReport = ({
         effraction_constatee: effraction.value,
         signature: signature,
       };
-      console.log(data);
       dispatch(missionReportSubmitRequest(data));
     }
   };
@@ -202,8 +200,6 @@ const MissionReport = ({
       })
       .catch((err) => {});
   }, [item.id]);
-
-  console.log(missionReport, 'missionReport');
 
   if (!strictValidObjectWithKeys(missionReport)) {
     return (
@@ -502,7 +498,7 @@ const MissionReport = ({
                   </View>
                 )}
               </ScrollView>
-              {/*
+
               <Modalize
                 adjustToContentHeight={true}
                 handlePosition="inside"
@@ -606,7 +602,7 @@ const MissionReport = ({
                     }}
                   />
                 )}
-              </Modalize> */}
+              </Modalize>
             </>
           )}
         </Formik>

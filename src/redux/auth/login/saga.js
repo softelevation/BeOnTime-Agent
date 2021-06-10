@@ -22,7 +22,7 @@ const SaveData = async (data) => {
 export function* loginRequest(action) {
   try {
     const response = yield call(Api, action.payload);
-    console.log(response, 'response');
+
     if (response.data.status === 1) {
       yield call(SaveToken, response.data);
       yield call(SaveData, response.data);
@@ -34,7 +34,6 @@ export function* loginRequest(action) {
       Alerts('Login Failed', response.data.message, light.danger);
     }
   } catch (err) {
-    console.log(err.response, 'err');
     yield put(loginError(err.response.data.message));
     Alerts('Login Failed', err.response.data.message, light.danger);
   }
@@ -51,7 +50,6 @@ export function* changePasswordRequest(action) {
       Alerts('Error', response.data.message, light.danger);
     }
   } catch (err) {
-    console.log(err.response, 'err');
     yield put(changePasswordError(err.response.data.message));
     Alerts('Error', err.response.data.message, light.danger);
   }

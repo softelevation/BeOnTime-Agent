@@ -37,7 +37,6 @@ const InProgress = () => {
     socket.emit('finish_mission', {mission_id, token});
 
     socket.on(`finish_mission_${mission_id}`, (msg) => {
-      console.log(msg, `finish_mission_${mission_id}`);
       dispatch(getMissionsRequest());
     });
   };
@@ -82,12 +81,9 @@ const InProgress = () => {
       <Block
         shadow
         primary
-        margin={[0, w5, t2]}
+        margin={[hp(1), w5, t2]}
         padding={[t2, 0, t2, 0]}
         borderRadius={10}>
-        {/* <Block margin={[0, 0, t2]} style={{height: hp(15)}} secondary>
-          <CommonMap />
-        </Block> */}
         <Block padding={[0, w3]}>
           <Text semibold grey size={14}>
             MISN0{item.id}
@@ -100,17 +96,6 @@ const InProgress = () => {
         {renderAgentDetails(item)}
         {renderRequestReview(item)}
         <Block flex={false} padding={[0, w3]}>
-          <Button
-            onPress={() =>
-              item.tracking === 0
-                ? TravelMission(item)
-                : navigation.navigate('TravelMission', {
-                    item: item,
-                  })
-            }
-            color="primary">
-            Travel To Mission
-          </Button>
           <Button onPress={() => finishMission(item.id)} color="secondary">
             Finish mission
           </Button>
@@ -146,7 +131,13 @@ const InProgress = () => {
       </Block>
     );
   };
-  const renderRequestReview = () => {
+  const renderRequestReview = (item) => {
+    // var percentage =
+    //   (new Date().getTime() - new Date(item.start_date_time).getTime()) /
+    //   (new Date(item.start_date_time).getTime() +
+    //     item.total_hours * 60 * 60 * 1000 -
+    //     new Date(item.start_date_time).getTime());
+    // console.log(percentage, 'percentage');
     return (
       <Block margin={[t1, w3, t1]} flex={false} row center>
         <Block
@@ -166,9 +157,9 @@ const InProgress = () => {
               <Text semibold size={16} margin={[0, w3, 0, 0]}>
                 Mission Accepted
               </Text>
-              <Text margin={[hp(0.5), 0, 0]} size={14} grey>
+              {/* <Text margin={[hp(0.5), 0, 0]} size={14} grey>
                 Reaching location in 15 min.
-              </Text>
+              </Text> */}
             </>
           </Block>
         </Block>

@@ -14,7 +14,6 @@ import {light} from '../../components/theme/colors';
 export function* request(action) {
   try {
     const response = yield call(Api, action.payload);
-    console.log(response, 'noti');
     if (response.data.status === 1) {
       yield put(getNotificationSuccess(response.data.data));
     } else {

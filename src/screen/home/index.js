@@ -103,7 +103,6 @@ const Home = () => {
     setloader(val);
     const mission_id = id;
     socket.emit('agent_mission_request', {mission_id, status});
-    console.log(mission_id, status, 'mission_id, status');
     setTimeout(() => {
       ApiRequest();
     }, 2000);
@@ -147,12 +146,9 @@ const Home = () => {
       <Block
         shadow
         primary
-        margin={[0, w5, t2]}
-        padding={[0, 0, t2, 0]}
+        margin={[hp(1), w5, t2]}
+        padding={[hp(2), 0, t2, 0]}
         borderRadius={10}>
-        <Block margin={[0, 0, t2]} style={{height: hp(15)}} secondary>
-          <CommonMap />
-        </Block>
         <Block padding={[0, w3]}>
           <Text semibold grey size={14}>
             MISN0{item.id}

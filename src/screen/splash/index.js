@@ -60,24 +60,21 @@ const Splash = () => {
     requestUserPermission();
     callAuthApi();
     const socket = io(config.Api_Url);
-    console.log('Connecting socket...');
     socket.on('connect', (a) => {
       dispatch(socketConnection(socket));
-      console.log('true', socket.connected); // true
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const requestUserPermission = async () => {
     const authStatus = await messaging().requestPermission();
-    console.log(authStatus);
+
     const enabled =
       authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
       authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-    console.log(authStatus, enabled);
+
     if (enabled) {
       getFcmToken();
-      console.log('Authorization status:', authStatus);
     }
   };
   const getFcmToken = async () => {

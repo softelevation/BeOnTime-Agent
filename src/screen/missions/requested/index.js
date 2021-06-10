@@ -1,13 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import AsyncStorage from '@react-native-community/async-storage';
 import {useNavigation} from '@react-navigation/native';
+import axios from 'axios';
 import React, {useState} from 'react';
 import {FlatList, RefreshControl} from 'react-native';
+import {showMessage} from 'react-native-flash-message';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import {useDispatch, useSelector} from 'react-redux';
+import {io} from 'socket.io-client';
 import {
   Block,
   Button,
@@ -20,6 +23,7 @@ import EmptyFile from '../../../components/emptyFile';
 import {t1, t2, w3, w5} from '../../../components/theme/fontsize';
 import {getMissionsRequest} from '../../../redux/action';
 import {divider} from '../../../utils/commonView';
+import {config} from '../../../utils/config';
 import CommonMap from '../../common/Map';
 
 const Requested = () => {
@@ -38,8 +42,17 @@ const Requested = () => {
     socket.emit('start_mission', {mission_id, token});
 
     socket.on(`mission_data_${mission_id}`, (msg) => {
-      console.log(msg, `mission_data_${mission_id}`);
       dispatch(getMissionsRequest());
+    });
+  };
+
+  const travelToMission = async (item) => {
+    const token = await AsyncStorage.getItem('token');
+    const mission_id = item.id;
+    socket.emit('travel_to_mission', {mission_id: mission_id, token: token});
+    dispatch(getMissionsRequest());
+    navigation.navigate('TravelMission', {
+      item: item,
     });
   };
 
@@ -51,12 +64,39 @@ const Requested = () => {
     dispatch(getMissionsRequest());
   };
 
+  const TravelMission = async (item) => {
+    const token = await AsyncStorage.getItem('token');
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: token,
+    };
+    const res = await axios({
+      method: 'post',
+      url: `${config.Api_Url}/agent/track-to-mission`,
+      headers,
+      data: {
+        mission_id: item.id,
+      },
+    });
+    if (res.data.status === 1) {
+      navigation.navigate('TravelMission', {
+        item: item,
+      });
+    } else {
+      showMessage({
+        message: '',
+        description: res.data.message,
+        type: 'danger',
+      });
+    }
+  };
+
   const renderCards = ({item, index}) => {
     return (
       <Block
         shadow
         primary
-        margin={[0, w5, t2]}
+        margin={[hp(1), w5, t2]}
         padding={[t2, 0, t2, 0]}
         borderRadius={10}>
         <Block padding={[0, w3]}>
@@ -70,7 +110,21 @@ const Requested = () => {
         {divider()}
         {renderAgentDetails(item)}
         <Block flex={false} padding={[0, w3]}>
-          <Button onPress={() => startMission(item.id)} color="secondary">
+          <Button
+            onPress={() =>
+              item.status !== 2
+                ? travelToMission(item)
+                : navigation.navigate('TravelMission', {
+                    item: item,
+                  })
+            }
+            color="primary">
+            Travel To Mission
+          </Button>
+          <Button
+            disabled={item.status !== 3}
+            onPress={() => startMission(item.id)}
+            color="secondary">
             Start mission
           </Button>
         </Block>

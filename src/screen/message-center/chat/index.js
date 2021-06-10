@@ -71,7 +71,6 @@ const Chat = ({
       message: messages,
       type: 'send_by_agent',
     };
-    console.log(data);
     socket.emit('message_center', data);
     setMessages('');
     setTimeout(() => {

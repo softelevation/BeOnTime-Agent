@@ -15,7 +15,6 @@ export function* request(action) {
   try {
     const response = yield call(chatApi, action.payload);
     if (response.data.status === 1) {
-      console.log(response.data, 'get Chat');
       yield put(getChatSuccess(response.data.data));
     } else {
       yield put(getChatError(response));

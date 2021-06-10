@@ -58,7 +58,6 @@ const MissionDetails = ({
     time_intervel,
     repetitive_mission,
   } = item;
-  console.log(item, 'item');
   useEffect(() => {
     modalizeRef.current?.open();
   }, []);
@@ -81,7 +80,6 @@ const MissionDetails = ({
     socket.emit('finish_mission', {mission_id, token});
 
     socket.on(`finish_mission_${mission_id}`, (msg) => {
-      console.log(msg, `finish_mission_${mission_id}`);
       dispatch(getMissionsRequest());
       navigateToBack();
     });
@@ -94,7 +92,6 @@ const MissionDetails = ({
     socket.emit('start_mission', {mission_id, token});
     setloader({startloader: false});
     socket.on(`mission_data_${mission_id}`, (msg) => {
-      console.log(msg, `mission_data_${mission_id}`);
       dispatch(getMissionsRequest());
       navigateToBack();
     });

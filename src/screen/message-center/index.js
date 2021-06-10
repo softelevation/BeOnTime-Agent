@@ -75,7 +75,6 @@ const MessageCenter = ({callGetChatApi, chat, isLoad}) => {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
-        {console.log(chat)}
         {strictValidArrayWithLength(chat.active) && (
           <Block margin={[t1]} flex={false}>
             <Text size={14} grey semibold>

@@ -1,10 +1,17 @@
 import React, {useState, useRef, useEffect} from 'react';
-import {Block, CustomButton, ImageComponent} from '../../../components';
+import {Block, Button, CustomButton, ImageComponent} from '../../../components';
 import Header from '../../../components/common/header';
 import AsyncStorage from '@react-native-community/async-storage';
 import MapViewDirections from 'react-native-maps-directions';
 import Geolocation from '@react-native-community/geolocation';
-import {View, StyleSheet, Platform, Linking} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Platform,
+  Linking,
+  AppState,
+  Alert,
+} from 'react-native';
 import ResponsiveImage from 'react-native-responsive-image';
 import {images} from '../../../assets';
 import MapView, {Marker} from 'react-native-maps';
@@ -14,6 +21,7 @@ import {
   heightPercentageToDP,
   widthPercentageToDP,
 } from 'react-native-responsive-screen';
+import {useNavigation} from '@react-navigation/core';
 
 const googleKey = 'AIzaSyBf4G3qQTDy6-DN6Tb9m6WzgYCW598EoxU';
 
@@ -23,6 +31,7 @@ const TravelMission = ({
   },
 }) => {
   const socket = io(config.Api_Url);
+  const navigation = useNavigation();
   // User Params
   const {latitude, longitude} = item;
   // Initial State
@@ -34,6 +43,18 @@ const TravelMission = ({
     angle: 120,
   });
   const mapRef = useRef();
+  const appState = useRef(AppState.currentState);
+  const [appStateVisible, setAppStateVisible] = useState(appState.current);
+
+  useEffect(() => {
+    AppState.addEventListener('change', _handleAppStateChange);
+
+    return () => {
+      AppState.removeEventListener('change', _handleAppStateChange);
+    };
+  }, []);
+
+  const _handleAppStateChange = (nextAppState) => {};
 
   const callSocket = async (position) => {
     const mission_id = item.id;
@@ -54,7 +75,6 @@ const TravelMission = ({
   useEffect(() => {
     let watchId = Geolocation.watchPosition(
       (position) => {
-        console.log(position);
         let region = {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
@@ -74,7 +94,7 @@ const TravelMission = ({
         distanceFilter: 1000,
       },
     );
-    return () => Geolocation.clearWatch(watchId);
+    // return () => Geolocation.clearWatch(watchId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -89,7 +109,13 @@ const TravelMission = ({
 
     Linking.openURL(url);
   };
-  console.log(item, 'item');
+
+  const missionArrived = async () => {
+    const token = await AsyncStorage.getItem('token');
+    const mission_id = item.id;
+    socket.emit('arrived_to_mission', {mission_id: mission_id, token: token});
+    navigation.goBack();
+  };
   return (
     <Block primary>
       <Header centerText="Travel To Mission" />
@@ -97,7 +123,6 @@ const TravelMission = ({
         <MapView
           ref={mapRef}
           scrollEnabled
-          // provider="google"
           style={styles.map}
           region={location}
           onRegionChangeComplete={async (coords) => {
@@ -154,6 +179,20 @@ const TravelMission = ({
           flex={false}>
           <ImageComponent name="map_icon" height={30} width={30} />
         </CustomButton>
+        <CustomButton
+          onPress={() => openMaps(item)}
+          center
+          middle
+          style={styles.CustomButton}
+          flex={false}>
+          <Button
+            onPress={() => missionArrived()}
+            textStyle={{textTransform: 'capitalize'}}
+            style={{width: widthPercentageToDP(95)}}
+            color="secondary">
+            Arrived on the destination
+          </Button>
+        </CustomButton>
       </Block>
     </Block>
   );
@@ -170,6 +209,11 @@ const styles = StyleSheet.create({
     width: 60,
     borderRadius: 60,
     backgroundColor: '#fff',
+  },
+  CustomButton: {
+    position: 'absolute',
+    bottom: heightPercentageToDP(1),
+    right: widthPercentageToDP(3),
   },
 });
 

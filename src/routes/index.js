@@ -40,12 +40,10 @@ function Routes() {
     });
     if (strictValidObjectWithKeys(userId) && userId.id) {
       socket.on(`notification_${userId.id}`, (msg) => {
-        console.log(msg, `notification_${userId.id}`);
         onDisplayNotification(msg);
         dispatch(getNotificationRequest());
       });
       socket.on(`refresh_feed_${userId.id}`, (msg) => {
-        console.log(msg, `refresh_feed_${userId.id}`);
         dispatch(getMissionsRequest());
       });
     }
