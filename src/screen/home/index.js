@@ -32,6 +32,7 @@ import {CountdownCircleTimer} from 'react-native-countdown-circle-timer';
 import AsyncStorage from '@react-native-community/async-storage';
 import {light} from '../../components/theme/colors';
 import ActivityLoader from '../../components/activityLoader';
+import moment from 'moment';
 
 const initialState = {
   acceptloader: null,
@@ -107,7 +108,27 @@ const Home = () => {
       ApiRequest();
     }, 2000);
   };
+  const calculateTime = (assigned, current) => {
+    var startTime = moment(assigned, 'HH:mm:ss a');
+    var endTime = moment(current, 'HH:mm:ss a');
+
+    // calculate total duration
+    var duration = moment.duration(endTime.diff(startTime));
+
+    // duration in hours
+    var hours = parseInt(duration.asHours()) * 60;
+
+    // duration in minutes
+    var minutes = parseInt(duration.asMinutes()) % 60;
+
+    return hours + minutes * 60;
+  };
   const renderAgentDetails = (item) => {
+    // const time = moment(item.assigned_at).format('HH:mm:ss a');
+    // const newDate = moment(new Date()).format('HH:mm:ss a');
+    // const interval = calculateTime(time, newDate);
+    // alert(interval);
+    // console.log(time, newDate);
     return (
       <Block margin={[0, w3, t1]} flex={false} row space="between">
         <Block flex={false} row center>
@@ -129,7 +150,7 @@ const Home = () => {
           isPlaying
           size={50}
           strokeWidth={4}
-          duration={item.time_intervel}
+          duration={0}
           colors={'#000'}>
           {({remainingTime, animatedColor}) => (
             <Text size={12} bold>

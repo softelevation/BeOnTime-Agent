@@ -126,11 +126,11 @@ const Finished = () => {
           <Block flex={false}>
             <>
               <Text semibold size={16} margin={[0, w3, 0, 0]}>
-                Mission Accepted
+                Mission Completed
               </Text>
               <Text margin={[hp(0.5), 0, 0]} size={14} grey>
                 {/* `{Mission ended. }`PaymentStatus */}
-                {`Mission ended ${PaymentStatus(item.payment_status)}`}
+                {`Mission ended. ${PaymentStatus(item.payment_status)}`}
               </Text>
             </>
           </Block>

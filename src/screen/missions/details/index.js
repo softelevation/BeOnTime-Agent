@@ -20,6 +20,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {getMissionsRequest, missionListRequest} from '../../../redux/action';
 import {useDispatch, useSelector} from 'react-redux';
 import {StackActions, useNavigation} from '@react-navigation/core';
+import moment from 'moment';
 const initialState = {
   acceptloader: null,
   rejecttloader: null,
@@ -57,6 +58,7 @@ const MissionDetails = ({
     mission_finish_time,
     time_intervel,
     repetitive_mission,
+    created_at,
   } = item;
   useEffect(() => {
     modalizeRef.current?.open();
@@ -234,6 +236,9 @@ const MissionDetails = ({
       </Block>
     );
   };
+  const formatDate = (d) => {
+    return moment(d).format('DD MMMM YYYY');
+  };
   const renderDetails = (header, content) => {
     return (
       <Block center margin={[hp(0.5), 0]} flex={false} row space={'between'}>
@@ -259,7 +264,9 @@ const MissionDetails = ({
       {renderMissionStatus()}
       {divider()}
       {MissionDetail()}
+      {console.log(item, 'item')}
       <Block flex={false} margin={[t2, 0, 0]}>
+        {renderDetails('Mission Date', formatDate(created_at))}
         {renderDetails('Mission type', MissionType(intervention))}
         {renderDetails('Agent type', AgentType(agent_type))}
         {renderDetails('Location', location)}

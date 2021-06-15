@@ -31,6 +31,26 @@ const Login = () => {
   const navigation = useNavigation();
   const isLoad = useSelector((state) => state.user.login.loading);
 
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setKeyboardVisible(true); // or some other action
+      },
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardVisible(false); // or some other action
+      },
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
+
   const onSubmit = async (values) => {
     dispatch(
       loginRequest({
@@ -43,10 +63,11 @@ const Login = () => {
   return (
     <Block primary>
       <Header centerText="Login" />
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={heightPercentageToDP(30)}
-        style={{flexGrow: 1}}>
+      <KeyboardAwareScrollView
+        contentContainerStyle={[
+          isKeyboardVisible ? {bottom: heightPercentageToDP(10)} : {bottom: 0},
+          {flexGrow: 1, justifyContent: 'flex-end'},
+        ]}>
         <Formik
           initialValues={{
             email: '',
@@ -69,8 +90,7 @@ const Login = () => {
             dirty,
           }) => (
             <>
-              <CustomButton onPress={Keyboard.dismiss} flex={0.45} primary />
-              <Block padding={[0, w4]} flex={0.5}>
+              <Block bottom padding={[0, w4, t4]}>
                 <Block flex={false} margin={[t1, 0]}>
                   <ImageComponent name="logo" height="50" width="50" />
                 </Block>
@@ -113,7 +133,7 @@ const Login = () => {
             </>
           )}
         </Formik>
-      </KeyboardAvoidingView>
+      </KeyboardAwareScrollView>
     </Block>
   );
 };
