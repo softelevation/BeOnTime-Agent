@@ -99,6 +99,7 @@ export const en = {
   RemoveNotification: 'You want to remove this notification',
   Cancel: 'Cancel',
   YesDoIt: 'Yes, do it',
+  HaveArrivedOnDestination: 'you have arrived at your destination ?',
   //Forgot
 
   ResetInstructions: 'Reset instructions will be send to your email.',
@@ -119,6 +120,24 @@ export const en = {
   NeedSupportWithOperator: 'Need Support with Operator',
   SupportHelp: 'Select the mission for which you need support help.',
   TypeMessage: 'Type your message...',
+
+  //Missions
+  ViewReport: 'View report',
+  SubmitReport: 'Submit Report',
+  FinishMission: 'Finish Mission',
+  MissionStarted: 'Mission Started',
+  StartMission: 'Start mission',
+  TravelMission: 'Travel To Mission',
+  MissionDate: 'Mission Date',
+  MissionTypeHeader: 'Mission Type',
+  LocationHeader: 'Location',
+  Duration: 'Duration',
+  VehicleRequired: 'Vehicle Required',
+  MissionFinishedTime: 'Mission finished time',
+  TimeInterval: 'Time Interval',
+  RepetitiveMission: 'Repetitive mission',
+  Hours: 'hours',
+  ArrivedOnDestination: 'Arrived on the destination',
 };
 
 export const fr = {
@@ -222,6 +241,7 @@ export const fr = {
   RemoveNotification: 'You want to remove this notification',
   Cancel: 'Cancel',
   YesDoIt: 'Yes, do it',
+  HaveArrivedOnDestination: 'you have arrived at your destination ?',
   //Forgot
 
   ResetInstructions: 'Reset instructions will be send to your email.',
@@ -242,4 +262,22 @@ export const fr = {
   NeedSupportWithOperator: 'Need Support with Operator',
   SupportHelp: 'Select the mission for which you need support help.',
   TypeMessage: 'Type your message...',
+
+  //Missions
+  ViewReport: 'View report',
+  SubmitReport: 'Submit Report',
+  FinishMission: 'Finish Mission',
+  MissionStarted: 'Mission Started',
+  StartMission: 'Start mission',
+  TravelMission: 'Travel To Mission',
+  MissionDate: 'Mission Date',
+  MissionTypeHeader: 'Mission Type',
+  LocationHeader: 'Location',
+  Duration: 'Duration',
+  VehicleRequired: 'Vehicle Required',
+  MissionFinishedTime: 'Mission finished time',
+  TimeInterval: 'Time Interval',
+  RepetitiveMission: 'Repetitive mission',
+  Hours: 'hours',
+  ArrivedOnDestination: 'Arrived on the destination',
 };

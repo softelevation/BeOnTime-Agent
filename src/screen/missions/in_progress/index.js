@@ -31,7 +31,9 @@ const InProgress = () => {
   const isLoad = useSelector((state) => state.mission.missions.loading);
   const {missionInProgress} = MissionData;
   const socket = io(config.Api_Url);
+  const languageMode = useSelector((state) => state.languageReducer.language);
 
+  const {MissionStarted, FinishMission, MissionDetails} = languageMode;
   const finishMission = async (id) => {
     const token = await AsyncStorage.getItem('token');
     const mission_id = id;
@@ -99,7 +101,7 @@ const InProgress = () => {
         {renderRequestReview(item)}
         <Block flex={false} padding={[0, w3]}>
           <Button onPress={() => finishMission(item.id)} color="secondary">
-            Finish mission
+            {FinishMission}
           </Button>
         </Block>
         <CustomButton
@@ -109,7 +111,7 @@ const InProgress = () => {
             })
           }
           center>
-          <Text size={14}>Mission Details</Text>
+          <Text size={14}>{MissionDetails}</Text>
         </CustomButton>
       </Block>
     );
@@ -157,7 +159,7 @@ const InProgress = () => {
           <Block flex={false}>
             <>
               <Text semibold size={16} margin={[0, w3, 0, 0]}>
-                Mission Accepted
+                {MissionStarted}
               </Text>
               {/* <Text margin={[hp(0.5), 0, 0]} size={14} grey>
                 Reaching location in 15 min.

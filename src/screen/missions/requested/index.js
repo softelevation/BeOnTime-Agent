@@ -34,7 +34,9 @@ const Requested = () => {
   const {missionPending} = MissionData;
   const isLoad = useSelector((state) => state.mission.missions.loading);
   const socket = io(config.Api_Url);
+  const languageMode = useSelector((state) => state.languageReducer.language);
 
+  const {TravelMission, StartMission, MissionDetails} = languageMode;
   const dispatch = useDispatch();
 
   const startMission = async (id) => {
@@ -64,34 +66,6 @@ const Requested = () => {
     }, 2000);
     dispatch(getMissionsRequest());
   };
-
-  const TravelMission = async (item) => {
-    const token = await AsyncStorage.getItem('token');
-    const headers = {
-      'Content-Type': 'application/json',
-      Authorization: token,
-    };
-    const res = await axios({
-      method: 'post',
-      url: `${config.Api_Url}/agent/track-to-mission`,
-      headers,
-      data: {
-        mission_id: item.id,
-      },
-    });
-    if (res.data.status === 1) {
-      navigation.navigate('TravelMission', {
-        item: item,
-      });
-    } else {
-      showMessage({
-        message: '',
-        description: res.data.message,
-        type: 'danger',
-      });
-    }
-  };
-
   const renderCards = ({item, index}) => {
     return (
       <Block
@@ -120,13 +94,13 @@ const Requested = () => {
                 : travelToMission(item)
             }
             color="primary">
-            Travel To Mission
+            {TravelMission}
           </Button>
           <Button
             disabled={item.status !== 3}
             onPress={() => startMission(item.id)}
             color="secondary">
-            Start mission
+            {StartMission}
           </Button>
         </Block>
         <CustomButton
@@ -136,7 +110,7 @@ const Requested = () => {
             })
           }
           center>
-          <Text size={14}>Mission Details</Text>
+          <Text size={14}>{MissionDetails}</Text>
         </CustomButton>
       </Block>
     );
