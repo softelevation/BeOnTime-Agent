@@ -57,4 +57,4 @@ buck-out/
 
 # CocoaPods
 /ios/Pods/
-src/screen/missions/completed/index.js
+android/app/release/

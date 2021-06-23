@@ -2,13 +2,7 @@ import {useNavigation} from '@react-navigation/native';
 import {Formik} from 'formik';
 import * as yup from 'yup';
 import React, {useEffect, useState} from 'react';
-import {
-  Alert,
-  Keyboard,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-} from 'react-native';
+import {Keyboard} from 'react-native';
 import {heightPercentageToDP} from 'react-native-responsive-screen';
 import {
   Block,
@@ -19,8 +13,8 @@ import {
   Text,
 } from '../../../components';
 import Header from '../../../components/common/header';
-import {t1, t2, t4, w4} from '../../../components/theme/fontsize';
-import axios from 'axios';
+import {t1, t4, w4} from '../../../components/theme/fontsize';
+
 import {useDispatch, useSelector} from 'react-redux';
 import {loginRequest} from '../../../redux/action';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -30,7 +24,17 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const isLoad = useSelector((state) => state.user.login.loading);
+  const languageMode = useSelector((state) => state.languageReducer.language);
 
+  const {
+    Password,
+    EmailAddress,
+    EnterPassword,
+    EnterProfileDetails,
+    EnterEmail,
+    ForgotPassword,
+    LoginHeaderTop,
+  } = languageMode;
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
@@ -62,10 +66,10 @@ const Login = () => {
   };
   return (
     <Block primary>
-      <Header centerText="Login" />
+      <Header centerText={LoginHeaderTop} />
       <KeyboardAwareScrollView
         contentContainerStyle={[
-          isKeyboardVisible ? {bottom: heightPercentageToDP(10)} : {bottom: 0},
+          isKeyboardVisible ? {bottom: heightPercentageToDP(5)} : {bottom: 0},
           {flexGrow: 1, justifyContent: 'flex-end'},
         ]}>
         <Formik
@@ -95,11 +99,11 @@ const Login = () => {
                   <ImageComponent name="logo" height="50" width="50" />
                 </Block>
                 <Text size={23} height={30} semibold>
-                  Enter profile details
+                  {EnterProfileDetails}
                 </Text>
                 <Input
-                  label="Email address"
-                  placeholder={'Enter your email address'}
+                  label={EmailAddress}
+                  placeholder={EnterEmail}
                   value={values.email}
                   onChangeText={handleChange('email')}
                   onBlur={() => setFieldTouched('email')}
@@ -110,8 +114,8 @@ const Login = () => {
                   onChangeText={handleChange('password')}
                   onBlur={() => setFieldTouched('password')}
                   error={touched.password && errors.password}
-                  label="Password"
-                  placeholder={'Enter your password'}
+                  label={Password}
+                  placeholder={EnterPassword}
                   secureTextEntry={true}
                 />
 
@@ -120,13 +124,13 @@ const Login = () => {
                   isLoading={isLoad}
                   onPress={handleSubmit}
                   color="secondary">
-                  Login
+                  {LoginHeaderTop}
                 </Button>
                 <CustomButton
                   onPress={() => navigation.navigate('Forgot')}
                   margin={[t1, 0]}>
                   <Text size={18} center semibold>
-                    Forgot password
+                    {ForgotPassword}
                   </Text>
                 </CustomButton>
               </Block>

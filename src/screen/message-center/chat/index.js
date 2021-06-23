@@ -19,7 +19,7 @@ import {
   Text,
 } from '../../../components';
 import {t1, t2, w3} from '../../../components/theme/fontsize';
-import {connect, useDispatch} from 'react-redux';
+import {connect, useDispatch, useSelector} from 'react-redux';
 import {
   getChatByIdFlush,
   getChatByIdRequest,
@@ -27,17 +27,21 @@ import {
 import AsyncStorage from '@react-native-community/async-storage';
 import {strictValidString} from '../../../utils/commonUtils';
 import {AutoScrollFlatList} from 'react-native-autoscroll-flatlist';
+import {io} from 'socket.io-client';
+import {config} from '../../../utils/config';
 const Chat = ({
   route: {params: {id, name} = {}} = {},
   callGetChatByIdApi,
   chatMessages,
-  socket,
 }) => {
   const flatlistRef = useRef();
   const [messages, setMessages] = useState('');
   const [loader, setloader] = useState(false);
   const dispatch = useDispatch();
+  const socket = io(config.Api_Url);
+  const languageMode = useSelector((state) => state.languageReducer.language);
 
+  const {TypeMessage} = languageMode;
   useEffect(() => {
     dispatch(getChatByIdRequest(id));
     clearBadge();
@@ -127,7 +131,7 @@ const Chat = ({
         <Input
           transparent
           style={{width: wp(75)}}
-          placeholder={'Type your message...'}
+          placeholder={TypeMessage}
           value={messages}
           onChangeText={(v) => setMessages(v)}
         />

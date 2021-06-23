@@ -8,10 +8,9 @@ import {
 import {Block, ImageComponent, Text} from '../../components';
 import Header from '../../components/common/header';
 import {t1, t2, w3} from '../../components/theme/fontsize';
-import ItemBox from '../../components/swipeable';
 import {useNavigation} from '@react-navigation/core';
 import ChatMeesage from '../../components/swipeable';
-import {connect} from 'react-redux';
+import {connect, useSelector} from 'react-redux';
 import {getChatRequest} from '../../redux/messages/action';
 import {
   strictValidArrayWithLength,
@@ -22,7 +21,9 @@ import ActivityLoader from '../../components/activityLoader';
 const MessageCenter = ({callGetChatApi, chat, isLoad}) => {
   const navigation = useNavigation();
   const [refreshing, setRefreshing] = useState(false);
+  const languageMode = useSelector((state) => state.languageReducer.language);
 
+  const {MessageCenterHeader, Active, Finished} = languageMode;
   useEffect(() => {
     callGetChatApi();
     const unsubscribe = navigation.addListener('focus', () => {
@@ -69,7 +70,7 @@ const MessageCenter = ({callGetChatApi, chat, isLoad}) => {
 
   return (
     <Block primary>
-      <Header leftIcon centerText="Message Center" />
+      <Header leftIcon centerText={MessageCenterHeader} />
       {isLoad && <ActivityLoader />}
       <ScrollView
         refreshControl={
@@ -78,7 +79,7 @@ const MessageCenter = ({callGetChatApi, chat, isLoad}) => {
         {strictValidArrayWithLength(chat.active) && (
           <Block margin={[t1]} flex={false}>
             <Text size={14} grey semibold>
-              Active
+              {Active}
             </Text>
             <Block
               borderColorDeafult
@@ -96,7 +97,7 @@ const MessageCenter = ({callGetChatApi, chat, isLoad}) => {
         {strictValidArrayWithMinLength(chat.finish) && (
           <Block padding={[0, t1, t1]} flex={false}>
             <Text margin={[t1, 0, 0]} size={14} grey semibold>
-              Finished
+              {Finished}
             </Text>
             <Block
               borderColorDeafult

@@ -21,6 +21,8 @@ import {getMissionsRequest, missionListRequest} from '../../../redux/action';
 import {useDispatch, useSelector} from 'react-redux';
 import {StackActions, useNavigation} from '@react-navigation/core';
 import moment from 'moment';
+import {io} from 'socket.io-client';
+import {config} from '../../../utils/config';
 const initialState = {
   acceptloader: null,
   rejecttloader: null,
@@ -41,7 +43,7 @@ const MissionDetails = ({
 
   // Reducers
 
-  const socket = useSelector((state) => state.socket.data);
+  const socket = io(config.Api_Url);
 
   const {
     id,

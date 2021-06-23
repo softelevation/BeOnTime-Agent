@@ -31,7 +31,7 @@ const Profile = () => {
     Email,
     HomeAddress,
     PhoneNumber,
-    BillingLanguage,
+    ProfileHeader,
     ChangeLanguage,
     ChangePassword,
     Logout,
@@ -46,10 +46,6 @@ const Profile = () => {
   };
 
   const ProfileData = [
-    // {
-    //   name: BillingLanguage,
-    //   nav: 'Billing',
-    // },
     {
       name: EditProfileLanguage,
       nav: 'EditProfile',
@@ -83,7 +79,7 @@ const Profile = () => {
   };
   return (
     <Block white>
-      <Header leftIcon={true} menu centerText={'Profile'} />
+      <Header leftIcon={true} menu centerText={ProfileLanguage} />
       <ScrollView showsVerticalScrollIndicator={false}>
         <Block margin={[t1, 0]} flex={false} center>
           {strictValidObjectWithKeys(profile) &&

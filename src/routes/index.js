@@ -22,6 +22,7 @@ import {
   getMissionsRequest,
   getNotificationRequest,
   socketConnection,
+  missionListRequest,
 } from '../redux/action';
 import {strictValidObjectWithKeys} from '../utils/commonUtils';
 import {onDisplayNotification} from '../utils/site-specific-common-utils';
@@ -45,6 +46,9 @@ function Routes() {
       });
       socket.on(`refresh_feed_${userId.id}`, (msg) => {
         dispatch(getMissionsRequest());
+      });
+      socket.on(`payment_success_${userId.id}`, (msg) => {
+        dispatch(missionListRequest());
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {useFocusEffect} from '@react-navigation/core';
 import React from 'react';
 import {Alert, FlatList, ScrollView} from 'react-native';
-import {connect} from 'react-redux';
+import {connect, useSelector} from 'react-redux';
 import {io} from 'socket.io-client';
 import {Block, Text} from '../../components';
 import ActivityLoader from '../../components/activityLoader';
@@ -24,7 +24,17 @@ const Notifications = ({
   callDeleteNotificationApi,
 }) => {
   const socket = io(config.Api_Url);
+  const languageMode = useSelector((state) => state.languageReducer.language);
 
+  const {
+    MostRecent,
+    NotificationsLanguage,
+    NoNotification,
+    AreYouSure,
+    RemoveNotification,
+    Cancel,
+    YesDoIt,
+  } = languageMode;
   const clearNotification = async () => {
     const token = await AsyncStorage.getItem('token');
 
@@ -48,14 +58,14 @@ const Notifications = ({
   };
   const deleteItem = (id) => {
     Alert.alert(
-      'Are you sure?',
-      'You want to remove this notification',
+      AreYouSure,
+      RemoveNotification,
       [
         {
-          text: 'Cancel',
+          text: Cancel,
         },
         {
-          text: 'Yes, do it',
+          text: YesDoIt,
           onPress: () => onhandleDelete(id),
           style: 'cancel',
         },
@@ -74,13 +84,13 @@ const Notifications = ({
   };
   return (
     <Block primary>
-      <Header centerText="Notifications" leftIcon />
+      <Header centerText={NotificationsLanguage} leftIcon />
       <ScrollView contentContainerStyle={{flexGrow: 1}}>
         {isLoad && <ActivityLoader />}
         {strictValidArrayWithLength(notifications.recent) && (
           <Block margin={[t1]} flex={false}>
-            <Text size={14} grey semibold>
-              MOST RECENT
+            <Text uppercase size={14} grey semibold>
+              {MostRecent}
             </Text>
             <Block
               borderColorDeafult
@@ -97,8 +107,8 @@ const Notifications = ({
         )}
         {strictValidArrayWithLength(notifications.all) ? (
           <Block padding={[0, t1, t1]} flex={false}>
-            <Text margin={[t1, 0, 0]} size={14} grey semibold>
-              NOTIFICATIONS
+            <Text uppercase margin={[t1, 0, 0]} size={14} grey semibold>
+              {NotificationsLanguage}
             </Text>
             <Block
               borderColorDeafult
@@ -113,7 +123,7 @@ const Notifications = ({
             />
           </Block>
         ) : (
-          <EmptyFile text="No Notifications" />
+          <EmptyFile text={NoNotification} />
         )}
       </ScrollView>
     </Block>

@@ -33,14 +33,15 @@ const Requested = () => {
   const MissionData = useSelector((state) => state.mission.missions.data);
   const {missionPending} = MissionData;
   const isLoad = useSelector((state) => state.mission.missions.loading);
-  const socket = useSelector((state) => state.socket.data);
+  const socket = io(config.Api_Url);
+
   const dispatch = useDispatch();
 
   const startMission = async (id) => {
     const token = await AsyncStorage.getItem('token');
     const mission_id = id;
     socket.emit('start_mission', {mission_id, token});
-
+    navigation.navigate('InProgress');
     socket.on(`mission_data_${mission_id}`, (msg) => {
       dispatch(getMissionsRequest());
     });
@@ -112,11 +113,11 @@ const Requested = () => {
         <Block flex={false} padding={[0, w3]}>
           <Button
             onPress={() =>
-              item.status !== 2
-                ? travelToMission(item)
-                : navigation.navigate('TravelMission', {
+              item.status === 3
+                ? navigation.navigate('TravelMission', {
                     item: item,
                   })
+                : travelToMission(item)
             }
             color="primary">
             Travel To Mission

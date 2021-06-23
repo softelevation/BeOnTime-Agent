@@ -1,33 +1,16 @@
-import {useNavigation} from '@react-navigation/native';
 import {Formik} from 'formik';
 import * as yup from 'yup';
-import React, {useEffect, useState} from 'react';
-import {
-  Alert,
-  Keyboard,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-} from 'react-native';
+import React from 'react';
+import {Keyboard, KeyboardAvoidingView, Platform} from 'react-native';
 import {heightPercentageToDP} from 'react-native-responsive-screen';
-import {
-  Block,
-  Button,
-  CustomButton,
-  ImageComponent,
-  Input,
-  Text,
-} from '../../../components';
+import {Block, Button, CustomButton, Input, Text} from '../../../components';
 import Header from '../../../components/common/header';
-import {t1, t2, t4, w4} from '../../../components/theme/fontsize';
-import axios from 'axios';
+import {w4} from '../../../components/theme/fontsize';
 import {useDispatch, useSelector} from 'react-redux';
 import {changePasswordRequest} from '../../../redux/action';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const ChangePassword = () => {
   const dispatch = useDispatch();
-  const navigation = useNavigation();
   const isLoad = useSelector((state) => state.user.login.loading);
 
   const onSubmit = async (values) => {

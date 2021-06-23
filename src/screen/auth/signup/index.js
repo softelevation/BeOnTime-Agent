@@ -1,9 +1,8 @@
 import {Formik} from 'formik';
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useRef} from 'react';
 import Toast from 'react-native-simple-toast';
 import {
   ActivityIndicator,
-  Alert,
   ImageBackground,
   Platform,
   TouchableOpacity,
@@ -27,23 +26,21 @@ import {
 } from '../../../components';
 import Header from '../../../components/common/header';
 import {t1, t2, t4, w1, w2, w3, w4} from '../../../components/theme/fontsize';
-import * as yup from 'yup';
-import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
-import {loginRequest, registerRequest} from '../../../redux/action';
+import {registerRequest} from '../../../redux/action';
 import AgentType from './agent-type';
 import ImagePicker from './imagePicker';
 import {Modalize} from 'react-native-modalize';
 import {
+  Alerts,
   strictValidArrayWithLength,
   strictValidObjectWithKeys,
 } from '../../../utils/commonUtils';
 import GooglePlacesTextInput from '../../../components/googlePlaces';
-import {config} from '../../../utils/config';
-import AsyncStorage from '@react-native-community/async-storage';
-import {UPLOAD, uploadMedia} from '../../../utils/site-specific-common-utils';
+import {UPLOAD} from '../../../utils/site-specific-common-utils';
 import {styles} from '../../../utils/common-styles';
 import Modal from 'react-native-modal';
+import {light} from '../../../components/theme/colors';
 
 const imageData = {
   profileUrl: {},
@@ -73,12 +70,8 @@ const SocialSecurityData = {
 };
 
 const Signup = () => {
-  const navigation = useNavigation();
   const formikRef = useRef(null);
   const loading = useSelector((state) => state.user.register.loading);
-  const isLoad = useSelector((state) => state.user.login.loading);
-  const isSuccess = useSelector((state) => state.user.register.isSuccess);
-  const location = useSelector((state) => state.common.location.data);
   const modalizeRef = useRef();
   const dispatch = useDispatch();
   const [action, setAction] = useState('');
@@ -98,6 +91,61 @@ const Signup = () => {
   // Url's of Image
   const [docData, setDocData] = useState(imageData);
   const {profileUrl, identityUrl, socialUrl, acvUrl} = docData;
+
+  const languageMode = useSelector((state) => state.languageReducer.language);
+  const {
+    MandatoryFields,
+    EmailAddress,
+    PhoneNumber,
+    FirstName,
+    LastName,
+    EnterFirstName,
+    EnterPhoneNumber,
+    EnterLastName,
+    Getstarted,
+    UploadDocument,
+    EnterEmail,
+    AgentTypeHeader,
+    SelectAgentType,
+    IdentityCard,
+    cvv,
+    SocialSecurityNumber,
+    IBANInfo,
+    CNAPSNum,
+    EnterIBANInfo,
+    EnterCNAPSNum,
+    HomeAddress,
+    PossessVehicle,
+    WorkLocation,
+    EnterHomeAddress,
+    Ok,
+    WelcomeBeOnTime,
+    RegistrationSuccess,
+    Yes,
+    No,
+    SubContractor,
+    FinishRegistration,
+    Iaccept,
+    PrivacyPolicy,
+    TermsConditions,
+    CompanyName,
+    EnterCompanyName,
+    PleaseUploadACV,
+    PleaseUploadICV,
+    PleaseUploadSSN,
+    PleaseEnterFirstName,
+    PleaseEnterLastName,
+    EnterValidEmail,
+    PleaseEnterEmail,
+    PleaseEnterPhoneNumber,
+    PleaseAcceptTerms,
+    PleaseAcceptPrivacy,
+    PleaseEnterCompanyName,
+    PleaseEnterWorkLocation,
+    PleaseEnterHomeAddress,
+    PleaseEnterCNAPS,
+    PleaseEnterIBAN,
+  } = languageMode;
 
   const uploadPhoto = (type) => {
     ImageCropPicker.openPicker({
@@ -504,35 +552,35 @@ const Signup = () => {
       /^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i,
     );
     if (values.firstName === '') {
-      Toast.show('Please Enter First Name');
+      Alerts('', PleaseEnterFirstName, light.danger);
     } else if (values.lastName === '') {
-      Toast.show('Please Enter Last  Name');
+      Alerts('', PleaseEnterLastName, light.danger);
     } else if (!pattern.test(values.email)) {
-      Toast.show('Please enter valid email-ID.');
+      Alerts('', EnterValidEmail, light.danger);
     } else if (values.email === '') {
-      Toast.show('Please enter email');
+      Alerts('', PleaseEnterEmail, light.danger);
     } else if (values.phone === '') {
-      Toast.show('Please enter phone number');
+      Alerts('', PleaseEnterPhoneNumber, light.danger);
     } else if (!strictValidObjectWithKeys(identityUrl) && identityUrl.value) {
-      Toast.show('Please Upload Identity Card Document');
+      Alerts('', PleaseUploadICV, light.danger);
     } else if (!strictValidObjectWithKeys(acvUrl) && acvUrl.value) {
-      Toast.show('Please Upload Anonymous Curriculum Vitae document');
+      Alerts('', PleaseUploadACV, light.danger);
     } else if (!strictValidObjectWithKeys(socialUrl) && socialUrl.value) {
-      Toast.show('Please Upload Social Security Number document');
+      Alerts('', PleaseUploadSSN, light.danger);
     } else if (values.iban === '') {
-      Toast.show('Please enter IBAN number');
+      Alerts('', PleaseEnterIBAN, light.danger);
     } else if (values.cnaps === '') {
-      Toast.show('Please enter CNAPS Number');
+      Alerts('', PleaseEnterCNAPS, light.danger);
     } else if (values.address === '') {
-      Toast.show('Please Enter Home Address');
+      Alerts('', PleaseEnterHomeAddress, light.danger);
     } else if (values.work_location === '') {
-      Toast.show('Please Enter Work Location Address');
+      Alerts('', PleaseEnterWorkLocation, light.danger);
     } else if (values.typeContractor === 'yes' && values.company === '') {
-      Toast.show('Please Enter Company Name');
+      Alerts('', PleaseEnterCompanyName, light.danger);
     } else if (values.privacy === false) {
-      Toast.show('Please accept Privacy Policy');
+      Alerts('', PleaseAcceptPrivacy, light.danger);
     } else if (values.terms === false) {
-      Toast.show('Please accept Terms');
+      Alerts('', PleaseAcceptTerms, light.danger);
     } else {
       const {
         firstName,
@@ -680,10 +728,10 @@ const Signup = () => {
 
   return (
     <Block primary>
-      <Header centerText="Get Started" />
+      <Header centerText={Getstarted} />
       <Block padding={[t1, 0]} flex={false} color="#000">
         <Text white size={14} semibold center>
-          ALL FIELDS ARE MANDATORY
+          {MandatoryFields}
         </Text>
       </Block>
 
@@ -706,10 +754,9 @@ const Signup = () => {
           iban: '',
           cnaps: '',
           work_location: '',
-          company: '',
-          identy_card: 'Please Upload Document',
-          Acv: 'Please Upload Document',
-          Ssn: 'Please Upload Document',
+          identy_card: UploadDocument,
+          Acv: UploadDocument,
+          Ssn: UploadDocument,
           typeVehicle: 'no',
           typeContractor: 'no',
           lat: '',
@@ -738,12 +785,12 @@ const Signup = () => {
                     onChangeText={handleChange('firstName')}
                     onBlur={() => setFieldTouched('firstName')}
                     error={touched.firstName && errors.firstName}
-                    label="First Name"
-                    placeholder="Enter first name"
+                    label={FirstName}
+                    placeholder={EnterFirstName}
                   />
                   <Input
-                    label="Last Name"
-                    placeholder="Enter last name"
+                    label={LastName}
+                    placeholder={EnterLastName}
                     value={values.lastName}
                     onChangeText={handleChange('lastName')}
                     onBlur={() => setFieldTouched('lastName')}
@@ -752,58 +799,58 @@ const Signup = () => {
                     autoCorrect={false}
                   />
                   <Input
-                    label="Email address"
-                    placeholder="Enter email address"
+                    label={EmailAddress}
+                    placeholder={EnterEmail}
                     value={values.email}
                     onChangeText={handleChange('email')}
                     onBlur={() => setFieldTouched('email')}
                     error={touched.email && errors.email}
                   />
                   <Input
-                    label="Phone number"
-                    placeholder="Enter phone number"
+                    label={PhoneNumber}
+                    placeholder={EnterPhoneNumber}
                     value={values.phone}
                     onChangeText={handleChange('phone')}
                     onBlur={() => setFieldTouched('phone')}
                     error={touched.phone && errors.phone}
                   />
                   {renderAgentType(
-                    'Agent type',
-                    'Select agent type',
+                    AgentTypeHeader,
+                    SelectAgentType,
                     () => onOpen('agent'),
                     values.agent_type,
                   )}
                   {renderFiles(
-                    'Identity Card',
-                    'Please Upload document',
+                    IdentityCard,
+                    UploadDocument,
                     () => onOpen('identry_card'),
                     idCardImage ? '1 file selected' : values.identy_card,
                   )}
                   {renderFiles(
-                    'Anonymous Curriculum Vitae',
-                    'Please Upload document',
+                    cvv,
+                    UploadDocument,
                     () => onOpen('Acv'),
                     AcvCardImage ? '1 file selected' : values.Acv,
                   )}
                   {/* {renderFiles('Anonymous Curriculum Vitae')} */}
                   {/* {renderFiles('Social Security Number')} */}
                   {renderFiles(
-                    'Social Security Number',
-                    'Please Upload document',
+                    SocialSecurityNumber,
+                    UploadDocument,
                     () => onOpen('Ssn'),
                     socialSecImage ? '1 file selected' : values.Acv,
                   )}
                   <Input
-                    label="IBAN Info"
-                    placeholder="Enter IBAN Info"
+                    label={IBANInfo}
+                    placeholder={EnterIBANInfo}
                     value={values.iban}
                     onChangeText={handleChange('iban')}
                     onBlur={() => setFieldTouched('iban')}
                     error={touched.iban && errors.iban}
                   />
                   <Input
-                    label="CNAPS Number"
-                    placeholder="Enter CNAPS Number"
+                    label={CNAPSNum}
+                    placeholder={EnterCNAPSNum}
                     value={values.cnaps}
                     onChangeText={handleChange('cnaps')}
                     onBlur={() => setFieldTouched('cnaps')}
@@ -811,11 +858,10 @@ const Signup = () => {
                   />
                   <View style={{marginTop: t1}}>
                     <GooglePlacesTextInput
-                      placeholder="Enter home address"
-                      label="Home address"
+                      placeholder={EnterHomeAddress}
+                      label={HomeAddress}
                       value={values.address}
                       onPress={(data, details) => {
-                        const latlng = details.geometry.location;
                         const description = data.description;
                         setFieldValue('address', description);
                       }}
@@ -830,8 +876,8 @@ const Signup = () => {
                   </View>
                   <View style={{marginTop: t2}}>
                     <GooglePlacesTextInput
-                      label="Work Location"
-                      placeholder="Work Location"
+                      label={WorkLocation}
+                      placeholder={WorkLocation}
                       value={values.work_location}
                       onPress={(data, details) => {
                         const latlng = details.geometry.location;
@@ -851,17 +897,12 @@ const Signup = () => {
                   </View>
                 </Block>
                 <Block flex={false} padding={[0, w2]}>
-                  <Block
-                    // space={'between'}
-                    center
-                    margin={[t1, w1]}
-                    row
-                    flex={false}>
+                  <Block center margin={[t1, w2]} row flex={false}>
                     <Text
                       size={16}
-                      style={{width: widthPercentageToDP(40)}}
+                      style={{width: widthPercentageToDP(37)}}
                       regular>
-                      Do you possess a vehicle?
+                      {PossessVehicle}
                     </Text>
                     <Block
                       flex={false}
@@ -893,7 +934,7 @@ const Signup = () => {
                         shadow={values.typeVehicle === 'yes'}
                         margin={[0, w1]}>
                         <Text size={14} semibold>
-                          Yes
+                          {Yes}
                         </Text>
                       </CustomButton>
                       <CustomButton
@@ -914,24 +955,19 @@ const Signup = () => {
                         }
                         shadow={values.typeVehicle === 'no'}>
                         <Text size={14} semibold>
-                          No
+                          {No}
                         </Text>
                       </CustomButton>
                     </Block>
                   </Block>
                 </Block>
                 <Block flex={false} padding={[0, w2]}>
-                  <Block
-                    // space={'between'}
-                    center
-                    margin={[t1, w1]}
-                    row
-                    flex={false}>
+                  <Block center margin={[t1, w2]} row flex={false}>
                     <Text
                       size={16}
-                      style={{width: widthPercentageToDP(40)}}
+                      style={{width: widthPercentageToDP(37)}}
                       regular>
-                      Are you a sub-contractor?
+                      {SubContractor}
                     </Text>
                     <Block
                       flex={false}
@@ -965,7 +1001,7 @@ const Signup = () => {
                         shadow={values.typeContractor === 'yes'}
                         margin={[0, w1]}>
                         <Text size={14} semibold>
-                          Yes
+                          {Yes}
                         </Text>
                       </CustomButton>
                       <CustomButton
@@ -986,7 +1022,7 @@ const Signup = () => {
                         }
                         shadow={values.typeContractor === 'no'}>
                         <Text size={14} semibold>
-                          No
+                          {No}
                         </Text>
                       </CustomButton>
                     </Block>
@@ -995,8 +1031,8 @@ const Signup = () => {
                 <Block flex={false} padding={[0, w3]}>
                   {values.typeContractor === 'yes' && (
                     <Input
-                      label="Company name"
-                      placeholder="Enter company name"
+                      label={CompanyName}
+                      placeholder={EnterCompanyName}
                       value={values.company}
                       onChangeText={handleChange('company')}
                       onBlur={() => setFieldTouched('company')}
@@ -1011,9 +1047,9 @@ const Signup = () => {
                       checked={values.privacy}
                     />
                     <Text size={16}>
-                      I accept{' '}
+                      {Iaccept}{' '}
                       <Text style={{textDecorationLine: 'underline'}} size={16}>
-                        Privacy Policy.
+                        {PrivacyPolicy}
                       </Text>
                     </Text>
                   </Block>
@@ -1025,9 +1061,9 @@ const Signup = () => {
                       checked={values.terms}
                     />
                     <Text size={16}>
-                      I accept{' '}
+                      {Iaccept}{' '}
                       <Text style={{textDecorationLine: 'underline'}} size={16}>
-                        Terms & Conditions.
+                        {TermsConditions}
                       </Text>
                     </Text>
                   </Block>
@@ -1038,7 +1074,7 @@ const Signup = () => {
                     onPress={handleSubmit}
                     style={{marginTop: t2}}
                     color="secondary">
-                    Finish registration
+                    {FinishRegistration}
                   </Button>
                 </Block>
               </KeyboardAwareScrollView>
@@ -1099,16 +1135,16 @@ const Signup = () => {
         onBackdropPress={() => setmodal(false)}>
         <View style={styles.modalView}>
           <Text semibold style={styles.modalText}>
-            Registration Success !
+            {RegistrationSuccess}
           </Text>
           <Text style={styles.textStyle} center>
-            Welcome to BeOnTime.
+            {WelcomeBeOnTime}
           </Text>
           <Button
             style={styles.button}
             onPress={() => onLogin()}
             color="secondary">
-            Ok
+            {Ok}
           </Button>
         </View>
       </Modal>

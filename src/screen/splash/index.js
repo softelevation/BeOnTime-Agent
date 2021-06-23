@@ -4,6 +4,7 @@ import React, {useEffect} from 'react';
 import {useDispatch} from 'react-redux';
 import {Block, ImageComponent, Text} from '../../components';
 import {
+  languageSuccess,
   locationSuccess,
   loginSuccess,
   profileRequest,
@@ -15,6 +16,7 @@ import Geolocation from '@react-native-community/geolocation';
 import {t4} from '../../components/theme/fontsize';
 import messaging from '@react-native-firebase/messaging';
 import {config} from '../../utils/config';
+import {en, fr} from '../common/language';
 
 const Splash = () => {
   const navigation = useNavigation();
@@ -34,6 +36,24 @@ const Splash = () => {
 
     return () => Geolocation.clearWatch(watchId);
   }, []);
+
+  useEffect(() => {
+    getLanguageValue();
+  }, []);
+
+  const getLanguageValue = async () => {
+    let value = '';
+    try {
+      value = (await AsyncStorage.getItem('language')) || 'none';
+    } catch (error) {
+      // Error retrieving data
+    }
+    if (value === 'en') {
+      dispatch(languageSuccess(en));
+    } else {
+      dispatch(languageSuccess(fr));
+    }
+  };
 
   const callAuthApi = async () => {
     const token = await AsyncStorage.getItem('token');

@@ -19,10 +19,11 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {strictValidString} from '../../../utils/commonUtils';
 import {AutoScrollFlatList} from 'react-native-autoscroll-flatlist';
 import {operatorChatRequest} from '../../../redux/action';
+import {config} from '../../../utils/config';
+import {io} from 'socket.io-client';
 
 const ChatOperator = ({
   route: {params: {id, name} = {}} = {},
-  socket,
   chatMessages,
 }) => {
   const flatlistRef = useRef();
@@ -30,7 +31,10 @@ const ChatOperator = ({
   const [loader, setloader] = useState(false);
   const profile = useSelector((v) => v.user.profile.user.data);
   const dispatch = useDispatch();
+  const socket = io(config.Api_Url);
+  const languageMode = useSelector((state) => state.languageReducer.language);
 
+  const {TypeMessage} = languageMode;
   useEffect(() => {
     dispatch(operatorChatRequest());
     clearBadge();
@@ -115,7 +119,7 @@ const ChatOperator = ({
         <Input
           transparent
           style={{width: wp(75)}}
-          placeholder={'Type your message...'}
+          placeholder={TypeMessage}
           value={messages}
           onChangeText={(v) => setMessages(v)}
         />

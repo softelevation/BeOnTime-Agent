@@ -11,10 +11,23 @@ import {Alerts} from '../../../utils/commonUtils';
 import {config} from '../../../utils/config';
 import {Formik} from 'formik';
 import * as yup from 'yup';
+import {useSelector} from 'react-redux';
 
 const Forgot = () => {
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+  const languageMode = useSelector((state) => state.languageReducer.language);
 
+  const {
+    SentResetEmail,
+    EmailAddress,
+    ResetInstructions,
+    EmailSent,
+    EnterEmail,
+    ForgotPassword,
+    EmailInbox,
+    ErrorHeader,
+    CorrectEmail,
+  } = languageMode;
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
@@ -52,16 +65,16 @@ const Forgot = () => {
     });
     if (response.data.status === 1) {
       setloader(false);
-      Alerts('Email has been sent', 'Please check your email', light.success);
+      Alerts(EmailSent, EmailInbox, light.success);
       goBack();
     } else {
       setloader(false);
-      Alerts('Error', 'Please Enter the correct email address', light.danger);
+      Alerts(ErrorHeader, CorrectEmail, light.danger);
     }
   };
   return (
     <Block primary>
-      <Header centerText="Forgot password" />
+      <Header centerText={ForgotPassword} />
       <Formik
         initialValues={{
           email: '',
@@ -89,14 +102,14 @@ const Forgot = () => {
             <CustomButton onPress={Keyboard.dismiss} flex={0.7} primary />
             <Block padding={[0, w4]} flex={0.2}>
               <Text size={20} height={30} semibold>
-                Enter email address
+                {EnterEmail}
               </Text>
               <Text margin={[t1, 0]} grey size={14}>
-                Reset instructions will be send to your email.
+                {ResetInstructions}
               </Text>
               <Input
-                label="Email address"
-                placeholder={'Enter your email address'}
+                label={EmailAddress}
+                placeholder={EnterEmail}
                 value={values.email}
                 onChangeText={handleChange('email')}
                 onBlur={() => setFieldTouched('email')}
@@ -107,7 +120,7 @@ const Forgot = () => {
                 disabled={!isValid || !dirty}
                 onPress={handleSubmit}
                 color="secondary">
-                Sent reset email
+                {SentResetEmail}
               </Button>
             </Block>
           </KeyboardAvoidingView>

@@ -21,6 +21,7 @@ import {divider} from '../../../utils/commonView';
 import ActivityLoader from '../../../components/activityLoader';
 import AsyncStorage from '@react-native-community/async-storage';
 import {showMessage} from 'react-native-flash-message';
+import {io} from 'socket.io-client';
 
 const InProgress = () => {
   const navigation = useNavigation();
@@ -29,12 +30,13 @@ const InProgress = () => {
   const MissionData = useSelector((state) => state.mission.missions.data);
   const isLoad = useSelector((state) => state.mission.missions.loading);
   const {missionInProgress} = MissionData;
-  const socket = useSelector((state) => state.socket.data);
+  const socket = io(config.Api_Url);
 
   const finishMission = async (id) => {
     const token = await AsyncStorage.getItem('token');
     const mission_id = id;
     socket.emit('finish_mission', {mission_id, token});
+    navigation.navigate('Finished');
 
     socket.on(`finish_mission_${mission_id}`, (msg) => {
       dispatch(getMissionsRequest());

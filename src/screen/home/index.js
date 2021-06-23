@@ -20,7 +20,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import {missionListRequest, profileRequest} from '../../redux/action';
 import Header from '../../components/common/header';
 import EmptyFile from '../../components/emptyFile';
-import CommonMap from '../common/Map';
 import {divider} from '../../utils/commonView';
 import CommonApi from '../../utils/CommonApi';
 import {
@@ -33,6 +32,8 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {light} from '../../components/theme/colors';
 import ActivityLoader from '../../components/activityLoader';
 import moment from 'moment';
+import {config} from '../../utils/config';
+import {io} from 'socket.io-client';
 
 const initialState = {
   acceptloader: null,
@@ -41,7 +42,6 @@ const initialState = {
 const Home = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const socket = useSelector((state) => state.socket.data);
   const profile = useSelector((state) => state.user.profile.user.data);
   const agentList = useSelector((state) => state.request.list.agents);
   const load = useSelector((state) => state.request.list.loading);
@@ -49,6 +49,18 @@ const Home = () => {
   const [loader, setloader] = useState(initialState);
   const {acceptloader, rejecttloader} = loader;
   const [refreshing, setRefreshing] = useState(false);
+  const socket = io(config.Api_Url);
+  const languageMode = useSelector((state) => state.languageReducer.language);
+
+  const {
+    Yes,
+    No,
+    Accept,
+    Reject,
+    MissionDetails,
+    AcceptingNewMissionRequest,
+    MissionRequest,
+  } = languageMode;
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -180,7 +192,6 @@ const Home = () => {
         </Block>
         {divider()}
         {renderAgentDetails(item)}
-        {/* {renderRequestReview(item)} */}
         <Block row space={'around'} flex={false} center>
           <Button
             loaderColor="#000"
@@ -188,14 +199,14 @@ const Home = () => {
             style={{width: wp(40)}}
             onPress={() => acceptRejectMission(item.id, '2')}
             color="primary">
-            Reject
+            {Reject}
           </Button>
           <Button
             isLoading={acceptloader === item.id}
             style={{width: wp(40)}}
             onPress={() => acceptRejectMission(item.id, '1')}
             color="secondary">
-            Accept
+            {Accept}
           </Button>
         </Block>
         <CustomButton
@@ -207,7 +218,7 @@ const Home = () => {
           margin={[t1, 0]}
           center>
           <Text semibold size={14}>
-            Mission Details
+            {MissionDetails}
           </Text>
         </CustomButton>
       </Block>
@@ -215,16 +226,15 @@ const Home = () => {
   };
   return (
     <Block primary>
-      <Header centerText="Mission Requests" leftIcon />
+      <Header centerText={MissionRequest} leftIcon />
       {load && <ActivityLoader />}
       <>
         <Block>
           <Block flex={false} padding={[0, w4]}>
             <Block center margin={[t1, w3]} row flex={false}>
               <Text size={16} style={{width: widthPercentageToDP(45)}} regular>
-                Accepting new mission requests?
+                {AcceptingNewMissionRequest}
               </Text>
-
               <Block
                 primary
                 margin={[0, w4, 0, 0]}
@@ -246,7 +256,7 @@ const Home = () => {
                   shadow={type === '1'}
                   margin={[0, w1]}>
                   <Text size={14} semibold>
-                    Yes
+                    {Yes}
                   </Text>
                 </CustomButton>
                 <CustomButton
@@ -262,7 +272,7 @@ const Home = () => {
                   color={type === '0' ? '#FFFFFF' : '#F7F8FA'}
                   shadow={type === '0'}>
                   <Text size={14} semibold>
-                    No
+                    {No}
                   </Text>
                 </CustomButton>
               </Block>

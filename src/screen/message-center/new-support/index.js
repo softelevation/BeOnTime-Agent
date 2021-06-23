@@ -5,6 +5,7 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
+import {useSelector} from 'react-redux';
 import {Block, CustomButton, ImageComponent, Text} from '../../../components';
 import ActivityLoader from '../../../components/activityLoader';
 import Header from '../../../components/common/header';
@@ -19,6 +20,14 @@ const NewSupport = () => {
   const [state, setstate] = useState(initialState);
   const {loading, newChat} = state;
   const navigation = useNavigation();
+  const languageMode = useSelector((v) => v.languageReducer.language);
+
+  const {
+    NewSupportChat,
+    OthersHelps,
+    NeedSupportWithOperator,
+    SupportHelp,
+  } = languageMode;
 
   useEffect(() => {
     setstate({
@@ -67,11 +76,11 @@ const NewSupport = () => {
   };
   return (
     <Block primary>
-      <Header centerText="New Support Chat" />
+      <Header centerText={NewSupportChat} />
       {loading && <ActivityLoader />}
       <Block margin={[t1]} flex={false}>
         <Text size={14} grey semibold>
-          Others Helps
+          {OthersHelps}
         </Text>
         <ScrollView showsVerticalScrollIndicator={false}>
           <Block
@@ -84,7 +93,7 @@ const NewSupport = () => {
             scrollEnabled={false}
             data={[
               {
-                title: 'Need Support with Operator',
+                title: NeedSupportWithOperator,
               },
             ]}
             renderItem={({item}) => {
@@ -118,7 +127,7 @@ const NewSupport = () => {
       </Block>
       <Block margin={[t1]} flex={1}>
         <Text size={14} grey semibold>
-          Select the mission for which you need support help.
+          {SupportHelp}
         </Text>
         <Block
           borderColorDeafult

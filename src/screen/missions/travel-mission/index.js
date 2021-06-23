@@ -57,6 +57,7 @@ const TravelMission = ({
   const _handleAppStateChange = (nextAppState) => {};
 
   const callSocket = async (position) => {
+    console.log(position, 'position');
     const mission_id = item.id;
     const token = await AsyncStorage.getItem('token');
     const data = {
@@ -91,10 +92,10 @@ const TravelMission = ({
         enableHighAccuracy: true,
         timeout: 15000,
         maximumAge: 10000,
-        distanceFilter: 1000,
+        distanceFilter: 100,
       },
     );
-    // return () => Geolocation.clearWatch(watchId);
+    return () => Geolocation.clearWatch(watchId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -110,11 +111,29 @@ const TravelMission = ({
     Linking.openURL(url);
   };
 
-  const missionArrived = async () => {
+  const deleteItem = async () => {
     const token = await AsyncStorage.getItem('token');
     const mission_id = item.id;
     socket.emit('arrived_to_mission', {mission_id: mission_id, token: token});
     navigation.goBack();
+  };
+
+  const missionArrived = (id) => {
+    Alert.alert(
+      'Are you sure?',
+      'you have arrived at your destination ?',
+      [
+        {
+          text: 'Cancel',
+        },
+        {
+          text: 'Yes',
+          onPress: () => deleteItem(),
+          style: 'cancel',
+        },
+      ],
+      {cancelable: false},
+    );
   };
   return (
     <Block primary>
@@ -179,20 +198,16 @@ const TravelMission = ({
           flex={false}>
           <ImageComponent name="map_icon" height={30} width={30} />
         </CustomButton>
-        <CustomButton
-          onPress={() => openMaps(item)}
-          center
-          middle
-          style={styles.CustomButton}
-          flex={false}>
+        <Block center middle style={styles.CustomButton} flex={false}>
           <Button
+            disabled={item.status === 3}
             onPress={() => missionArrived()}
             textStyle={{textTransform: 'capitalize'}}
             style={{width: widthPercentageToDP(95)}}
             color="secondary">
             Arrived on the destination
           </Button>
-        </CustomButton>
+        </Block>
       </Block>
     </Block>
   );
