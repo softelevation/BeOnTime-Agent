@@ -27,6 +27,9 @@ const Finished = () => {
   const {missionCompleted} = MissionData;
   const [refreshing, setRefreshing] = useState(false);
 
+  const languageMode = useSelector((state) => state.languageReducer.language);
+
+  const {ViewReport, SubmitReport, MissionDetails} = languageMode;
   const onRefresh = () => {
     setRefreshing(true);
     setTimeout(() => {
@@ -62,9 +65,7 @@ const Finished = () => {
               })
             }
             color="secondary">
-            {strictValidNumber(item.reports_id)
-              ? 'View report'
-              : 'Submit Report'}
+            {strictValidNumber(item.reports_id) ? ViewReport : SubmitReport}
           </Button>
         </Block>
         <CustomButton
@@ -74,7 +75,7 @@ const Finished = () => {
             })
           }
           center>
-          <Text size={14}>Mission Details</Text>
+          <Text size={14}>{MissionDetails}</Text>
         </CustomButton>
       </Block>
     );

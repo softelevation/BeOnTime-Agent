@@ -17,7 +17,7 @@ import {
   strictValidString,
 } from '../../../utils/commonUtils';
 import AsyncStorage from '@react-native-community/async-storage';
-import {getMissionsRequest, missionListRequest} from '../../../redux/action';
+import {getMissionsRequest} from '../../../redux/action';
 import {useDispatch, useSelector} from 'react-redux';
 import {StackActions, useNavigation} from '@react-navigation/core';
 import moment from 'moment';
@@ -29,7 +29,7 @@ const initialState = {
   startloader: null,
   finishloader: null,
 };
-const MissionDetails = ({
+const MissionDetailScreen = ({
   route: {
     params: {item},
   },
@@ -62,6 +62,27 @@ const MissionDetails = ({
     repetitive_mission,
     created_at,
   } = item;
+  const languageMode = useSelector((state) => state.languageReducer.language);
+
+  const {
+    MissionDate,
+    StartMission,
+    MissionDetails,
+    Accept,
+    Reject,
+    FinishMission,
+    MissionTypeHeader,
+    AgentTypeHeader,
+    LocationHeader,
+    Yes,
+    No,
+    RepetitiveMission,
+    Duration,
+    VehicleRequired,
+    MissionFinishedTime,
+    TimeInterval,
+    Hours,
+  } = languageMode;
   useEffect(() => {
     modalizeRef.current?.open();
   }, []);
@@ -196,14 +217,14 @@ const MissionDetails = ({
               style={{width: wp(43)}}
               onPress={() => acceptRejectMission(id, '2')}
               color="primary">
-              Reject
+              {Reject}
             </Button>
             <Button
               isLoading={acceptloader === id}
               style={{width: wp(43)}}
               onPress={() => acceptRejectMission(id, '1')}
               color="secondary">
-              Accept
+              {Accept}
             </Button>
           </Block>
         )}
@@ -212,7 +233,7 @@ const MissionDetails = ({
             isLoading={startloader}
             onPress={() => startMission(id)}
             color="secondary">
-            Start Mission
+            {StartMission}
           </Button>
         )}
         {status === 4 && (
@@ -220,7 +241,7 @@ const MissionDetails = ({
             isLoading={finishloader}
             onPress={() => finishMission(id)}
             color="secondary">
-            Finish Mission
+            {FinishMission}
           </Button>
         )}
       </Block>
@@ -230,7 +251,7 @@ const MissionDetails = ({
     return (
       <Block flex={false}>
         <Text semibold size={18}>
-          Mission details
+          {MissionDetails}
         </Text>
         <Text margin={[t1, 0, 0]} color="#8A8E99" size={14}>
           {description}
@@ -266,31 +287,27 @@ const MissionDetails = ({
       {renderMissionStatus()}
       {divider()}
       {MissionDetail()}
-      {console.log(item, 'item')}
       <Block flex={false} margin={[t2, 0, 0]}>
-        {renderDetails('Mission Date', formatDate(created_at))}
-        {renderDetails('Mission type', MissionType(intervention))}
-        {renderDetails('Agent type', AgentType(agent_type))}
-        {renderDetails('Location', location)}
-        {renderDetails('Duration', `${total_hours} hours`)}
-        {renderDetails(
-          'Vehicle required',
-          vehicle_required === 1 ? 'Yes' : 'No',
-        )}
+        {renderDetails(MissionDate, formatDate(created_at))}
+        {renderDetails(MissionTypeHeader, MissionType(intervention))}
+        {renderDetails(AgentTypeHeader, AgentType(agent_type))}
+        {renderDetails(LocationHeader, location)}
+        {renderDetails(Duration, `${total_hours} ${Hours}`)}
+        {renderDetails(VehicleRequired, vehicle_required === 1 ? Yes : No)}
         {strictValidString(mission_finish_time) &&
-          renderDetails('Mission finished time', mission_finish_time)}
+          renderDetails(MissionFinishedTime, mission_finish_time)}
         {strictValidString(time_intervel) ||
           (strictValidNumber(time_intervel) &&
-            renderDetails('Time interval', time_intervel))}
+            renderDetails(TimeInterval, time_intervel))}
         {strictValidString(repetitive_mission) &&
-          renderDetails('Repetitive mission', repetitive_mission)}
+          renderDetails(RepetitiveMission, repetitive_mission)}
       </Block>
       {divider()}
     </Block>
   );
   return (
     <Block primary>
-      <Header centerText="Mission-Details" />
+      <Header centerText={MissionDetails} />
       <Block flex={1}>
         <CommonMap agent={item} />
       </Block>
@@ -306,4 +323,4 @@ const MissionDetails = ({
   );
 };
 
-export default MissionDetails;
+export default MissionDetailScreen;

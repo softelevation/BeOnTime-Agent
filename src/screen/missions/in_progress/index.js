@@ -1,8 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {useNavigation} from '@react-navigation/native';
 import React, {useState} from 'react';
-import {FlatList, Linking, Platform, RefreshControl} from 'react-native';
-import axios from 'axios';
+import {FlatList, RefreshControl} from 'react-native';
 import {config} from '../../../utils/config';
 import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import {useDispatch, useSelector} from 'react-redux';
@@ -20,7 +19,6 @@ import {getMissionsRequest} from '../../../redux/action';
 import {divider} from '../../../utils/commonView';
 import ActivityLoader from '../../../components/activityLoader';
 import AsyncStorage from '@react-native-community/async-storage';
-import {showMessage} from 'react-native-flash-message';
 import {io} from 'socket.io-client';
 
 const InProgress = () => {
@@ -31,7 +29,9 @@ const InProgress = () => {
   const isLoad = useSelector((state) => state.mission.missions.loading);
   const {missionInProgress} = MissionData;
   const socket = io(config.Api_Url);
+  const languageMode = useSelector((state) => state.languageReducer.language);
 
+  const {MissionStarted, FinishMission, MissionDetails} = languageMode;
   const finishMission = async (id) => {
     const token = await AsyncStorage.getItem('token');
     const mission_id = id;
@@ -72,7 +72,7 @@ const InProgress = () => {
         {renderRequestReview(item)}
         <Block flex={false} padding={[0, w3]}>
           <Button onPress={() => finishMission(item.id)} color="secondary">
-            Finish mission
+            {FinishMission}
           </Button>
         </Block>
         <CustomButton
@@ -82,7 +82,7 @@ const InProgress = () => {
             })
           }
           center>
-          <Text size={14}>Mission Details</Text>
+          <Text size={14}>{MissionDetails}</Text>
         </CustomButton>
       </Block>
     );
@@ -124,7 +124,7 @@ const InProgress = () => {
           <Block flex={false}>
             <>
               <Text semibold size={16} margin={[0, w3, 0, 0]}>
-                Mission Started
+                {MissionStarted}
               </Text>
             </>
           </Block>

@@ -19,13 +19,21 @@ import {useSelector} from 'react-redux';
 
 const googleKey = 'AIzaSyBf4G3qQTDy6-DN6Tb9m6WzgYCW598EoxU';
 
-const TravelMission = ({
+const TravelMissionScreen = ({
   route: {
     params: {item},
   },
 }) => {
   const loc = useSelector((state) => state.common.location.data);
   const navigation = useNavigation();
+  const languageMode = useSelector((state) => state.languageReducer.language);
+
+  const {
+    TravelMission,
+    ArrivedOnDestination,
+    AreYouSure,
+    HaveArrivedOnDestination,
+  } = languageMode;
   // User Params
   const {latitude, longitude} = item;
   // Initial State
@@ -107,8 +115,8 @@ const TravelMission = ({
 
   const missionArrived = (id) => {
     Alert.alert(
-      'Are you sure?',
-      'you have arrived at your destination ?',
+      AreYouSure,
+      HaveArrivedOnDestination,
       [
         {
           text: 'Cancel',
@@ -124,7 +132,7 @@ const TravelMission = ({
   };
   return (
     <Block primary>
-      <Header centerText="Travel To Mission" />
+      <Header centerText={TravelMission} />
       <Block flex={1}>
         <MapView
           ref={mapRef}
@@ -194,7 +202,7 @@ const TravelMission = ({
             textStyle={{textTransform: 'capitalize'}}
             style={{width: widthPercentageToDP(95)}}
             color="secondary">
-            Arrived on the destination
+            {ArrivedOnDestination}
           </Button>
         </Block>
       </Block>
@@ -221,4 +229,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TravelMission;
+export default TravelMissionScreen;
