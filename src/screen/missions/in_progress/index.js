@@ -43,33 +43,6 @@ const InProgress = () => {
     });
   };
 
-  const TravelMission = async (item) => {
-    const token = await AsyncStorage.getItem('token');
-    const headers = {
-      'Content-Type': 'application/json',
-      Authorization: token,
-    };
-    const res = await axios({
-      method: 'post',
-      url: `${config.Api_Url}/agent/track-to-mission`,
-      headers,
-      data: {
-        mission_id: item.id,
-      },
-    });
-    if (res.data.status === 1) {
-      navigation.navigate('TravelMission', {
-        item: item,
-      });
-    } else {
-      showMessage({
-        message: '',
-        description: res.data.message,
-        type: 'danger',
-      });
-    }
-  };
-
   const onRefresh = () => {
     setRefreshing(true);
     setTimeout(() => {
@@ -134,12 +107,6 @@ const InProgress = () => {
     );
   };
   const renderRequestReview = (item) => {
-    // var percentage =
-    //   (new Date().getTime() - new Date(item.start_date_time).getTime()) /
-    //   (new Date(item.start_date_time).getTime() +
-    //     item.total_hours * 60 * 60 * 1000 -
-    //     new Date(item.start_date_time).getTime());
-    // console.log(percentage, 'percentage');
     return (
       <Block margin={[t1, w3, t1]} flex={false} row center>
         <Block
@@ -157,11 +124,8 @@ const InProgress = () => {
           <Block flex={false}>
             <>
               <Text semibold size={16} margin={[0, w3, 0, 0]}>
-                Mission Accepted
+                Mission Started
               </Text>
-              {/* <Text margin={[hp(0.5), 0, 0]} size={14} grey>
-                Reaching location in 15 min.
-              </Text> */}
             </>
           </Block>
         </Block>

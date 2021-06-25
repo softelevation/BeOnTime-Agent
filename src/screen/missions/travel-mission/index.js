@@ -4,14 +4,7 @@ import Header from '../../../components/common/header';
 import AsyncStorage from '@react-native-community/async-storage';
 import MapViewDirections from 'react-native-maps-directions';
 import Geolocation from '@react-native-community/geolocation';
-import {
-  View,
-  StyleSheet,
-  Platform,
-  Linking,
-  AppState,
-  Alert,
-} from 'react-native';
+import {View, StyleSheet, Platform, Linking, Alert} from 'react-native';
 import ResponsiveImage from 'react-native-responsive-image';
 import {images} from '../../../assets';
 import MapView, {Marker} from 'react-native-maps';
@@ -22,6 +15,7 @@ import {
   widthPercentageToDP,
 } from 'react-native-responsive-screen';
 import {useNavigation} from '@react-navigation/core';
+import {useSelector} from 'react-redux';
 
 const googleKey = 'AIzaSyBf4G3qQTDy6-DN6Tb9m6WzgYCW598EoxU';
 
@@ -30,34 +24,22 @@ const TravelMission = ({
     params: {item},
   },
 }) => {
-  const socket = io(config.Api_Url);
+  const loc = useSelector((state) => state.common.location.data);
   const navigation = useNavigation();
   // User Params
   const {latitude, longitude} = item;
   // Initial State
   const [location, setlocation] = useState({
-    latitude: 48.864716,
-    longitude: 2.349014,
+    latitude: loc.latitude,
+    longitude: loc.longitude,
     latitudeDelta: 0.00922 * 1.5,
     longitudeDelta: 0.00421 * 1.5,
-    angle: 120,
+    angle: loc.heading,
   });
   const mapRef = useRef();
-  const appState = useRef(AppState.currentState);
-  const [appStateVisible, setAppStateVisible] = useState(appState.current);
-
-  useEffect(() => {
-    AppState.addEventListener('change', _handleAppStateChange);
-
-    return () => {
-      AppState.removeEventListener('change', _handleAppStateChange);
-    };
-  }, []);
-
-  const _handleAppStateChange = (nextAppState) => {};
 
   const callSocket = async (position) => {
-    console.log(position, 'position');
+    const socket = io(config.Api_Url);
     const mission_id = item.id;
     const token = await AsyncStorage.getItem('token');
     const data = {
@@ -92,10 +74,14 @@ const TravelMission = ({
         enableHighAccuracy: true,
         timeout: 15000,
         maximumAge: 10000,
-        distanceFilter: 100,
+        distanceFilter: 1,
       },
     );
-    return () => Geolocation.clearWatch(watchId);
+    return () => {
+      if (watchId !== null) {
+        Geolocation.clearWatch(watchId);
+      }
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -112,6 +98,7 @@ const TravelMission = ({
   };
 
   const deleteItem = async () => {
+    const socket = io(config.Api_Url);
     const token = await AsyncStorage.getItem('token');
     const mission_id = item.id;
     socket.emit('arrived_to_mission', {mission_id: mission_id, token: token});
@@ -141,6 +128,8 @@ const TravelMission = ({
       <Block flex={1}>
         <MapView
           ref={mapRef}
+          mapType={Platform.OS === 'android' ? 'none' : 'standard'}
+          followUserLocation
           scrollEnabled
           style={styles.map}
           region={location}

@@ -48,7 +48,7 @@ const Notifications = ({
   useFocusEffect(
     React.useCallback(() => {
       clearNotification();
-      callNotificationApi();
+      // callNotificationApi();
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []),
   );
@@ -123,7 +123,11 @@ const Notifications = ({
             />
           </Block>
         ) : (
-          <EmptyFile text={NoNotification} />
+          <>
+            {!isLoad && !strictValidArrayWithLength(notifications.all) && (
+              <EmptyFile text={NoNotification} />
+            )}
+          </>
         )}
       </ScrollView>
     </Block>

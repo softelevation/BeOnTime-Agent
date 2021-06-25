@@ -1,11 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {useNavigation} from '@react-navigation/native';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {FlatList, RefreshControl} from 'react-native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
+import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   Block,
@@ -17,16 +14,9 @@ import {
 import EmptyFile from '../../../components/emptyFile';
 import {t1, t2, w3, w5} from '../../../components/theme/fontsize';
 import {getMissionsRequest} from '../../../redux/action';
-import {
-  strictValidArrayWithLength,
-  strictValidNumber,
-  strictValidObject,
-  strictValidString,
-} from '../../../utils/commonUtils';
+import {strictValidNumber} from '../../../utils/commonUtils';
 import {divider} from '../../../utils/commonView';
-import {AgentType, PaymentStatus} from '../../../utils/data';
-import CommonMap from '../../common/Map';
-import CommonApi from '../../../utils/CommonApi';
+import {PaymentStatus} from '../../../utils/data';
 import ActivityLoader from '../../../components/activityLoader';
 
 const Finished = () => {

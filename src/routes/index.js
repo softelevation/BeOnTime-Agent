@@ -5,7 +5,6 @@ import Splash from '../screen/splash';
 import {AuthStack, HomeStack} from './sub-routes';
 import {navigationRef} from './NavigationService';
 import CreateMission from '../screen/create-mission';
-import ChooseType from '../screen/choose-type';
 import ReviewDetails from '../screen/review';
 import Payment from '../screen/payment';
 import MissionDetails from '../screen/missions/details';
@@ -60,7 +59,6 @@ function Routes() {
         <Stack.Screen name="Auth" component={AuthStack} />
         <Stack.Screen name="Home" component={HomeStack} />
         <Stack.Screen name="CreateMission" component={CreateMission} />
-        <Stack.Screen name="ChooseType" component={ChooseType} />
         <Stack.Screen name="ReviewDetails" component={ReviewDetails} />
         <Stack.Screen name="Payment" component={Payment} />
         <Stack.Screen name="MissionDetails" component={MissionDetails} />

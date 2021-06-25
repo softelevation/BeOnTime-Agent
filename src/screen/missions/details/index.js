@@ -292,7 +292,7 @@ const MissionDetails = ({
     <Block primary>
       <Header centerText="Mission-Details" />
       <Block flex={1}>
-        <CommonMap />
+        <CommonMap agent={item} />
       </Block>
 
       <Modalize
