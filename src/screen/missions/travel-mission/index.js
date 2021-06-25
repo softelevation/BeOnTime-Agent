@@ -7,11 +7,7 @@ import Geolocation from '@react-native-community/geolocation';
 import {View, StyleSheet, Platform, Linking, Alert} from 'react-native';
 import ResponsiveImage from 'react-native-responsive-image';
 import {images} from '../../../assets';
-import MapView, {
-  Marker,
-  MarkerAnimated,
-  AnimatedRegion,
-} from 'react-native-maps';
+import MapView, {Marker} from 'react-native-maps';
 import {config} from '../../../utils/config';
 import {io} from 'socket.io-client';
 import {
@@ -20,6 +16,7 @@ import {
 } from 'react-native-responsive-screen';
 import {useNavigation} from '@react-navigation/core';
 import {useSelector} from 'react-redux';
+import {useFocusEffect} from '@react-navigation/native';
 
 const googleKey = 'AIzaSyBf4G3qQTDy6-DN6Tb9m6WzgYCW598EoxU';
 
@@ -31,7 +28,7 @@ const TravelMissionScreen = ({
   const loc = useSelector((state) => state.common.location.data);
   const navigation = useNavigation();
   const languageMode = useSelector((state) => state.languageReducer.language);
-
+  const socket = io(config.Api_Url);
   const {
     TravelMission,
     ArrivedOnDestination,
@@ -42,16 +39,15 @@ const TravelMissionScreen = ({
   const {latitude, longitude} = item;
   // Initial State
   const [location, setlocation] = useState({
-    latitude: loc.latitude,
-    longitude: loc.longitude,
+    latitude: loc.latitude || 0,
+    longitude: loc.longitude || 0,
     latitudeDelta: 0.00922 * 1.5,
     longitudeDelta: 0.00421 * 1.5,
-    angle: loc.heading,
+    angle: loc.heading || 40,
   });
-  const mapRef = useRef();
 
+  const mapRef = useRef();
   const callSocket = async (position) => {
-    const socket = io(config.Api_Url);
     const mission_id = item.id;
     const token = await AsyncStorage.getItem('token');
     const data = {
@@ -66,36 +62,58 @@ const TravelMissionScreen = ({
     };
     socket.emit('agent_location', data);
   };
+  const callSocketOnFirst = async (position) => {
+    const mission_id = item.id;
+    const token = await AsyncStorage.getItem('token');
+    const data = {
+      token: token,
+      latitude: position.latitude,
+      longitude: position.longitude,
+      latitudeDelta: 0.00922 * 1.5,
+      longitudeDelta: 0.00421 * 1.5,
+      angle: position.angle,
+      speed: position.speed || 10,
+      mission_id: mission_id,
+    };
+    console.log(data, 'data');
+    socket.emit('agent_location', data);
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      let watchId = Geolocation.watchPosition(
+        (position) => {
+          console.log(position, 'location');
+          let region = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            latitudeDelta: 0.00922 * 1.5,
+            longitudeDelta: 0.00421 * 1.5,
+            angle: position.coords.heading,
+          };
+
+          setlocation(region);
+          callSocket(position);
+        },
+        (error) => console.log(error),
+        {
+          enableHighAccuracy: true,
+          timeout: 15000,
+          maximumAge: 10000,
+          distanceFilter: 1,
+        },
+      );
+      return () => {
+        if (watchId !== null) {
+          Geolocation.clearWatch(watchId);
+        }
+      };
+    }, []),
+  );
 
   useEffect(() => {
-    let watchId = Geolocation.watchPosition(
-      (position) => {
-        let region = {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          latitudeDelta: 0.00922 * 1.5,
-          longitudeDelta: 0.00421 * 1.5,
-          angle: position.coords.heading,
-        };
-
-        setlocation(region);
-        callSocket(position);
-      },
-      (error) => console.log(error),
-      {
-        enableHighAccuracy: true,
-        timeout: 15000,
-        maximumAge: 10000,
-        distanceFilter: 1,
-      },
-    );
-    return () => {
-      if (watchId !== null) {
-        Geolocation.clearWatch(watchId);
-      }
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    callSocketOnFirst(location);
+  }, [location]);
 
   const openMaps = (data) => {
     const scheme = Platform.select({ios: 'maps:0,0?q=', android: 'geo:0,0?q='});
@@ -110,7 +128,6 @@ const TravelMissionScreen = ({
   };
 
   const deleteItem = async () => {
-    const socket = io(config.Api_Url);
     const token = await AsyncStorage.getItem('token');
     const mission_id = item.id;
     socket.emit('arrived_to_mission', {mission_id: mission_id, token: token});
@@ -140,7 +157,7 @@ const TravelMissionScreen = ({
       <Block flex={1}>
         <MapView
           ref={mapRef}
-          mapType={Platform.OS === 'android' ? 'none' : 'standard'}
+          // mapType={Platform.OS === 'android' ? 'none' : 'standard'}
           followUserLocation
           scrollEnabled
           style={styles.map}
@@ -148,7 +165,7 @@ const TravelMissionScreen = ({
           onRegionChangeComplete={async (coords) => {
             mapRef.current?.animateCamera(coords);
           }}>
-          <MarkerAnimated coordinate={location}>
+          <Marker coordinate={location}>
             <View>
               <ResponsiveImage
                 style={{
@@ -164,7 +181,7 @@ const TravelMissionScreen = ({
                 initWidth="60"
               />
             </View>
-          </MarkerAnimated>
+          </Marker>
           {location.latitude > 0 && (
             <MapViewDirections
               origin={location}

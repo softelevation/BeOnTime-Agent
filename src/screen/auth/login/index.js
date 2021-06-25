@@ -69,7 +69,7 @@ const Login = () => {
       <Header centerText={LoginHeaderTop} />
       <KeyboardAwareScrollView
         contentContainerStyle={[
-          isKeyboardVisible ? {bottom: heightPercentageToDP(5)} : {bottom: 0},
+          isKeyboardVisible ? {bottom: heightPercentageToDP(3)} : {bottom: 0},
           {flexGrow: 1, justifyContent: 'flex-end'},
         ]}>
         <Formik

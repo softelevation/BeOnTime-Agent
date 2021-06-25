@@ -17,27 +17,55 @@ import {t4} from '../../components/theme/fontsize';
 import messaging from '@react-native-firebase/messaging';
 import {config} from '../../utils/config';
 import {en, fr} from '../common/language';
+import {PermissionsAndroid, Platform} from 'react-native';
 
 const Splash = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const watchId = Geolocation.getCurrentPosition(
+  const getLocation = () => {
+    Geolocation.getCurrentPosition(
       (position) => {
         dispatch(locationSuccess(position.coords));
       },
       (error) => {},
       {
-        enableHighAccuracy: true,
+        enableHighAccuracy: false,
         timeout: 15000,
       },
     );
-
-    return () => Geolocation.clearWatch(watchId);
-  }, []);
+  };
+  const requestCameraPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'BeOnTime App Location Permission',
+          message:
+            'BeOnTime App App needs access to your location ' +
+            'so you can access the geolocation service.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('You can use the location');
+        getLocation();
+      } else {
+        console.log('Camera permission denied');
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
 
   useEffect(() => {
+    if (Platform.OS === 'ios') {
+      getLocation();
+    } else {
+      requestCameraPermission();
+    }
     getLanguageValue();
   }, []);
 

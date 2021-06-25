@@ -87,7 +87,7 @@ const Requested = () => {
         <Block flex={false} padding={[0, w3]}>
           <Button
             onPress={() =>
-              item.status === 3
+              item.status === 2
                 ? navigation.navigate('TravelMission', {
                     item: item,
                   })
