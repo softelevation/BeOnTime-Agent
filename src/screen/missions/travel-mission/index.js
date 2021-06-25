@@ -7,7 +7,11 @@ import Geolocation from '@react-native-community/geolocation';
 import {View, StyleSheet, Platform, Linking, Alert} from 'react-native';
 import ResponsiveImage from 'react-native-responsive-image';
 import {images} from '../../../assets';
-import MapView, {Marker} from 'react-native-maps';
+import MapView, {
+  Marker,
+  MarkerAnimated,
+  AnimatedRegion,
+} from 'react-native-maps';
 import {config} from '../../../utils/config';
 import {io} from 'socket.io-client';
 import {
@@ -144,7 +148,7 @@ const TravelMissionScreen = ({
           onRegionChangeComplete={async (coords) => {
             mapRef.current?.animateCamera(coords);
           }}>
-          <Marker coordinate={location}>
+          <MarkerAnimated coordinate={location}>
             <View>
               <ResponsiveImage
                 style={{
@@ -160,7 +164,7 @@ const TravelMissionScreen = ({
                 initWidth="60"
               />
             </View>
-          </Marker>
+          </MarkerAnimated>
           {location.latitude > 0 && (
             <MapViewDirections
               origin={location}
