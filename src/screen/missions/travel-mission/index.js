@@ -113,7 +113,7 @@ const TravelMissionScreen = ({
 
   useEffect(() => {
     callSocketOnFirst(location);
-  }, [location]);
+  }, []);
 
   const openMaps = (data) => {
     const scheme = Platform.select({ios: 'maps:0,0?q=', android: 'geo:0,0?q='});

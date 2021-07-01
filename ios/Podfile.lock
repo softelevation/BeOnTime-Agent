@@ -140,15 +140,9 @@ PODS:
     - PromisesObjC (~> 1.2)
   - GoogleUtilities/Logger (7.4.3):
     - GoogleUtilities/Environment
-<<<<<<< HEAD
   - GoogleUtilities/MethodSwizzler (7.4.3):
     - GoogleUtilities/Logger
   - GoogleUtilities/Network (7.4.3):
-=======
-  - GoogleUtilities/MethodSwizzler (7.4.1):
-    - GoogleUtilities/Logger
-  - GoogleUtilities/Network (7.4.1):
->>>>>>> d27d2dd18eddd897c5a96120e44d31622650d1a8
     - GoogleUtilities/Logger
     - "GoogleUtilities/NSData+zlib"
     - GoogleUtilities/Reachability
@@ -656,11 +650,7 @@ SPEC CHECKSUMS:
   glog: 40a13f7840415b9a77023fbcae0f1e6f43192af3
   GoogleAppMeasurement: 120eec8803fe65a4a7475fb3d3d59a61d0e1a866
   GoogleDataTransport: 8b0e733ea77c9218778e5a9e34ba9508b8328939
-<<<<<<< HEAD
   GoogleUtilities: 45dbb24a7f351d69d0a601482b39ad6c32e30dab
-=======
-  GoogleUtilities: f8a43108b38a68eebe8b3540e1f4f2d28843ce20
->>>>>>> d27d2dd18eddd897c5a96120e44d31622650d1a8
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   nanopb: 59221d7f958fb711001e6a449489542d92ae113e
   OpenSSL-Universal: 1aa4f6a6ee7256b83db99ec1ccdaa80d10f9af9b
