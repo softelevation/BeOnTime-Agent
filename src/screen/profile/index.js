@@ -47,6 +47,10 @@ const Profile = () => {
 
   const ProfileData = [
     {
+      name: 'Planning',
+      nav: 'Planning',
+    },
+    {
       name: EditProfileLanguage,
       nav: 'EditProfile',
     },

@@ -27,6 +27,7 @@ import {strictValidObjectWithKeys} from '../utils/commonUtils';
 import {onDisplayNotification} from '../utils/site-specific-common-utils';
 import {config} from '../utils/config';
 import TravelMission from '../screen/missions/travel-mission';
+import Planning from '../screen/planning';
 
 const Stack = createStackNavigator();
 
@@ -70,6 +71,7 @@ function Routes() {
         <Stack.Screen name="Chat" component={Chat} />
         <Stack.Screen name="ChatOperator" component={ChatOperator} />
         <Stack.Screen name="Language" component={Language} />
+        <Stack.Screen name="Planning" component={Planning} />
       </Stack.Navigator>
     </NavigationContainer>
   );

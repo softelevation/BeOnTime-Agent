@@ -95,9 +95,6 @@ const Login = () => {
           }) => (
             <>
               <Block bottom padding={[0, w4, t4]}>
-                <Block flex={false} margin={[t1, 0]}>
-                  <ImageComponent name="logo" height="50" width="50" />
-                </Block>
                 <Text size={23} height={30} semibold>
                   {EnterProfileDetails}
                 </Text>

@@ -26,18 +26,21 @@ const WelcomeLogin = () => {
         width={Dimensions.get('screen').width}
       />
       <Block margin={[t3, widthPercentageToDP(10)]} flex={false}>
-        <Text semibold size={26}>
+        <Block flex={false} margin={[t3, 0]}>
+          <ImageComponent name="logo" height="50" width="50" />
+        </Block>
+        <Text semibold size={24}>
           {RequestSecurity}
         </Text>
-        <Text semibold size={26}>
+        <Text semibold size={24}>
           {Afewsimple}
         </Text>
         <Text height={18} margin={[t1, 0]} grey size={16}>
           {WelcomeDescription}
         </Text>
-        <Text margin={[t1, 0]} grey size={16}>
+        {/* <Text margin={[t1, 0]} grey size={16}>
           {WegotCover}
-        </Text>
+        </Text> */}
         <Block flex={false} margin={[t2, 0]}>
           <Block flex={false} margin={[t2, 0]} />
           <Button

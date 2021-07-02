@@ -25,10 +25,6 @@ export const en = {
   HoursClocked: 'Hours Clocked',
 
   // Welcome Screen
-  RequestSecurity: 'Request security agent in.',
-  Afewsimple: 'a few simple clicks.',
-  WelcomeDescription:
-    'Need to ensure the security of a site, surveillance of a parking lot,protection of a store, or prevention of fire risks in public establishments?',
   WegotCover: 'We got you covered.',
   Getstarted: 'Get Started',
   Alreadyaccount: 'Already have an account?',
@@ -138,6 +134,17 @@ export const en = {
   RepetitiveMission: 'Repetitive mission',
   Hours: 'hours',
   ArrivedOnDestination: 'Arrived on the destination',
+
+  // New
+
+  RequestSecurity: 'Find extra security missions',
+  Afewsimple: 'close to you in a simple click',
+  WelcomeDescription:
+    'Through this app, find new missions near you and improve your remuneration, even if you already have an activity.',
+  RequestHeader: 'Request',
+  Accepted: 'Accepted',
+  Started: 'Started',
+  MissionHeader: 'Missions',
 };
 
 export const fr = {
@@ -283,4 +290,8 @@ export const fr = {
   RepetitiveMission: 'mission répétitive',
   Hours: 'heures',
   ArrivedOnDestination: 'Arrivé à destination',
+  RequestHeader: 'Demander',
+  Accepted: 'Accepted',
+  Started: 'Started',
+  MissionHeader: 'Missions',
 };

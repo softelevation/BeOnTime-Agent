@@ -11,7 +11,7 @@ import PropTypes from 'prop-types';
 import Text from './Text';
 import {images} from '../assets';
 import {strictValidObjectWithKeys} from '../utils/commonUtils';
-import {connect} from 'react-redux';
+import {connect, useSelector} from 'react-redux';
 import {getNotificationRequest} from '../redux/action';
 
 const styles = StyleSheet.create({
@@ -87,6 +87,31 @@ const BottomTab = ({
   notifications,
   chat,
 }) => {
+  const languageMode = useSelector((v) => v.languageReducer.language);
+
+  const {
+    ProfileLanguage,
+    NotificationsLanguage,
+    MessageCenterHeader,
+    RequestHeader,
+    MissionHeader,
+  } = languageMode;
+  const renderLabel = (type) => {
+    switch (type) {
+      case 'Request':
+        return RequestHeader;
+      case 'Message':
+        return MessageCenterHeader;
+      case 'Missions':
+        return MissionHeader;
+      case 'Notifications':
+        return NotificationsLanguage;
+      case 'Profile':
+        return ProfileLanguage;
+      default:
+        return 'Beontime';
+    }
+  };
   return (
     <View style={styles.ButtonContainer}>
       {state.routes.map((route, index) => {
@@ -187,7 +212,7 @@ const BottomTab = ({
                   marginTop: hp(1),
                   color: '#000',
                 }}>
-                {label}
+                {renderLabel(label)}
               </Text>
             ) : (
               <Text

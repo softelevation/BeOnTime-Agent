@@ -17,14 +17,17 @@ const Missions = ({navigationState}) => {
   const dispatch = useDispatch();
   const selected = index;
   const navigation = useNavigation();
+  const languageMode = useSelector((state) => state.languageReducer.language);
+
+  const {Accepted, Started, Finished, MissionHeader} = languageMode;
   const getValues = (name) => {
     if (name === 'Requested') {
-      return 'Accepted';
+      return Accepted;
     }
     if (name === 'InProgress') {
-      return 'Started';
+      return Started;
     }
-    return 'Finished';
+    return Finished;
   };
 
   useFocusEffect(
@@ -35,7 +38,7 @@ const Missions = ({navigationState}) => {
 
   return (
     <Block primary flex={false}>
-      <Header centerText="Missions" leftIcon />
+      <Header centerText={MissionHeader} leftIcon />
       <FlatList
         data={routes}
         horizontal
