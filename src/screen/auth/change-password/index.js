@@ -12,7 +12,17 @@ import {changePasswordRequest} from '../../../redux/action';
 const ChangePassword = () => {
   const dispatch = useDispatch();
   const isLoad = useSelector((state) => state.user.login.loading);
-
+  const languageMode = useSelector((state) => state.languageReducer.language);
+  const {
+    CurrentPassword,
+    NewPassword,
+    ConfirmNewPassword,
+    EnterNewPassword,
+    EnterConfirmPassword,
+    EnterCurrentPassword,
+    BothSamePassword,
+    ChangePassword,
+  } = languageMode;
   const onSubmit = async (values) => {
     const {new_password, current_password, confirm_password} = values;
     dispatch(
@@ -25,7 +35,7 @@ const ChangePassword = () => {
   };
   return (
     <Block primary>
-      <Header centerText="Change Password" />
+      <Header centerText={ChangePassword} />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={heightPercentageToDP(20)}
@@ -46,10 +56,7 @@ const ChangePassword = () => {
                 is: (val) => (val && val.length > 0 ? true : false),
                 then: yup
                   .string()
-                  .oneOf(
-                    [yup.ref('new_password')],
-                    'Both password need to be the same',
-                  ),
+                  .oneOf([yup.ref('new_password')], BothSamePassword),
               })
               .required('Required'),
           })}>
@@ -68,11 +75,11 @@ const ChangePassword = () => {
               <CustomButton onPress={Keyboard.dismiss} flex={0.5} primary />
               <Block padding={[0, w4]} flex={0.5}>
                 <Text size={23} height={30} semibold>
-                  Change Password
+                  {ChangePassword}
                 </Text>
                 <Input
-                  label="Current Password"
-                  placeholder={'Enter your current Password'}
+                  label={CurrentPassword}
+                  placeholder={EnterCurrentPassword}
                   value={values.current_password}
                   onChangeText={handleChange('current_password')}
                   onBlur={() => setFieldTouched('current_password')}
@@ -83,8 +90,8 @@ const ChangePassword = () => {
                   onChangeText={handleChange('new_password')}
                   onBlur={() => setFieldTouched('new_password')}
                   error={touched.new_password && errors.new_password}
-                  label="New password"
-                  placeholder={'Enter your new password'}
+                  label={NewPassword}
+                  placeholder={EnterNewPassword}
                   secureTextEntry={true}
                 />
                 <Input
@@ -95,8 +102,8 @@ const ChangePassword = () => {
                   errorText={
                     touched.confirm_password && errors.confirm_password
                   }
-                  label="Confirm new password"
-                  placeholder={'Enter your confirm password'}
+                  label={ConfirmNewPassword}
+                  placeholder={EnterConfirmPassword}
                   secureTextEntry={true}
                 />
 
@@ -105,7 +112,7 @@ const ChangePassword = () => {
                   isLoading={isLoad}
                   onPress={handleSubmit}
                   color="secondary">
-                  Change password
+                  {ChangePassword}
                 </Button>
               </Block>
             </>

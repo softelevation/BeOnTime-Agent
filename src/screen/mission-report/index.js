@@ -11,18 +11,7 @@ import {
 import Header from '../../components/common/header';
 import {Modalize} from 'react-native-modalize';
 import {t1, w3} from '../../components/theme/fontsize';
-import {
-  allumeeData,
-  circulationData,
-  EffractionData,
-  fonctionData,
-  meteoData,
-  MissionType,
-  ouvertesData,
-  RemiseData,
-  systemData,
-  verificationData,
-} from '../../utils/data';
+import {MissionType} from '../../utils/data';
 import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import moment from 'moment';
 import CommonApi from '../../utils/CommonApi';
@@ -46,6 +35,55 @@ import {styles} from '../../utils/common-styles';
 import Modal from 'react-native-modal';
 import {config} from '../../utils/config';
 
+export const meteoData = [
+  {name: 'Vent fort', value: 'Vent fort'},
+  {name: 'Pluie', value: 'Pluie'},
+  {name: 'Orage', value: 'Orage'},
+  {name: 'Neige', value: 'Neige'},
+];
+export const circulationData = [
+  {name: 'Mauvaise (motif)', value: 'Mauvaise (motif)'},
+];
+export const verificationData = [
+  {name: 'Intérieur', value: 'Intérieur'},
+  {name: 'Extérieur', value: 'Extérieur'},
+];
+export const allumeeData = [
+  {name: 'Non', value: 'Non'},
+  {name: 'Oui Pièce', value: 'Oui Pièce'},
+];
+export const ouvertesData = [
+  {name: 'Non', value: 'Non'},
+  {name: 'Oui Lesquelles', value: 'Oui Lesquelles'},
+];
+export const fonctionData = [
+  {name: 'Non', value: 'Non'},
+  {name: 'Oui', value: 'Oui'},
+];
+export const systemData = [
+  {name: 'En service', value: 'En service'},
+  {
+    name: 'Hors service à l’arrivée de l’intervenant',
+    value: 'Hors service à l’arrivée de l’intervenant',
+  },
+];
+export const RemiseData = [
+  {name: 'Non', value: 'Non'},
+  {name: 'Oui', value: 'Oui'},
+  {name: 'Zone(s) en anomalies', value: 'Zone(s) en anomalies'},
+  {name: 'Zones isolées', value: 'Zones isolées'},
+];
+export const EffractionData = [
+  {name: 'Non', value: 'Non'},
+  {name: 'Oui', value: 'Oui'},
+];
+export const presenceData = [
+  {name: 'Client', value: 'Client'},
+  {name: 'Police', value: 'Police'},
+  {name: 'Gendarmerie', value: 'Gendarmerie'},
+  {name: 'Pompiers', value: 'Pompiers'},
+];
+
 const MissionReport = ({
   route: {
     params: {item = {}},
@@ -66,7 +104,27 @@ const MissionReport = ({
   const isSuccess = useSelector(
     (state) => state.request.missionReport.isSuccess,
   );
+  const languageMode = useSelector((state) => state.languageReducer.language);
 
+  const {
+    MissionReportHeader,
+    FinishMission,
+    MissionTypeHeader,
+    Description,
+    Signature,
+    DrawSignature,
+    DateLanguage,
+    EnterValidDescription,
+    ValidConstantMeteo,
+    ValidCirculation,
+    ValidVerification,
+    ValidLumiere,
+    ValidOvertes,
+    ValidFonction,
+    ValidSysteme,
+    ValidRemise,
+    ValidEffraction,
+  } = languageMode;
   const {report} = missionReport;
   useEffect(() => {
     if (isSuccess === true) {
@@ -103,25 +161,25 @@ const MissionReport = ({
   const onSubmit = (values) => {
     const danger = light.danger;
     if (values.description === '') {
-      Alerts('', 'Please Enter valid description', danger);
+      Alerts('', EnterValidDescription, danger);
     } else if (values.meteo === '') {
-      Alerts('', 'Please choose valid Constat météo', danger);
+      Alerts('', ValidConstantMeteo, danger);
     } else if (values.circulation === '') {
-      Alerts('', 'Please choose valid Circulation', danger);
+      Alerts('', ValidCirculation, danger);
     } else if (values.verification === '') {
-      Alerts('', 'Please choose valid Circuit de Vérification', danger);
+      Alerts('', ValidVerification, danger);
     } else if (values.allumee === '') {
-      Alerts('', 'Please choose valid Lumiere allume', danger);
+      Alerts('', ValidLumiere, danger);
     } else if (values.ouvertes === '') {
-      Alerts('', 'Please choose valid Issues(s) ouvertes', danger);
+      Alerts('', ValidOvertes, danger);
     } else if (values.fonction === '') {
-      Alerts('', 'Please Echoose valid Sirene en fonction', danger);
+      Alerts('', ValidFonction, danger);
     } else if (values.systeme === '') {
-      Alerts('', 'Please choose valid Systeme', danger);
+      Alerts('', ValidSysteme, danger);
     } else if (values.remise === '') {
-      Alerts('', 'Please choose valid Remise en service du systeme', danger);
+      Alerts('', ValidRemise, danger);
     } else if (values.effraction === false) {
-      Alerts('', 'Please choose valid Effraction constatee', danger);
+      Alerts('', ValidEffraction, danger);
     } else {
       const {
         description,
@@ -204,7 +262,7 @@ const MissionReport = ({
   if (!strictValidObjectWithKeys(missionReport)) {
     return (
       <Block>
-        <Header centerText="Mission Report" leftIcon={false} />
+        <Header centerText={MissionReportHeader} leftIcon={false} />
         <Block center middle>
           <ActivityIndicator color="#000" size="large" />
         </Block>
@@ -213,7 +271,7 @@ const MissionReport = ({
   } else {
     return (
       <Block white>
-        <Header centerText="Mission Report" leftIcon={false} />
+        <Header centerText={MissionReportHeader} leftIcon={false} />
         <Formik
           innerRef={formikRef}
           enableReinitialize
@@ -319,7 +377,7 @@ const MissionReport = ({
                   </Block>
                   <Block padding={[0, w3]} flex={false}>
                     <Input
-                      label="Description"
+                      label={Description}
                       value={values.description}
                       onChangeText={handleChange('description')}
                       onBlur={() => setFieldTouched('description')}
@@ -331,14 +389,14 @@ const MissionReport = ({
                   </Block>
 
                   {renderType(
-                    'Mission type',
+                    MissionTypeHeader,
                     '',
                     () => console.log('Mission'),
                     report.intervention,
                   )}
 
                   {renderType(
-                    'Date',
+                    DateLanguage,
                     '',
                     () => console.log('Date'),
                     formatDate(report.start_date_time),
@@ -369,7 +427,7 @@ const MissionReport = ({
                     'Constat meteo',
                     '',
                     () => onOpen('meteo'),
-                    values.meteo.name,
+                    values.meteo.value,
                     report.constat_meteo,
                   )}
 
@@ -377,7 +435,7 @@ const MissionReport = ({
                     'Circulation',
                     '',
                     () => onOpen('circulation'),
-                    values.circulation.name,
+                    values.circulation.value,
                     report.circulation,
                   )}
 
@@ -385,7 +443,7 @@ const MissionReport = ({
                     'Circuit de Verification',
                     '',
                     () => onOpen('verification'),
-                    values.verification.name,
+                    values.verification.value,
                     report.circuit_de_verification,
                   )}
 
@@ -393,7 +451,7 @@ const MissionReport = ({
                     'Lumiere allume',
                     '',
                     () => onOpen('allumee'),
-                    values.allumee.name,
+                    values.allumee.value,
                     report.lumiere_allumee,
                   )}
 
@@ -401,7 +459,7 @@ const MissionReport = ({
                     'Issues(s) ouvertes',
                     '',
                     () => onOpen('ouvertes'),
-                    values.ouvertes.name,
+                    values.ouvertes.value,
                     report.issues_ouvertes,
                   )}
 
@@ -409,7 +467,7 @@ const MissionReport = ({
                     'Sirene en fonction',
                     '',
                     () => onOpen('fonction'),
-                    values.fonction.name,
+                    values.fonction.value,
                     report.sirene_en_fonction,
                   )}
 
@@ -417,7 +475,7 @@ const MissionReport = ({
                     'Systeme',
                     '',
                     () => onOpen('systeme'),
-                    values.systeme.name,
+                    values.systeme.value,
                     report.systeme,
                   )}
 
@@ -425,7 +483,7 @@ const MissionReport = ({
                     'Remise en service du systeme',
                     '',
                     () => onOpen('remise'),
-                    values.remise.name,
+                    values.remise.value,
                     report.remise_en_service_du_systeme,
                   )}
 
@@ -433,7 +491,7 @@ const MissionReport = ({
                     'Effraction constatee',
                     '',
                     () => onOpen('effraction'),
-                    values.effraction.name,
+                    values.effraction.value,
                     report.effraction_constatee,
                   )}
                 </View>
@@ -441,7 +499,7 @@ const MissionReport = ({
                 {!strictValidString(report.signature) && (
                   <View style={{padding: 16}}>
                     <Text margin={[0, 0, hp(2)]} color="black" size={20}>
-                      Signature
+                      {Signature}
                     </Text>
                     {addSignature ? (
                       <View
@@ -469,13 +527,13 @@ const MissionReport = ({
                           <Button
                             onPress={() => onDrawSignature()}
                             color="primary">
-                            Draw signature
+                            {DrawSignature}
                           </Button>
                           <Button
                             isLoading={loader}
                             onPress={handleSubmit}
                             color="secondary">
-                            Finish Mission
+                            {FinishMission}
                           </Button>
                         </>
                       )}

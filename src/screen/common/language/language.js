@@ -23,10 +23,10 @@ const Language = () => {
     } catch (error) {
       // Error retrieving data
     }
-    if (value === 'en') {
-      setlanguage('English');
-    } else {
+    if (value === 'fr') {
       setlanguage('French');
+    } else {
+      setlanguage('English');
     }
   };
   const change = async (value) => {

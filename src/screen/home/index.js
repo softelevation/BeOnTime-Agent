@@ -1,11 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useState} from 'react';
-import {
-  FlatList,
-  PermissionsAndroid,
-  Platform,
-  RefreshControl,
-} from 'react-native';
+import {FlatList, RefreshControl} from 'react-native';
 import {
   Block,
   Button,
@@ -20,13 +15,9 @@ import {
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import {t1, t2, w1, w3, w4, w5} from '../../components/theme/fontsize';
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
-import {
-  locationSuccess,
-  missionListRequest,
-  profileRequest,
-} from '../../redux/action';
+import {missionListRequest, profileRequest} from '../../redux/action';
 import Header from '../../components/common/header';
 import EmptyFile from '../../components/emptyFile';
 import {divider} from '../../utils/commonView';
@@ -43,7 +34,6 @@ import ActivityLoader from '../../components/activityLoader';
 import moment from 'moment';
 import {config} from '../../utils/config';
 import {io} from 'socket.io-client';
-import Geolocation from '@react-native-community/geolocation';
 
 const initialState = {
   acceptloader: null,
@@ -80,50 +70,7 @@ const Home = () => {
     ApiRequest();
   };
 
-  // const getLocation = () => {
-  //   Geolocation.getCurrentPosition(
-  //     (position) => {
-  //       alert('get');
-  //       console.log(position, 'position');
-  //       dispatch(locationSuccess(position.coords));
-  //     },
-  //     (error) => {},
-  //     {
-  //       enableHighAccuracy: true,
-  //       timeout: 15000,
-  //     },
-  //   );
-  // };
-  // const requestCameraPermission = async () => {
-  //   try {
-  //     const granted = await PermissionsAndroid.request(
-  //       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-  //       {
-  //         title: 'BeOnTime App Location Permission',
-  //         message:
-  //           'BeOnTime App App needs access to your location ' +
-  //           'so you can access the location service.',
-  //         buttonNeutral: 'Ask Me Later',
-  //         buttonNegative: 'Cancel',
-  //         buttonPositive: 'OK',
-  //       },
-  //     );
-  //     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-  //       console.log('You can use the location');
-  //       getLocation();
-  //     } else {
-  //       console.log('Camera permission denied');
-  //     }
-  //   } catch (err) {
-  //     console.warn(err);
-  //   }
-  // };
   useEffect(() => {
-    // if (Platform.OS === 'ios') {
-    //   getLocation();
-    // } else {
-    //   requestCameraPermission();
-    // }
     ApiRequest();
     if (strictValidObjectWithKeys(profile)) {
       socket.on(`refresh_feed_${profile.id}`, (msg) => {
