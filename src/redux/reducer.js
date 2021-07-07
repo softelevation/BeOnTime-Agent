@@ -8,6 +8,7 @@ import socket from './socket/reducer';
 import notifications from './notifications/reducer';
 import messages from './messages/reducer';
 import {languageReducer} from './language/reducer';
+import {planning} from './planning/reducer';
 
 const rootreducer = combineReducers({
   user,
@@ -19,5 +20,6 @@ const rootreducer = combineReducers({
   notifications,
   messages,
   languageReducer,
+  planning,
 });
 export default rootreducer;
