@@ -7,6 +7,7 @@ import {paymentWatcher} from './payments/saga';
 import {missionWatcher} from './missions/saga';
 import {notificationWatcher} from './notifications/saga';
 import {messageWatcher} from './messages/saga';
+import {planningWatcher} from './planning/saga';
 export default function* rootSaga() {
   yield all([
     loginWatcher(),
@@ -17,5 +18,6 @@ export default function* rootSaga() {
     missionWatcher(),
     notificationWatcher(),
     messageWatcher(),
+    planningWatcher(),
   ]);
 }
