@@ -61,9 +61,10 @@ const MissionDetailScreen = ({
     time_intervel,
     repetitive_mission,
     created_at,
+    start_date_time,
+    end_date_time,
   } = item;
   const languageMode = useSelector((state) => state.languageReducer.language);
-
   const {
     MissionDate,
     StartMission,
@@ -274,6 +275,11 @@ const MissionDetailScreen = ({
       </Block>
     );
   };
+  const formatDuration = (d) => {
+    var newsplit = d.split(':');
+    const hours = newsplit[0].replace(/^0+/, '');
+    return `${hours} hours : ${newsplit[1]} minutes`;
+  };
   const renderHeader = () => (
     <Block padding={[t2]} flex={false}>
       <Text size={13} grey semibold>
@@ -292,7 +298,8 @@ const MissionDetailScreen = ({
         {renderDetails(MissionTypeHeader, MissionType(intervention))}
         {renderDetails(AgentTypeHeader, AgentType(agent_type))}
         {renderDetails(LocationHeader, location)}
-        {renderDetails(Duration, `${total_hours} ${Hours}`)}
+        {renderDetails(Duration, formatDuration(total_hours))}
+        {/* {renderDetails(Duration, formatDuration(`${total_hours} ${Hours}`))} */}
         {renderDetails(VehicleRequired, vehicle_required === 1 ? Yes : No)}
         {strictValidString(mission_finish_time) &&
           renderDetails(MissionFinishedTime, mission_finish_time)}
@@ -301,7 +308,12 @@ const MissionDetailScreen = ({
             renderDetails(TimeInterval, time_intervel))}
         {strictValidString(repetitive_mission) &&
           renderDetails(RepetitiveMission, repetitive_mission)}
+        {strictValidString(start_date_time) &&
+          renderDetails('Start Date and Time', start_date_time)}
+        {strictValidString(end_date_time) &&
+          renderDetails('End Date and Time', end_date_time)}
       </Block>
+
       {divider()}
     </Block>
   );

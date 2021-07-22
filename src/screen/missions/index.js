@@ -10,7 +10,11 @@ import {useDispatch, useSelector} from 'react-redux';
 import {Block, Text, CustomButton} from '../../components';
 import Header from '../../components/common/header';
 import {t2, w4} from '../../components/theme/fontsize';
-import {getMissionsRequest, locationSuccess} from '../../redux/action';
+import {
+  customMissionRequest,
+  getMissionsRequest,
+  locationSuccess,
+} from '../../redux/action';
 
 const Missions = ({navigationState}) => {
   const {routes, index} = navigationState;
@@ -19,7 +23,13 @@ const Missions = ({navigationState}) => {
   const navigation = useNavigation();
   const languageMode = useSelector((state) => state.languageReducer.language);
 
-  const {Accepted, Started, Finished, MissionHeader} = languageMode;
+  const {
+    Accepted,
+    Started,
+    Finished,
+    MissionHeader,
+    CustomRequest,
+  } = languageMode;
   const getValues = (name) => {
     if (name === 'Requested') {
       return Accepted;
@@ -27,12 +37,16 @@ const Missions = ({navigationState}) => {
     if (name === 'InProgress') {
       return Started;
     }
+    if (name === 'CustomRequest') {
+      return CustomRequest;
+    }
     return Finished;
   };
 
   useFocusEffect(
     React.useCallback(() => {
       dispatch(getMissionsRequest());
+      dispatch(customMissionRequest());
     }, []),
   );
 

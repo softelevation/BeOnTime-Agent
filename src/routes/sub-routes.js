@@ -16,7 +16,8 @@ import Requested from '../screen/missions/requested';
 import InProgress from '../screen/missions/in_progress';
 import Finished from '../screen/missions/completed';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import MissionReport from '../screen/mission-report'
+import MissionReport from '../screen/mission-report';
+import CustomRequest from '../screen/missions/custom-request';
 
 const TopTab = createMaterialTopTabNavigator();
 const Stack = createStackNavigator();
@@ -42,8 +43,9 @@ const MapStack = () => {
 const MyTabs = () => {
   return (
     <TopTab.Navigator
-      initialRouteName="Requested"
+      initialRouteName="CustomRequest"
       tabBar={(props) => <Missions {...props} />}>
+      <TopTab.Screen name="CustomRequest" component={CustomRequest} />
       <TopTab.Screen name="Requested" component={Requested} />
       <TopTab.Screen name="InProgress" component={InProgress} />
       <TopTab.Screen name="Finished" component={Finished} />
