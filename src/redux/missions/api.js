@@ -14,3 +14,15 @@ export const Api = async (data) => {
     data: data,
   });
 };
+export const customApi = async () => {
+  const token = await AsyncStorage.getItem('token');
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization: `${token}`,
+  };
+  return axios({
+    method: 'get',
+    url: `${config.Api_Url}/agent/custom-mission-list`,
+    headers,
+  });
+};

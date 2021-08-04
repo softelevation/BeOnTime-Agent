@@ -204,15 +204,7 @@ const BottomTab = ({
             ) : null}
 
             {isFocused ? (
-              <Text
-                semibold
-                center
-                size={12}
-                regular
-                style={{
-                  marginTop: hp(1),
-                  color: '#000',
-                }}>
+              <Text center uppercase semibold size={12} regular style={focused}>
                 {renderLabel(label)}
               </Text>
             ) : (
@@ -239,6 +231,12 @@ BottomTab.propTypes = {
 };
 BottomTab.defaultProps = {
   state: 'Search here',
+};
+const focused = {
+  marginTop: hp(1),
+  color: '#000',
+  width: wp(30),
+  textAlign: 'center',
 };
 
 const mapStateToProps = (state) => {

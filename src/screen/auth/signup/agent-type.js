@@ -35,6 +35,7 @@ const data = [
 ];
 const AgentType = ({state, setValues, closeModal}) => {
   const [agent, setAgent] = useState(state || []);
+
   const renderdata = (value) => {
     const agentFiltered = agent.filter((v) => v.name !== value.name);
     const isExist = agent.filter((v) => v.name === value.name);

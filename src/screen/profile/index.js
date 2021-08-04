@@ -25,13 +25,12 @@ const Profile = () => {
   const languageMode = useSelector((state) => state.languageReducer.language);
   const {
     ProfileLanguage,
-    Customer,
     CompletedMissions,
     EditProfileLanguage,
     Email,
     HomeAddress,
     PhoneNumber,
-    ProfileHeader,
+    Planning,
     ChangeLanguage,
     ChangePassword,
     Logout,
@@ -47,7 +46,7 @@ const Profile = () => {
 
   const ProfileData = [
     {
-      name: 'Planning',
+      name: Planning,
       nav: 'Planning',
     },
     {
