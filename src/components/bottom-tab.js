@@ -206,6 +206,7 @@ const BottomTab = ({
             {isFocused ? (
               <Text
                 semibold
+                center
                 size={12}
                 regular
                 style={{
