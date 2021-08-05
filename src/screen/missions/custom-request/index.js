@@ -1,31 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import AsyncStorage from '@react-native-community/async-storage';
 import {useNavigation} from '@react-navigation/native';
-import axios from 'axios';
 import React, {useState} from 'react';
-import {FlatList, ImageBackground, RefreshControl} from 'react-native';
-import {showMessage} from 'react-native-flash-message';
+import {FlatList, RefreshControl} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import {useDispatch, useSelector} from 'react-redux';
 import {io} from 'socket.io-client';
-import {
-  Block,
-  Button,
-  CustomButton,
-  ImageComponent,
-  Text,
-} from '../../../components';
+import {Block, Button, CustomButton, Text} from '../../../components';
 import ActivityLoader from '../../../components/activityLoader';
 import EmptyFile from '../../../components/emptyFile';
 import {t1, t2, w3, w5} from '../../../components/theme/fontsize';
-import {customMissionRequest, getMissionsRequest} from '../../../redux/action';
-import {strictValidString} from '../../../utils/commonUtils';
+import {customMissionRequest} from '../../../redux/action';
 import {divider} from '../../../utils/commonView';
 import {config} from '../../../utils/config';
-import CommonMap from '../../common/Map';
 import CustomAvatar from '../../common/profile';
 
 const CustomRequest = () => {
@@ -55,7 +45,7 @@ const CustomRequest = () => {
     const mission_id = item.id;
     socket.emit('travel_to_mission', {mission_id: mission_id, token: token});
     dispatch(customMissionRequest());
-    navigation.navigate('TravelMission', {
+    navigation.navigate('TravelMissionCustom', {
       item: item,
     });
   };

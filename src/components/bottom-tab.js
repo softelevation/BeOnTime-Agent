@@ -204,7 +204,7 @@ const BottomTab = ({
             ) : null}
 
             {isFocused ? (
-              <Text uppercase semibold size={12} regular style={focused}>
+              <Text center uppercase semibold size={12} regular style={focused}>
                 {renderLabel(label)}
               </Text>
             ) : (
@@ -235,7 +235,7 @@ BottomTab.defaultProps = {
 const focused = {
   marginTop: hp(1),
   color: '#000',
-  width: wp(30),
+  // width: wp(30),
   textAlign: 'center',
 };
 
