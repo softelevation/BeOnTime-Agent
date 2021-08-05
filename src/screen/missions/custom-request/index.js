@@ -1,10 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import AsyncStorage from '@react-native-community/async-storage';
 import {useNavigation} from '@react-navigation/native';
-import axios from 'axios';
 import React, {useState} from 'react';
 import {FlatList, RefreshControl} from 'react-native';
-import {showMessage} from 'react-native-flash-message';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -21,10 +19,9 @@ import {
 import ActivityLoader from '../../../components/activityLoader';
 import EmptyFile from '../../../components/emptyFile';
 import {t1, t2, w3, w5} from '../../../components/theme/fontsize';
-import {customMissionRequest, getMissionsRequest} from '../../../redux/action';
+import {customMissionRequest} from '../../../redux/action';
 import {divider} from '../../../utils/commonView';
 import {config} from '../../../utils/config';
-import CommonMap from '../../common/Map';
 
 const CustomRequest = () => {
   const navigation = useNavigation();
@@ -53,7 +50,7 @@ const CustomRequest = () => {
     const mission_id = item.id;
     socket.emit('travel_to_mission', {mission_id: mission_id, token: token});
     dispatch(customMissionRequest());
-    navigation.navigate('TravelMission', {
+    navigation.navigate('TravelMissionCustom', {
       item: item,
     });
   };

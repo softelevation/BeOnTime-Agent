@@ -235,7 +235,7 @@ BottomTab.defaultProps = {
 const focused = {
   marginTop: hp(1),
   color: '#000',
-  width: wp(30),
+  // width: wp(30),
   textAlign: 'center',
 };
 
