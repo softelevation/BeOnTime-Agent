@@ -20,6 +20,7 @@ import {divider} from '../../../utils/commonView';
 import ActivityLoader from '../../../components/activityLoader';
 import AsyncStorage from '@react-native-community/async-storage';
 import {io} from 'socket.io-client';
+import CustomAvatar from '../../common/profile';
 
 const InProgress = () => {
   const navigation = useNavigation();
@@ -90,7 +91,7 @@ const InProgress = () => {
   const renderAgentDetails = (item) => {
     return (
       <Block margin={[0, w3, t1]} flex={false} row center>
-        <ImageComponent name="blurAvatar_icon" height="50" width="50" />
+        <CustomAvatar image={item.image} />
         <Block margin={[0, w3]} flex={false}>
           <Text
             transform="capitalize"

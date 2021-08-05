@@ -23,6 +23,7 @@ import {StackActions, useNavigation} from '@react-navigation/core';
 import moment from 'moment';
 import {io} from 'socket.io-client';
 import {config} from '../../../utils/config';
+import CustomAvatar from '../../common/profile';
 const initialState = {
   acceptloader: null,
   rejecttloader: null,
@@ -128,7 +129,7 @@ const MissionDetailScreen = ({
       <Block flex={false}>
         <Block space={'between'} margin={[0, 0, t1]} flex={false} row>
           <Block flex={false} row>
-            <ImageComponent name="blurAvatar_icon" height="60" width="60" />
+            <CustomAvatar image={item.image} />
             <Block margin={[0, w3]} flex={false}>
               <Block row center flex={false}>
                 <Text
@@ -278,7 +279,7 @@ const MissionDetailScreen = ({
   const formatDuration = (d) => {
     var newsplit = d.split(':');
     const hours = newsplit[0].replace(/^0+/, '');
-    return `${hours} hours : ${newsplit[1]} minutes`;
+    return `${hours} ${Hours} : ${newsplit[1]} minutes`;
   };
   const renderHeader = () => (
     <Block padding={[t2]} flex={false}>
@@ -294,13 +295,18 @@ const MissionDetailScreen = ({
       {divider()}
       {MissionDetail()}
       <Block flex={false} margin={[t2, 0, 0]}>
-        {renderDetails(MissionDate, formatDate(created_at))}
-        {renderDetails(MissionTypeHeader, MissionType(intervention))}
-        {renderDetails(AgentTypeHeader, AgentType(agent_type))}
-        {renderDetails(LocationHeader, location)}
-        {renderDetails(Duration, formatDuration(total_hours))}
+        {strictValidString(created_at) &&
+          renderDetails(MissionDate, formatDate(created_at))}
+        {strictValidString(intervention) &&
+          renderDetails(MissionTypeHeader, MissionType(intervention))}
+        {strictValidString(agent_type) &&
+          renderDetails(AgentTypeHeader, AgentType(agent_type))}
+        {strictValidString(location) && renderDetails(LocationHeader, location)}
+        {strictValidString(total_hours) &&
+          renderDetails(Duration, formatDuration(total_hours))}
         {/* {renderDetails(Duration, formatDuration(`${total_hours} ${Hours}`))} */}
-        {renderDetails(VehicleRequired, vehicle_required === 1 ? Yes : No)}
+        {strictValidNumber(vehicle_required) &&
+          renderDetails(VehicleRequired, vehicle_required === 1 ? Yes : No)}
         {strictValidString(mission_finish_time) &&
           renderDetails(MissionFinishedTime, mission_finish_time)}
         {strictValidString(time_intervel) ||

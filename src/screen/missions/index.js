@@ -1,6 +1,5 @@
-import Geolocation from '@react-native-community/geolocation';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
-import React, {useEffect} from 'react';
+import React from 'react';
 import {FlatList} from 'react-native';
 import {
   heightPercentageToDP as hp,
@@ -9,12 +8,8 @@ import {
 import {useDispatch, useSelector} from 'react-redux';
 import {Block, Text, CustomButton} from '../../components';
 import Header from '../../components/common/header';
-import {t2, w4} from '../../components/theme/fontsize';
-import {
-  customMissionRequest,
-  getMissionsRequest,
-  locationSuccess,
-} from '../../redux/action';
+import {t2} from '../../components/theme/fontsize';
+import {customMissionRequest, getMissionsRequest} from '../../redux/action';
 
 const Missions = ({navigationState}) => {
   const {routes, index} = navigationState;
@@ -54,6 +49,7 @@ const Missions = ({navigationState}) => {
     <Block primary flex={false}>
       <Header centerText={MissionHeader} leftIcon />
       <FlatList
+        showsHorizontalScrollIndicator={false}
         data={routes}
         horizontal
         style={{alignSelf: 'center', borderRadius: 30}}

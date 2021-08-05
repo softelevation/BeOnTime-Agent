@@ -25,6 +25,7 @@ import {getMissionsRequest} from '../../../redux/action';
 import {divider} from '../../../utils/commonView';
 import {config} from '../../../utils/config';
 import CommonMap from '../../common/Map';
+import CustomAvatar from '../../common/profile';
 
 const Requested = () => {
   const navigation = useNavigation();
@@ -119,7 +120,7 @@ const Requested = () => {
     return (
       <Block margin={[0, w3, t1]} flex={false} row center space="between">
         <Block style={{width: wp(70)}} flex={false} row center>
-          <ImageComponent name="blurAvatar_icon" height="50" width="50" />
+          <CustomAvatar image={item.image} />
           <Block margin={[0, w3]} flex={false}>
             <Text
               transform="capitalize"

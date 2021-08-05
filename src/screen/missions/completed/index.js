@@ -18,6 +18,7 @@ import {strictValidNumber} from '../../../utils/commonUtils';
 import {divider} from '../../../utils/commonView';
 import {PaymentStatus} from '../../../utils/data';
 import ActivityLoader from '../../../components/activityLoader';
+import CustomAvatar from '../../common/profile';
 
 const Finished = () => {
   const navigation = useNavigation();
@@ -83,7 +84,7 @@ const Finished = () => {
   const renderAgentDetails = (item) => {
     return (
       <Block margin={[0, w3, t1]} flex={false} row center>
-        <ImageComponent name="blurAvatar_icon" height="50" width="50" />
+        <CustomAvatar image={item.image} />
         <Block margin={[0, w3]} flex={false}>
           <Text
             transform="capitalize"

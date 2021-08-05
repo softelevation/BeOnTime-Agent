@@ -1,10 +1,24 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useState, useRef, useEffect} from 'react';
-import {Block, Button, CustomButton, ImageComponent} from '../../../components';
+import {
+  Block,
+  Button,
+  CustomButton,
+  ImageComponent,
+  Text,
+} from '../../../components';
 import Header from '../../../components/common/header';
 import AsyncStorage from '@react-native-community/async-storage';
 import MapViewDirections from 'react-native-maps-directions';
 import Geolocation from '@react-native-community/geolocation';
-import {View, StyleSheet, Platform, Linking, Alert} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Platform,
+  Linking,
+  Alert,
+  Dimensions,
+} from 'react-native';
 import ResponsiveImage from 'react-native-responsive-image';
 import {images} from '../../../assets';
 import MapView, {Marker} from 'react-native-maps';
@@ -17,16 +31,24 @@ import {
 import {useNavigation} from '@react-navigation/core';
 import {useSelector} from 'react-redux';
 import {useFocusEffect} from '@react-navigation/native';
+import {t1, w3} from '../../../components/theme/fontsize';
+import {strictValidNumber} from '../../../utils/commonUtils';
 
-const googleKey = 'AIzaSyBf4G3qQTDy6-DN6Tb9m6WzgYCW598EoxU';
+const googleKey = config.googleKey;
 
 const TravelMissionScreen = ({
   route: {
     params: {item},
   },
 }) => {
+  const {width, height} = Dimensions.get('window');
+
   const loc = useSelector((state) => state.common.location.data);
   const navigation = useNavigation();
+  const [distance, setDistance] = useState({
+    distance: null,
+    minutes: null,
+  });
   const languageMode = useSelector((state) => state.languageReducer.language);
   const socket = io(config.Api_Url);
   const {
@@ -75,7 +97,6 @@ const TravelMissionScreen = ({
       speed: position.speed || 10,
       mission_id: mission_id,
     };
-    console.log(data, 'data');
     socket.emit('agent_location', data);
   };
 
@@ -83,7 +104,6 @@ const TravelMissionScreen = ({
     React.useCallback(() => {
       let watchId = Geolocation.watchPosition(
         (position) => {
-          console.log(position, 'location');
           let region = {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
@@ -154,10 +174,10 @@ const TravelMissionScreen = ({
   return (
     <Block primary>
       <Header centerText={TravelMission} />
+
       <Block flex={1}>
         <MapView
           ref={mapRef}
-          // mapType={Platform.OS === 'android' ? 'none' : 'standard'}
           followUserLocation
           scrollEnabled
           style={styles.map}
@@ -193,6 +213,23 @@ const TravelMissionScreen = ({
               }}
               apikey={googleKey}
               strokeWidth={3}
+              onReady={(result) => {
+                console.log(`Distance: ${result.distance} km`);
+                console.log(`Duration: ${result.duration} min.`);
+                setDistance({
+                  ...distance,
+                  distance: result.distance,
+                  minutes: result.duration,
+                });
+                mapRef.current?.fitToCoordinates(result.coordinates, {
+                  edgePadding: {
+                    right: width / 20,
+                    bottom: height / 20,
+                    left: width / 20,
+                    top: height / 20,
+                  },
+                });
+              }}
             />
           )}
 
@@ -217,10 +254,25 @@ const TravelMissionScreen = ({
           <ImageComponent name="map_icon" height={30} width={30} />
         </CustomButton>
         <Block center middle style={styles.CustomButton} flex={false}>
+          {strictValidNumber(distance.distance) && (
+            <Block
+              style={{width: widthPercentageToDP(95)}}
+              color="#fff"
+              center
+              flex={false}
+              padding={[t1, w3]}>
+              <Text height={20} size={16}>
+                Distance : {distance.distance.toFixed(2)} km left
+              </Text>
+              <Text size={16} height={20}>
+                Duration : {distance.minutes.toFixed()} minutes left
+              </Text>
+            </Block>
+          )}
           <Button
             disabled={item.status === 3}
             onPress={() => missionArrived()}
-            textStyle={{textTransform: 'capitalize'}}
+            textStyle={styles.textStyle}
             style={{width: widthPercentageToDP(95)}}
             color="secondary">
             {ArrivedOnDestination}
@@ -248,6 +300,7 @@ const styles = StyleSheet.create({
     bottom: heightPercentageToDP(1),
     right: widthPercentageToDP(3),
   },
+  textStyle: {textTransform: 'capitalize'},
 });
 
 export default TravelMissionScreen;

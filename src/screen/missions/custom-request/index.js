@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
 import React, {useState} from 'react';
-import {FlatList, RefreshControl} from 'react-native';
+import {FlatList, ImageBackground, RefreshControl} from 'react-native';
 import {showMessage} from 'react-native-flash-message';
 import {
   heightPercentageToDP as hp,
@@ -22,9 +22,11 @@ import ActivityLoader from '../../../components/activityLoader';
 import EmptyFile from '../../../components/emptyFile';
 import {t1, t2, w3, w5} from '../../../components/theme/fontsize';
 import {customMissionRequest, getMissionsRequest} from '../../../redux/action';
+import {strictValidString} from '../../../utils/commonUtils';
 import {divider} from '../../../utils/commonView';
 import {config} from '../../../utils/config';
 import CommonMap from '../../common/Map';
+import CustomAvatar from '../../common/profile';
 
 const CustomRequest = () => {
   const navigation = useNavigation();
@@ -118,7 +120,7 @@ const CustomRequest = () => {
     return (
       <Block margin={[0, w3, t1]} flex={false} row center space="between">
         <Block style={{width: wp(70)}} flex={false} row center>
-          <ImageComponent name="blurAvatar_icon" height="50" width="50" />
+          <CustomAvatar image={item.image} />
           <Block margin={[0, w3]} flex={false}>
             <Text
               transform="capitalize"
