@@ -29,6 +29,7 @@ import {config} from '../utils/config';
 import TravelMission from '../screen/missions/travel-mission';
 import Planning from '../screen/planning';
 import TravelMissionCustomScreen from '../screen/missions/custom-request/travel-mission-custom';
+import CustomMissionDetailScreen from '../screen/missions/custom-request/details';
 
 const Stack = createStackNavigator();
 
@@ -77,6 +78,10 @@ function Routes() {
         <Stack.Screen name="ChatOperator" component={ChatOperator} />
         <Stack.Screen name="Language" component={Language} />
         <Stack.Screen name="Planning" component={Planning} />
+        <Stack.Screen
+          name="CustomMissionDetailScreen"
+          component={CustomMissionDetailScreen}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

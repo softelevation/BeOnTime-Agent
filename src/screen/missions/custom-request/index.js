@@ -27,23 +27,49 @@ const CustomRequest = () => {
   const socket = io(config.Api_Url);
   const languageMode = useSelector((state) => state.languageReducer.language);
 
-  const {TravelMission, StartMission, MissionDetails} = languageMode;
+  const {
+    TravelMission,
+    StartMission,
+    MissionDetails,
+    FinishMission,
+  } = languageMode;
   const dispatch = useDispatch();
 
-  const startMission = async (id) => {
+  const startMission = async (id, custom_id) => {
     const token = await AsyncStorage.getItem('token');
     const mission_id = id;
-    socket.emit('start_mission', {mission_id, token});
-    navigation.navigate('InProgress');
-    socket.on(`mission_data_${mission_id}`, (msg) => {
+    socket.emit('custom_start_mission', {
+      mission_id: mission_id,
+      token: token,
+      custom_id: custom_id,
+    });
+    // navigation.navigate('InProgress');
+    socket.on(`custom_mission_data_${mission_id}`, (msg) => {
+      dispatch(customMissionRequest());
+    });
+  };
+  const finishMission = async (id, custom_id) => {
+    const token = await AsyncStorage.getItem('token');
+    const mission_id = id;
+    socket.emit('custom_finish_mission', {
+      mission_id: mission_id,
+      token: token,
+      custom_id: custom_id,
+    });
+    // navigation.navigate('InProgress');
+    socket.on(`custom_mission_data_${mission_id}`, (msg) => {
       dispatch(customMissionRequest());
     });
   };
 
   const travelToMission = async (item) => {
     const token = await AsyncStorage.getItem('token');
-    const mission_id = item.id;
-    socket.emit('travel_to_mission', {mission_id: mission_id, token: token});
+    const mission_id = item.mission_id;
+    socket.emit('custom_travel_to_mission', {
+      mission_id: mission_id,
+      token: token,
+      custom_id: item.id,
+    });
     dispatch(customMissionRequest());
     navigation.navigate('TravelMissionCustom', {
       item: item,
@@ -67,7 +93,7 @@ const CustomRequest = () => {
         borderRadius={10}>
         <Block padding={[0, w3]}>
           <Text semibold grey size={14}>
-            MISN0{item.id}
+            MISN0{item.mission_id}
           </Text>
           <Text margin={[hp(0.5), 0]} size={16} semibold>
             {item.title}
@@ -76,27 +102,45 @@ const CustomRequest = () => {
         {divider()}
         {renderAgentDetails(item)}
         <Block flex={false} padding={[0, w3]}>
-          <Button
-            onPress={() =>
-              item.status === 2
-                ? navigation.navigate('TravelMission', {
-                    item: item,
-                  })
-                : travelToMission(item)
-            }
-            color="primary">
-            {TravelMission}
-          </Button>
-          <Button
-            disabled={item.status !== 3}
-            onPress={() => startMission(item.id)}
-            color="secondary">
-            {StartMission}
-          </Button>
+          {item.custom_status !== 4 && (
+            <Button
+              onPress={() =>
+                item.custom_status !== 0
+                  ? navigation.navigate('TravelMissionCustom', {
+                      item: item,
+                    })
+                  : travelToMission(item)
+              }
+              color="primary">
+              {TravelMission}
+            </Button>
+          )}
+          {item.custom_status === 3 && (
+            <Button
+              onPress={() => finishMission(item.mission_id, item.id)}
+              color="secondary">
+              {FinishMission}
+            </Button>
+          )}
+          {(item.custom_status === 0 ||
+            item.custom_status === 1 ||
+            item.custom_status === 2) && (
+            <Button
+              disabled={item.custom_status !== 2}
+              onPress={() => startMission(item.mission_id, item.id)}
+              color="secondary">
+              {StartMission}
+            </Button>
+          )}
+          {item.custom_status === 4 && (
+            <Button activeOpacity={1} color="secondary">
+              {'Completed'}
+            </Button>
+          )}
         </Block>
         <CustomButton
           onPress={() =>
-            navigation.navigate('MissionDetails', {
+            navigation.navigate('CustomMissionDetailScreen', {
               item: item,
             })
           }

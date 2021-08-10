@@ -88,6 +88,7 @@ const MessageCenter = ({callGetChatApi, chat, isLoad}) => {
               flex={false}
             />
             <FlatList
+              keyExtractor={(item, index) => index.toString()}
               scrollEnabled={false}
               data={chat.active}
               renderItem={_renderItem}
@@ -106,6 +107,7 @@ const MessageCenter = ({callGetChatApi, chat, isLoad}) => {
               flex={false}
             />
             <FlatList
+              keyExtractor={(item, index) => index.toString()}
               scrollEnabled={false}
               data={chat.finish}
               renderItem={_renderItem}
@@ -116,7 +118,7 @@ const MessageCenter = ({callGetChatApi, chat, isLoad}) => {
       <TouchableOpacity
         style={plusIcon}
         onPress={() => navigation.navigate('NewSupport')}>
-        <ImageComponent name="plus_icon" height="60" width="70" />
+        <ImageComponent name="plus_icon" height={60} width={70} />
       </TouchableOpacity>
     </Block>
   );

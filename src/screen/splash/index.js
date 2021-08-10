@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import AsyncStorage from '@react-native-community/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import React, {useEffect} from 'react';
@@ -111,7 +112,6 @@ const Splash = () => {
     socket.on('connect', (a) => {
       dispatch(socketConnection(socket));
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const requestUserPermission = async () => {
@@ -136,7 +136,7 @@ const Splash = () => {
 
   return (
     <Block primary center middle>
-      <ImageComponent name="logo" height="170" width="170" />
+      <ImageComponent name="logo" height={170} width={170} />
       <Text size={28} margin={[t4, 0, 0]} bold>
         BE ON TIME
       </Text>

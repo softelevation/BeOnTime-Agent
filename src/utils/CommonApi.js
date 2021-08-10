@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import {config} from '../utils/config';
 
-export const CommonApi = {
+const CommonApi = {
   fetchAppCommon: async function (url, method, bodyData) {
     var header = {};
     var urlIs = config.Api_Url + url;
@@ -40,3 +40,4 @@ export const CommonApi = {
       });
   },
 };
+export default CommonApi;

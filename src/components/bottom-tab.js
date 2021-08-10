@@ -139,6 +139,7 @@ const BottomTab = ({
 
         return (
           <TouchableOpacity
+            key={index}
             accessibilityRole="button"
             testID={options.tabBarTestID}
             onLongPress={onLongPress}
@@ -204,7 +205,7 @@ const BottomTab = ({
             ) : null}
 
             {isFocused ? (
-              <Text center uppercase semibold size={12} regular style={focused}>
+              <Text center semibold size={12} regular style={focused}>
                 {renderLabel(label)}
               </Text>
             ) : (
@@ -230,12 +231,11 @@ BottomTab.propTypes = {
   state: PropTypes.shape(PropTypes.object),
 };
 BottomTab.defaultProps = {
-  state: 'Search here',
+  state: {},
 };
 const focused = {
   marginTop: hp(1),
   color: '#000',
-  // width: wp(30),
   textAlign: 'center',
 };
 

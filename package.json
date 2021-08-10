@@ -29,6 +29,8 @@
     "react": "16.13.1",
     "react-native": "0.63.4",
     "react-native-autoscroll-flatlist": "^1.10.1",
+    "react-native-background-fetch": "^4.0.3",
+    "react-native-background-geolocation": "^4.1.1",
     "react-native-calendars": "^1.1129.0",
     "react-native-countdown-circle-timer": "^2.5.1",
     "react-native-flash-message": "^0.1.18",

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {useNavigation} from '@react-navigation/core';
 import React, {useEffect, useState} from 'react';
 import {FlatList, ScrollView} from 'react-native';
@@ -142,6 +143,7 @@ const NewSupport = () => {
             scrollEnabled={false}
             data={newChat}
             renderItem={_renderItem}
+            keyExtractor={(item, index) => index.toString()}
           />
         </ScrollView>
       </Block>

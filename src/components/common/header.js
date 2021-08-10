@@ -56,7 +56,7 @@ Header.defaultProps = {
 Header.propTypes = {
   centerText: PropTypes.string,
   rightText: PropTypes.string,
-  leftIcon: PropTypes.string,
+  leftIcon: PropTypes.bool,
   onPress: PropTypes.func,
   bottomText: PropTypes.string,
 };

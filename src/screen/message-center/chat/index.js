@@ -117,7 +117,7 @@ const Chat = ({
           data={chatMessages}
           renderItem={_renderItem}
           threshold={20}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item, index) => index.toString()}
         />
       </Block>
       <Block
@@ -147,7 +147,7 @@ const Chat = ({
           {loader ? (
             <ActivityIndicator size="small" color="#fff" />
           ) : (
-            <ImageComponent name="message_send_icon" height="22" width="22" />
+            <ImageComponent name="message_send_icon" height={22} width={22} />
           )}
         </CustomButton>
       </Block>

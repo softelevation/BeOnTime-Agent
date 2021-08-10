@@ -11,7 +11,7 @@ const EmptyFile = ({text}) => {
   const {NoData} = languageMode;
   return (
     <Block center middle>
-      <ImageComponent name="empty_icon" height="200" width="200" />
+      <ImageComponent name="empty_icon" height={200} width={200} />
       <Text size={16} semibold margin={[t2, 0, 0]}>
         {text || NoData}
       </Text>
