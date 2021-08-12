@@ -33,7 +33,6 @@ export const AgentType = (type) => {
   switch (type) {
     case 1:
       return 'SSIAP 1';
-
     case 2:
       return 'SSIAP 2';
 

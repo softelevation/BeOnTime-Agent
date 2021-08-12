@@ -288,7 +288,7 @@ const CustomMissionDetailScreen = ({
           renderDetails(MissionDate, formatDate(created_at))}
         {strictValidString(intervention) &&
           renderDetails(MissionTypeHeader, MissionType(intervention))}
-        {strictValidString(agent_type) &&
+        {strictValidNumber(agent_type) &&
           renderDetails(AgentTypeHeader, AgentType(agent_type))}
         {strictValidString(location) && renderDetails(LocationHeader, location)}
         {strictValidString(total_hours) &&
