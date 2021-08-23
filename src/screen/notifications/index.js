@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import {useFocusEffect} from '@react-navigation/core';
-import React from 'react';
-import {Alert, FlatList, ScrollView} from 'react-native';
+import React, {useState} from 'react';
+import {Alert, FlatList, RefreshControl, ScrollView} from 'react-native';
 import {connect, useSelector} from 'react-redux';
 import {io} from 'socket.io-client';
 import {Block, Text} from '../../components';
@@ -25,6 +25,7 @@ const Notifications = ({
 }) => {
   const socket = io(config.Api_Url);
   const languageMode = useSelector((state) => state.languageReducer.language);
+  const [refreshing, setRefreshing] = useState(false);
 
   const {
     MostRecent,
@@ -82,14 +83,30 @@ const Notifications = ({
       />
     );
   };
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+    callNotificationApi();
+  };
   return (
     <Block primary>
       <Header centerText={NotificationsLanguage} leftIcon />
-      <ScrollView contentContainerStyle={{flexGrow: 1}}>
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            tintColor="#000"
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }
+        contentContainerStyle={{flexGrow: 1}}>
         {isLoad && <ActivityLoader />}
         {strictValidArrayWithLength(notifications.recent) && (
           <Block margin={[t1]} flex={false}>
-            <Text uppercase size={14} grey semibold>
+            <Text uppercase size={14} grey bold>
               {MostRecent}
             </Text>
             <Block
@@ -107,7 +124,7 @@ const Notifications = ({
         )}
         {strictValidArrayWithLength(notifications.all) ? (
           <Block padding={[0, t1, t1]} flex={false}>
-            <Text uppercase margin={[t1, 0, 0]} size={14} grey semibold>
+            <Text uppercase margin={[t1, 0, 0]} size={14} grey bold>
               {NotificationsLanguage}
             </Text>
             <Block
