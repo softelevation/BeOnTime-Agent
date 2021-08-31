@@ -14,7 +14,7 @@ const Language = () => {
   const dispatch = useDispatch();
   const [language, setlanguage] = useState('');
   const languageMode = useSelector((state) => state.languageReducer.language);
-  const {ChooseLanguage} = languageMode;
+  const {ChooseLanguage, type} = languageMode;
   useEffect(() => {
     getLanguageValue();
   }, []);
@@ -22,7 +22,7 @@ const Language = () => {
   const getLanguageValue = async () => {
     let value = '';
     try {
-      value = (await AsyncStorage.getItem('language')) || 'none';
+      value = (await AsyncStorage.getItem('language')) || type;
     } catch (error) {
       // Error retrieving data
     }

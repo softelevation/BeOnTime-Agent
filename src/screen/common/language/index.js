@@ -1,4 +1,5 @@
 export const en = {
+  type: 'en',
   ChooseLanguage: 'Choose Language',
   ProfileLanguage: 'Profile',
   Email: 'Email',
@@ -172,6 +173,7 @@ export const en = {
 };
 
 export const fr = {
+  type: 'fr',
   ChooseLanguage: 'Choisissez votre langue',
   ProfileLanguage: 'profil',
   Email: 'Adresse e-mail',
