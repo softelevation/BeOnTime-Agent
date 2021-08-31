@@ -9,8 +9,9 @@ import notifications from './notifications/reducer';
 import messages from './messages/reducer';
 import {languageReducer} from './language/reducer';
 import {planning} from './planning/reducer';
+import {ActionConstants} from './constants';
 
-const rootreducer = combineReducers({
+const appReducer = combineReducers({
   user,
   request,
   common,
@@ -22,4 +23,11 @@ const rootreducer = combineReducers({
   languageReducer,
   planning,
 });
-export default rootreducer;
+const rootReducer = (state, action) => {
+  if (action.type === ActionConstants.RESET_STORE) {
+    state = undefined;
+  }
+  return appReducer(state, action);
+};
+
+export default rootReducer;

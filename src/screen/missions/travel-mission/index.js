@@ -64,6 +64,8 @@ const TravelMissionScreen = ({
     ArrivedOnDestination,
     AreYouSure,
     HaveArrivedOnDestination,
+    Yes,
+    Cancel,
   } = languageMode;
   // User Params
   const {latitude, longitude} = item;
@@ -271,7 +273,7 @@ const TravelMissionScreen = ({
             longitudeDelta: 0.00421 * 1.5,
             angle: position.coords.heading,
           };
-          animate(position.coords.latitude, position.coords.longitude);
+          // animate(position.coords.latitude, position.coords.longitude);
           setlocationAni(new AnimatedRegion(region));
           setlocation(region);
           callSocket(position);
@@ -323,10 +325,10 @@ const TravelMissionScreen = ({
       HaveArrivedOnDestination,
       [
         {
-          text: 'Cancel',
+          text: Cancel,
         },
         {
-          text: 'Yes',
+          text: Yes,
           onPress: () => deleteItem(),
           style: 'cancel',
         },
@@ -343,10 +345,7 @@ const TravelMissionScreen = ({
           ref={mapRef}
           scrollEnabled
           style={styles.map}
-          region={location}
-          onRegionChangeComplete={async (coords) => {
-            mapRef.current?.animateCamera(coords);
-          }}>
+          region={location}>
           <MarkerAnimated ref={markerRef} coordinate={locationAni}>
             <View>
               <ResponsiveImage

@@ -1,6 +1,5 @@
 import {Formik} from 'formik';
 import React, {useState, useRef} from 'react';
-import Toast from 'react-native-simple-toast';
 import {
   ActivityIndicator,
   ImageBackground,
@@ -145,6 +144,7 @@ const Signup = () => {
     PleaseEnterHomeAddress,
     PleaseEnterCNAPS,
     PleaseEnterIBAN,
+    type,
   } = languageMode;
 
   const uploadPhoto = (type) => {
@@ -619,6 +619,7 @@ const Signup = () => {
         agent_type: agentTypeArray,
         cnaps_number: cnaps,
         image: strictValidObjectWithKeys(profileUrl) ? profileUrl.value : '',
+        language: type,
       };
 
       dispatch(registerRequest(data));

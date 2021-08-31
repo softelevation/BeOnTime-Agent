@@ -328,7 +328,7 @@ export const Alerts = (message, description, color) => {
     message,
     description,
     type: 'success',
-    backgroundColor: color || '#3F51B5', // background color
+    backgroundColor: color || '#000', // background color
     color: '#fff', // text color
     duration: 1800,
   });

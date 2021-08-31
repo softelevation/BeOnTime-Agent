@@ -1,9 +1,9 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import {useNavigation} from '@react-navigation/native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {FlatList, ScrollView} from 'react-native';
 import {heightPercentageToDP} from 'react-native-responsive-screen';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   Block,
   Button,
@@ -18,10 +18,15 @@ import {
   strictValidString,
 } from '../../utils/commonUtils';
 import {config} from '../../utils/config';
+import messaging from '@react-native-firebase/messaging';
+import {resetStore} from '../../redux/action';
+import axios from 'axios';
 
 const Profile = () => {
   const navigation = useNavigation();
-  const profile = useSelector((state) => state.user.profile.user.data);
+  const [loading, setloading] = useState(false);
+  const dispatch = useDispatch();
+  const profileData = useSelector((state) => state.user.profile.user.data);
   const languageMode = useSelector((state) => state.languageReducer.language);
   const {
     ProfileLanguage,
@@ -36,12 +41,32 @@ const Profile = () => {
     Logout,
     HoursClocked,
   } = languageMode;
+  const [profile, setProfile] = useState();
+  useEffect(() => {
+    setProfile(profileData);
+  }, [profileData]);
   const onLogout = async () => {
-    const keys = await AsyncStorage.getAllKeys();
-    await AsyncStorage.multiRemove(keys);
-    navigation.reset({
-      routes: [{name: 'Auth'}],
+    setloading(true);
+    const token = await AsyncStorage.getItem('token');
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: token,
+    };
+    await messaging().deleteToken(undefined, '*');
+    const response = await axios({
+      method: 'get',
+      url: `${config.Api_Url}/log-out`,
+      headers,
     });
+    if (response.data.status === 1) {
+      const keys = await AsyncStorage.getAllKeys();
+      dispatch(resetStore());
+      await AsyncStorage.multiRemove(keys);
+      navigation.reset({
+        routes: [{name: 'Auth'}],
+      });
+      setloading(false);
+    }
   };
 
   const ProfileData = [
@@ -83,106 +108,111 @@ const Profile = () => {
   return (
     <Block white>
       <Header leftIcon={true} menu centerText={ProfileLanguage} />
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <Block margin={[t1, 0]} flex={false} center>
-          {strictValidObjectWithKeys(profile) &&
-          strictValidString(profile.image) ? (
-            <ImageComponent
-              isURL
-              name={`${config.Api_Url}/${profile.image}`}
-              height="150"
-              width="150"
-              radius={150}
+      {strictValidObjectWithKeys(profile) && (
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <Block margin={[t1, 0]} flex={false} center>
+            {strictValidObjectWithKeys(profile) &&
+            strictValidString(profile.image) ? (
+              <ImageComponent
+                isURL
+                name={`${config.Api_Url}/${profile.image}`}
+                height="150"
+                width="150"
+                radius={150}
+              />
+            ) : (
+              <ImageComponent
+                name="default_profile_icon"
+                height="150"
+                width="150"
+              />
+            )}
+            <Text transform="capitalize" semibold margin={[t1, 0]}>
+              {profile.first_name} {profile.last_name}
+            </Text>
+            <Text size={16} grey>
+              {profile.type}
+            </Text>
+          </Block>
+          <Block
+            flex={false}
+            row
+            space={'between'}
+            margin={[t1, 0]}
+            padding={[0, w3]}
+            center>
+            <Text size={16}>{Email}</Text>
+            <Text grey size={16}>
+              {profile.email}
+            </Text>
+          </Block>
+          <Block
+            flex={false}
+            row
+            space={'between'}
+            margin={[t1, 0]}
+            padding={[0, w3]}
+            center>
+            <Text size={16}>{PhoneNumber}</Text>
+            <Text grey size={16}>
+              {profile.phone}
+            </Text>
+          </Block>
+          <Block
+            flex={false}
+            row
+            space={'between'}
+            margin={[t1, 0]}
+            padding={[0, w3]}
+            center>
+            <Text size={16}>{HomeAddress}</Text>
+            <Text grey size={16}>
+              {profile.home_address}
+            </Text>
+          </Block>
+          <Block
+            flex={false}
+            row
+            space={'between'}
+            margin={[t1, 0]}
+            padding={[0, w3]}
+            center>
+            <Text size={16}>{CompletedMissions}</Text>
+            <Text grey size={16}>
+              {profile.mission_completed}
+            </Text>
+          </Block>
+          <Block
+            flex={false}
+            row
+            space={'between'}
+            margin={[t1, 0]}
+            padding={[0, w3]}
+            center>
+            <Text size={16}>{HoursClocked}</Text>
+            <Text grey size={16}>
+              {profile.mission_time}
+            </Text>
+          </Block>
+          <Block flex={false} padding={[0, w3]} margin={[t5, 0, 0]}>
+            <FlatList
+              scrollEnabled={false}
+              contentContainerStyle={{
+                paddingBottom: heightPercentageToDP(4),
+                paddingTop: heightPercentageToDP(2),
+              }}
+              data={ProfileData}
+              renderItem={_renderItem}
             />
-          ) : (
-            <ImageComponent
-              name="default_profile_icon"
-              height="150"
-              width="150"
-            />
-          )}
-          <Text transform="capitalize" semibold margin={[t1, 0]}>
-            {profile.first_name} {profile.last_name}
-          </Text>
-          <Text size={16} grey>
-            {profile.type}
-          </Text>
-        </Block>
-        <Block
-          flex={false}
-          row
-          space={'between'}
-          margin={[t1, 0]}
-          padding={[0, w3]}
-          center>
-          <Text size={16}>{Email}</Text>
-          <Text grey size={16}>
-            {profile.email}
-          </Text>
-        </Block>
-        <Block
-          flex={false}
-          row
-          space={'between'}
-          margin={[t1, 0]}
-          padding={[0, w3]}
-          center>
-          <Text size={16}>{PhoneNumber}</Text>
-          <Text grey size={16}>
-            {profile.phone}
-          </Text>
-        </Block>
-        <Block
-          flex={false}
-          row
-          space={'between'}
-          margin={[t1, 0]}
-          padding={[0, w3]}
-          center>
-          <Text size={16}>{HomeAddress}</Text>
-          <Text grey size={16}>
-            {profile.home_address}
-          </Text>
-        </Block>
-        <Block
-          flex={false}
-          row
-          space={'between'}
-          margin={[t1, 0]}
-          padding={[0, w3]}
-          center>
-          <Text size={16}>{CompletedMissions}</Text>
-          <Text grey size={16}>
-            {profile.mission_completed}
-          </Text>
-        </Block>
-        <Block
-          flex={false}
-          row
-          space={'between'}
-          margin={[t1, 0]}
-          padding={[0, w3]}
-          center>
-          <Text size={16}>{HoursClocked}</Text>
-          <Text grey size={16}>
-            {profile.mission_time}
-          </Text>
-        </Block>
-        <Block flex={false} padding={[0, w3]} margin={[t5, 0, 0]}>
-          <FlatList
-            scrollEnabled={false}
-            contentContainerStyle={{
-              paddingBottom: heightPercentageToDP(4),
-              paddingTop: heightPercentageToDP(2),
-            }}
-            data={ProfileData}
-            renderItem={_renderItem}
-          />
-          <Button onPress={() => onLogout()} color="secondary">
-            {Logout}
-          </Button>
-        </Block>
-      </ScrollView>
+            <Button
+              isLoading={loading}
+              onPress={() => onLogout()}
+              color="secondary">
+              {Logout}
+            </Button>
+          </Block>
+        </ScrollView>
+      )}
     </Block>
   );
 };

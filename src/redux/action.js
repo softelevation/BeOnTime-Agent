@@ -1,3 +1,5 @@
+import {ActionConstants} from './constants';
+
 export {
   loginError,
   loginRequest,
@@ -82,3 +84,9 @@ export {
   getPlanningRequest,
   getPlanningSuccess,
 } from './planning/action';
+
+export const resetStore = () => {
+  return {
+    type: ActionConstants.RESET_STORE,
+  };
+};

@@ -34,6 +34,7 @@ const Login = () => {
     EnterEmail,
     ForgotPassword,
     LoginHeaderTop,
+    type,
   } = languageMode;
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -61,6 +62,7 @@ const Login = () => {
         email: values.email,
         password: values.password,
         role_id: 2,
+        language: type,
       }),
     );
   };

@@ -8,6 +8,7 @@ import {Block, Text} from '../../components';
 import ActivityLoader from '../../components/activityLoader';
 import Header from '../../components/common/header';
 import EmptyFile from '../../components/emptyFile';
+import NotificationItemBox from '../../components/ItemBox';
 import ItemBox from '../../components/swipeable';
 import {t1} from '../../components/theme/fontsize';
 import {
@@ -35,6 +36,7 @@ const Notifications = ({
     RemoveNotification,
     Cancel,
     YesDoIt,
+    type,
   } = languageMode;
   const clearNotification = async () => {
     const token = await AsyncStorage.getItem('token');
@@ -76,7 +78,8 @@ const Notifications = ({
   };
   const _renderItem = ({item, index}) => {
     return (
-      <ItemBox
+      <NotificationItemBox
+        type={type}
         handlePress={() => console.log('click')}
         data={item}
         handleDelete={(value) => deleteItem(value)}
@@ -94,6 +97,7 @@ const Notifications = ({
   return (
     <Block primary>
       <Header centerText={NotificationsLanguage} leftIcon />
+      {isLoad && <ActivityLoader />}
       <ScrollView
         refreshControl={
           <RefreshControl
@@ -103,7 +107,6 @@ const Notifications = ({
           />
         }
         contentContainerStyle={{flexGrow: 1}}>
-        {isLoad && <ActivityLoader />}
         {strictValidArrayWithLength(notifications.recent) && (
           <Block margin={[t1]} flex={false}>
             <Text uppercase size={14} grey bold>

@@ -328,6 +328,8 @@ const TravelMissionCustomScreen = ({
     ArrivedOnDestination,
     AreYouSure,
     HaveArrivedOnDestination,
+    Cancel,
+    Yes,
   } = languageMode;
   // User Params
   const {latitude, longitude} = item;
@@ -590,10 +592,10 @@ const TravelMissionCustomScreen = ({
       HaveArrivedOnDestination,
       [
         {
-          text: 'Cancel',
+          text: Cancel,
         },
         {
-          text: 'Yes',
+          text: Yes,
           onPress: () => deleteItem(),
           style: 'cancel',
         },

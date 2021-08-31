@@ -19,7 +19,7 @@ import {w1} from './theme/fontsize';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
-const ItemBox = ({data, handleDelete, handlePress}) => {
+const NotificationItemBox = ({data, handleDelete, handlePress, type}) => {
   const leftSwipe = (progress, dragX) => {
     const scale = dragX.interpolate({
       inputRange: [0, 100],
@@ -67,7 +67,7 @@ const ItemBox = ({data, handleDelete, handlePress}) => {
               : 'Need support with operator'}
           </Text>
           <Text margin={[hp(0.5), 0, 0]} grey size={14}>
-            {data.message}
+            {type === 'en' ? `${data.message}` : `${data.message_fr}`}
           </Text>
         </Block>
         <Text grey size={14}>
@@ -78,7 +78,7 @@ const ItemBox = ({data, handleDelete, handlePress}) => {
   );
 };
 
-export default ItemBox;
+export default NotificationItemBox;
 
 const styles = StyleSheet.create({
   container: {
