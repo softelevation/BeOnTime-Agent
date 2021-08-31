@@ -12,7 +12,7 @@ export function* request(action) {
       yield put(makePaymentSuccess(response.data));
     } else {
       yield put(makePaymentError(response));
-      Alerts('Error', response.data.data.code, light.danger);
+      Alerts('', response.data.data.code, light.danger);
     }
   } catch (err) {
     yield put(makePaymentError());

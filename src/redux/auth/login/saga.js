@@ -27,15 +27,15 @@ export function* loginRequest(action) {
       yield call(SaveToken, response.data);
       yield call(SaveData, response.data);
       yield put(loginSuccess(response.data));
-      Alerts('Login Successful', response.data.message, light.success);
+      Alerts('', response.data.message, light.success);
       navigation.navigate('Home');
     } else {
       yield put(loginError(response.data.message));
-      Alerts('Login Failed', response.data.message, light.danger);
+      Alerts('', response.data.message, light.danger);
     }
   } catch (err) {
     yield put(loginError(err.response.data.message));
-    Alerts('Login Failed', err.response.data.message, light.danger);
+    Alerts('', err.response.data.message, light.danger);
   }
 }
 export function* changePasswordRequest(action) {
@@ -43,15 +43,15 @@ export function* changePasswordRequest(action) {
     const response = yield call(updatePasswordApi, action.payload);
     if (response.data.status === 1) {
       yield put(changePasswordSuccess(response.data));
-      Alerts('Success', response.data.message, light.success);
+      Alerts('', response.data.message, light.success);
       navigation.goBack();
     } else {
       yield put(changePasswordError(response.data.message));
-      Alerts('Error', response.data.message, light.danger);
+      Alerts('', response.data.message, light.danger);
     }
   } catch (err) {
     yield put(changePasswordError(err.response.data.message));
-    Alerts('Error', err.response.data.message, light.danger);
+    Alerts('', err.response.data.message, light.danger);
   }
 }
 

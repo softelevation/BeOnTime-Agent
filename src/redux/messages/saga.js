@@ -18,7 +18,7 @@ export function* request(action) {
       yield put(getChatSuccess(response.data.data));
     } else {
       yield put(getChatError(response));
-      Alerts('Error', response.data.data.code, light.danger);
+      Alerts('', response.data.data.code, light.danger);
     }
   } catch (err) {
     yield put(getChatError());
@@ -31,7 +31,7 @@ export function* chatByIdRequest(action) {
       yield put(getChatByIdSuccess(response.data.data));
     } else {
       yield put(getChatByIdError(response));
-      Alerts('Error', response.data.data.code, light.danger);
+      Alerts('', response.data.data.code, light.danger);
     }
   } catch (err) {
     yield put(getChatByIdError());
@@ -44,7 +44,7 @@ export function* operatorRequest(action) {
       yield put(operatorChatSuccess(response.data.data));
     } else {
       yield put(operatorChatError(response));
-      Alerts('Error', response.data.data.code, light.danger);
+      Alerts('', response.data.data.code, light.danger);
     }
   } catch (err) {
     yield put(operatorChatError());

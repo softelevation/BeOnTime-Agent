@@ -31,12 +31,14 @@ export function* delrequest(action) {
     if (response.data.status === 1) {
       yield put(deleteNotificationSuccess(response.data));
       yield put(getNotificationRequest());
-      Alerts('Success', response.data.message, light.success);
+      Alerts('', response.data.message, light.success);
     } else {
       yield put(deleteNotificationError(response));
+      Alerts('', response.data.message, light.danger);
     }
   } catch (err) {
     yield put(deleteNotificationError());
+    Alerts('', err.response.data.message, light.danger);
   }
 }
 

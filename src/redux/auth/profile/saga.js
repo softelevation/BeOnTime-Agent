@@ -29,14 +29,16 @@ export function* updateRequest(action) {
     if (response) {
       yield put(profileRequest());
       yield put(updateProfileSuccess(response.data));
-      Alerts('Success', 'Profile updated successfully', light.success);
+      Alerts('', response.data.message, light.success);
       navigation.navigate('Home');
     } else {
       yield put(profileError(response));
       yield put(updateProfileError(response));
+      Alerts('', response.data.message, light.danger);
     }
   } catch (err) {
     yield put(profileError(err));
+    Alerts('', err.response.data.message, light.danger);
     yield put(updateProfileError(err));
   }
 }

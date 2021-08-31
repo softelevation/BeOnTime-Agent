@@ -17,7 +17,7 @@ export function* request(action) {
       yield put(getMissionsSuccess(response.data.data));
     } else {
       yield put(getMissionsError(response));
-      Alerts('Error', response.data.data.code, light.danger);
+      Alerts('', response.data.data.code, light.danger);
     }
   } catch (err) {
     yield put(getMissionsError());
@@ -30,7 +30,7 @@ export function* customRequest(action) {
       yield put(customMissionSuccess(response.data.data));
     } else {
       yield put(customMissionError(response));
-      Alerts('Error', response.data.data.code, light.danger);
+      Alerts('', response.data.data.code, light.danger);
     }
   } catch (err) {
     yield put(customMissionError(err));
