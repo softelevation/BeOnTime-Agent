@@ -51,6 +51,7 @@ const componentStyles = () => {
 };
 
 const Block = ({
+  opacity,
   safearea,
   padding,
   margin,
@@ -83,7 +84,7 @@ const Block = ({
 }) => {
   const styles = componentStyles();
   const handleMargins = () => {
-//alert('ssss')
+    //alert('ssss')
     if (typeof margin === 'number') {
       return {
         marginTop: margin,
@@ -283,6 +284,7 @@ const Block = ({
     primary && styles.primary,
     color && styles[color], // predefined styles colors for backgroundColor
     color && !styles[color] && {backgroundColor: color}, // custom backgroundColor
+    opacity && {opacity: opacity},
     style, // rewrite predefined styles
   ];
 

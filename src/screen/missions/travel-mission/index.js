@@ -215,54 +215,6 @@ const TravelMissionScreen = ({
 
   useFocusEffect(
     React.useCallback(() => {
-      // let watchId = BackgroundGeolocation.getCurrentPosition(
-      //   (position) => {
-      //     let region = {
-      //       latitude: position.coords.latitude,
-      //       longitude: position.coords.longitude,
-      //       latitudeDelta: 0.00922 * 1.5,
-      //       longitudeDelta: 0.00421 * 1.5,
-      //       angle: position.coords.heading,
-      //     };
-
-      //     setlocation(region);
-      //     callSocket(position);
-      //   },
-      //   (error) => console.log(error),
-      //   {
-      //     enableHighAccuracy: true,
-      //     timeout: 15000,
-      //     maximumAge: 10000,
-      //     distanceFilter: 1,
-      //   },
-      // );
-      // BackgroundGeolocation.watchPosition({
-      //   timeout: 30, // 30 second timeout to fetch location
-      //   persist: true, // Defaults to state.enabled
-      //   maximumAge: 5000, // Accept the last-known-location if not older than 5000 ms.
-      //   desiredAccuracy: 10, // Try to fetch a location with an accuracy of `10` meters.
-      //   samples: 3, // How many location samples to attempt.
-      //   extras: {
-      //     // Custom meta-data.
-      //     route_id: 123,
-      //   },
-      // }).then((position) => {
-      //   let region = {
-      //     latitude: position.coords.latitude,
-      //     longitude: position.coords.longitude,
-      //     latitudeDelta: 0.00922 * 1.5,
-      //     longitudeDelta: 0.00421 * 1.5,
-      //     angle: position.coords.heading,
-      //   };
-      //   setlocation(region);
-      //   callSocket(position);
-      // });
-      // return () => {
-      //   if (watchId !== null) {
-      //     Geolocation.clearWatch(watchId);
-      //   }
-      // };
-
       BackgroundGeolocation.watchPosition(
         (position) => {
           console.log('[watchPosition] -', location);

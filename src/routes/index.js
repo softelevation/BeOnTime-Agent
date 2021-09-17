@@ -30,6 +30,8 @@ import TravelMission from '../screen/missions/travel-mission';
 import Planning from '../screen/planning';
 import TravelMissionCustomScreen from '../screen/missions/custom-request/travel-mission-custom';
 import CustomMissionDetailScreen from '../screen/missions/custom-request/details';
+import {Available} from '../screen/planning/availability';
+import Availabilityplus from '../screen/planning/add';
 
 const Stack = createStackNavigator();
 
@@ -77,7 +79,9 @@ function Routes() {
         <Stack.Screen name="Chat" component={Chat} />
         <Stack.Screen name="ChatOperator" component={ChatOperator} />
         <Stack.Screen name="Language" component={Language} />
-        <Stack.Screen name="Planning" component={Planning} />
+        <Stack.Screen name="Planning" component={Available} />
+        <Stack.Screen name="Availabilityplus" component={Availabilityplus} />
+
         <Stack.Screen
           name="CustomMissionDetailScreen"
           component={CustomMissionDetailScreen}

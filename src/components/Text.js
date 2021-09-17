@@ -23,6 +23,9 @@ const componentStyles = () => {
     uppercase: {
       textTransform: 'uppercase',
     },
+    capitalize: {
+      textTransform: 'capitalize',
+    },
     regular: {
       fontFamily: RobotoRegular,
     },
@@ -108,6 +111,7 @@ const CustomText = ({
   margin,
   errorColor,
   link,
+  capitalize,
   ...props
 }) => {
   const styles = componentStyles();
@@ -192,6 +196,7 @@ const CustomText = ({
     uppercase && styles.uppercase,
     underline && styles.underline,
     errorColor && styles.errorColor,
+    capitalize && styles.capitalize,
     margin && {...handleMargins()},
     style, // rewrite predefined styles
   ];

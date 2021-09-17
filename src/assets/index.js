@@ -47,4 +47,6 @@ export const images = {
   tick_icon: require('./icons/tick.png'),
   map_icon: require('./icons/google-maps.png'),
   user_map_icon: require('./icons/user-map.png'),
+  clock_icon: require('./icons/wall-clock.png'),
+  calendar_icon: require('./icons/calendar.png'),
 };
