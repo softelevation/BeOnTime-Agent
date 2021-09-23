@@ -10,8 +10,21 @@ export const Api = async (data) => {
   };
   return axios({
     method: 'GET',
-    url: `${config.Api_Url}/agent/schedule-date`,
+    url: `${config.Api_Url}/agent/agent-schedule-date`,
     headers,
     // data: data,
+  });
+};
+export const SaveScheduleApi = async (data) => {
+  const token = await AsyncStorage.getItem('token');
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization: `${token}`,
+  };
+  return axios({
+    method: 'POST',
+    url: `${config.Api_Url}/agent/agent-schedule-date`,
+    headers,
+    data: data,
   });
 };

@@ -344,5 +344,5 @@ export const fr = {
   EnterCurrentPassword: 'Entrez votre mot de passe actuel',
   BothSamePassword: 'Les deux mots de passe doivent être identiques',
   NoData: 'Aucun résultat',
-  CustomRequest: 'Demande personnalisée',
+  CustomRequest: 'Demande particulière',
 };

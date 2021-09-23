@@ -863,6 +863,7 @@ const Signup = () => {
                       label={HomeAddress}
                       value={values.address}
                       onPress={(data, details) => {
+                        console.log(data, details);
                         const description = data.description;
                         setFieldValue('address', description);
                       }}

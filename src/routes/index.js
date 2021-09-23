@@ -30,7 +30,7 @@ import TravelMission from '../screen/missions/travel-mission';
 import Planning from '../screen/planning';
 import TravelMissionCustomScreen from '../screen/missions/custom-request/travel-mission-custom';
 import CustomMissionDetailScreen from '../screen/missions/custom-request/details';
-import {Available} from '../screen/planning/availability';
+import Available from '../screen/planning/availability';
 import Availabilityplus from '../screen/planning/add';
 
 const Stack = createStackNavigator();

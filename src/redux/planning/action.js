@@ -20,3 +20,24 @@ export const getPlanningError = (error) => {
     res: false,
   };
 };
+export const addPlanningRequest = (payload) => {
+  return {
+    type: ActionConstants.ADD_PLANNING_REQUEST,
+    payload,
+    res: false,
+  };
+};
+export const addPlanningSuccess = (data) => {
+  return {
+    type: ActionConstants.ADD_PLANNING_SUCCESS,
+    data,
+    res: true,
+  };
+};
+export const addPlanningError = (error) => {
+  return {
+    type: ActionConstants.ADD_PLANNING_ERROR,
+    error,
+    res: false,
+  };
+};

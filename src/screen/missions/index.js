@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {FlatList} from 'react-native';
@@ -24,6 +25,7 @@ const Missions = ({navigationState}) => {
     Finished,
     MissionHeader,
     CustomRequest,
+    type,
   } = languageMode;
   const getValues = (name) => {
     if (name === 'Requested') {
@@ -66,9 +68,20 @@ const Missions = ({navigationState}) => {
               color={selected === index ? '#FFFFFF' : '#F7F8FA'}
               shadow={selected === index}
               margin={[0, wp(1)]}>
-              <Text size={14} semibold>
-                {getValues(item.name)}
-              </Text>
+              {item.name === 'CustomRequest' && type === 'fr' ? (
+                <Text
+                  center
+                  style={{width: wp(18)}}
+                  numberOfLines={2}
+                  size={14}
+                  semibold>
+                  {getValues(item.name)}
+                </Text>
+              ) : (
+                <Text size={14} semibold>
+                  {getValues(item.name)}
+                </Text>
+              )}
             </CustomButton>
           );
         }}

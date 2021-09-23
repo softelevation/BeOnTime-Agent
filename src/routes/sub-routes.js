@@ -43,10 +43,10 @@ const MapStack = () => {
 const MyTabs = () => {
   return (
     <TopTab.Navigator
-      initialRouteName="CustomRequest"
+      initialRouteName="Requested"
       tabBar={(props) => <Missions {...props} />}>
-      <TopTab.Screen name="CustomRequest" component={CustomRequest} />
       <TopTab.Screen name="Requested" component={Requested} />
+      <TopTab.Screen name="CustomRequest" component={CustomRequest} />
       <TopTab.Screen name="InProgress" component={InProgress} />
       <TopTab.Screen name="Finished" component={Finished} />
     </TopTab.Navigator>

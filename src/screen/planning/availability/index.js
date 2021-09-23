@@ -20,41 +20,37 @@ import Header from '../../../components/common/header';
 import {ImageComponent, Text, Block} from '../../../components';
 import {Switch} from '../../../components/switch';
 import {light} from '../../../components/theme/colors';
+import {getPlanningRequest} from '../../../redux/planning/action';
+import {Alerts, strictValidArrayWithLength} from '../../../utils/commonUtils';
+import EmptyFile from '../../../components/emptyFile';
+import axios from 'axios';
+import AsyncStorage from '@react-native-community/async-storage';
+import {config} from '../../../utils/config';
 
-export class Available extends Component {
+class Available extends Component {
   constructor(props) {
     super(props);
     this.state = {
       weeks: [],
       refreshing: false,
       AvailabilityData: [],
+      loading: false,
     };
   }
 
   onRefresh = () => {
-    // const {providerId} = this.props;
     this.setState({refreshing: true});
     setTimeout(() => {
       this.setState({refreshing: false});
     }, 2000);
-    // this.props.getAvailabilityyRequest(providerId);
+    this.props.getPlanningRequest();
   };
 
-  // componentDidMount() {
-  //   this.focusListener = this.props.navigation.addListener('didFocus', () => {
-  //     if (!this.props.AvailabilityData.length) {
-  //       this.props.getAvailabilityyRequest(this.props.providerId);
-  //     } else {
-  //       this.setState({
-  //         AvailabilityData: this.props.AvailabilityData,
-  //       });
-  //     }
-  //   });
-  // }
-
-  componentWillUnmount() {
-    // Remove the event listener
-    // this.focusListener.remove();
+  componentDidMount() {
+    console.log(this.props);
+    this.focusListener = this.props.navigation.addListener('focus', () => {
+      this.props.getPlanningRequest();
+    });
   }
 
   // componentDidUpdate(prevProps) {
@@ -68,31 +64,44 @@ export class Available extends Component {
   //   }
   // }
 
-  handleChange = (data) => {
-    data.status = !data.status;
-    this.setState((prevState) => ({
-      AvailabilityData: prevState.AvailabilityData.map((resp) => {
-        if (resp.id === data.id) {
-          resp.status = data.status ? 1 : 0;
-          return {...resp}; // force update
-        } else {
-          return resp;
-        }
-      }),
-    }));
-    this.props.statusAvailabilityRequest(data);
+  handleChange = async (id, state, action) => {
+    const status = state === 1 ? 0 : 1;
+    this.setState({
+      loading: true,
+    });
+    const token = await AsyncStorage.getItem('token');
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: `${token}`,
+    };
+    const res = await axios({
+      method: 'post',
+      url: `${config.Api_Url}/agent/agent-schedule-status`,
+      headers,
+      data: {
+        status: status,
+        id: id,
+        action: action,
+      },
+    });
+    if (res) {
+      this.setState({
+        loading: true,
+      });
+      Alerts(res.data.message);
+      this.props.getPlanningRequest();
+    }
   };
 
   showDeleteAlert = (data) => {
-    const id = data.id;
     Alert.alert(
-      'Delete Availability',
-      'Are you sure you want to delete the selected availability?',
+      'Delete Planning',
+      'Are you sure you want to delete the selected Planning?',
       [
         {
           text: 'Yes',
           onPress: () => {
-            this.props.deleteAvailabilityRequest(id);
+            this.handleChange(data.id, 1, 'delete');
           },
         },
         {
@@ -105,65 +114,41 @@ export class Available extends Component {
   };
 
   render() {
-    const AvailabilityData = [
-      {
-        id: '1',
-        startDate: new Date(),
-        endDate: new Date(),
-        status: 1,
-        days: ['mon', 'tue', 'wed'],
-      },
-      {
-        id: '1',
-        startDate: new Date(),
-        endDate: new Date(),
-        status: 0,
-        days: ['mon', 'tue', 'thur'],
-      },
-      {
-        id: '1',
-        startDate: new Date(),
-        endDate: new Date(),
-        status: 0,
-        days: ['mon', 'tue', 'sat'],
-      },
-      {
-        id: '1',
-        startDate: new Date(),
-        endDate: new Date(),
-        status: 1,
-        days: ['mon', 'tue', 'fri', 'sun'],
-      },
-    ];
     return (
       <>
         <Block primary>
+          {!this.state.refreshing &&
+            !this.state.loading &&
+            this.props.loader && <ActivityLoader />}
           <>
             {/* {(loader || statusLoader || setLoader) && <ActivityLoader />} */}
             <Header centerText={'Planning'} icon={'ios-menu'} />
-            {AvailabilityData.length ? (
-              <FlatList
-                data={AvailabilityData}
-                keyExtractor={(item) => item.id.toString()}
-                refreshControl={
-                  <RefreshControl
-                    refreshing={this.state.refreshing}
-                    onRefresh={this.onRefresh}
-                  />
-                }
-                renderItem={({item}) => (
-                  <AvailabilityListITem
-                    item={item}
-                    onStatusChange={this.handleChange}
-                    deleteAvailability={this.showDeleteAlert}
-                  />
-                )}
-              />
-            ) : (
+            {/* {strictValidArrayWithLength(this.props.data) ? ( */}
+            <FlatList
+              data={this.props.data}
+              keyExtractor={(item) => item.id.toString()}
+              contentContainerStyle={{flexGrow: 1}}
+              ListEmptyComponent={<EmptyFile text="No Planning Available" />}
+              refreshControl={
+                <RefreshControl
+                  refreshing={this.state.refreshing}
+                  onRefresh={this.onRefresh}
+                />
+              }
+              renderItem={({item}) => (
+                <AvailabilityListITem
+                  item={item}
+                  onStatusChange={this.handleChange}
+                  deleteAvailability={this.showDeleteAlert}
+                  navigation={this.props.navigation}
+                />
+              )}
+            />
+            {/* ) : (
               <Block center middle>
-                <Text>{'No Availability'}</Text>
+                <Text>{'No Planning Available'}</Text>
               </Block>
-            )}
+            )} */}
           </>
         </Block>
         <View style={styles.plusContainer}>
@@ -195,7 +180,8 @@ class AvailabilityListITem extends React.PureComponent {
   };
 
   render() {
-    const {item, onStatusChange, deleteAvailability} = this.props;
+    const {item, onStatusChange, deleteAvailability, navigation} = this.props;
+    const perWeekDays = [];
     return (
       <>
         <Block
@@ -207,30 +193,34 @@ class AvailabilityListITem extends React.PureComponent {
           <TouchableOpacity
             onLongPress={() => deleteAvailability(item)}
             onPress={() =>
-              NavigationService.navigate('AvailabilityAdd', {
-                // daysData: item.days,
-                // dateData: item,
-                // id: item.id,
+              navigation?.navigate('Availabilityplus', {
+                daysData: item.schedule_time,
+                dateData: item,
+                id: item.id,
               })
             }>
             <View>
               <View style={styles.dateContainer}>
                 <Text size={16}>
-                  {'From'} : {this.formatDate(item.startDate)}
+                  {'From'} : {this.formatDate(item.start_date)}
                 </Text>
                 <Text size={16}>
                   {' '}
-                  {'To'} :{this.formatDate(item.endDate)}
+                  {'To'} :{this.formatDate(item.end_date)}
                 </Text>
               </View>
+              {item.schedule_time.forEach((r) => {
+                perWeekDays.push(r.schedule_day);
+              })}
+
               <View style={styles.weekContainer}>
-                {this.renderDays(item.days.indexOf('mon'), 'Mon')}
-                {this.renderDays(item.days.indexOf('tue'), 'Tue')}
-                {this.renderDays(item.days.indexOf('wed'), 'Wed')}
-                {this.renderDays(item.days.indexOf('thur'), 'Thur')}
-                {this.renderDays(item.days.indexOf('fri'), 'Fri')}
-                {this.renderDays(item.days.indexOf('sat'), 'Sat')}
-                {this.renderDays(item.days.indexOf('sun'), 'Sun')}
+                {this.renderDays(perWeekDays.indexOf('mon'), 'Mon')}
+                {this.renderDays(perWeekDays.indexOf('tue'), 'Tue')}
+                {this.renderDays(perWeekDays.indexOf('wed'), 'Wed')}
+                {this.renderDays(perWeekDays.indexOf('thu'), 'Thur')}
+                {this.renderDays(perWeekDays.indexOf('fri'), 'Fri')}
+                {this.renderDays(perWeekDays.indexOf('sat'), 'Sat')}
+                {this.renderDays(perWeekDays.indexOf('sun'), 'Sun')}
               </View>
             </View>
           </TouchableOpacity>
@@ -239,7 +229,9 @@ class AvailabilityListITem extends React.PureComponent {
             <Block center middle margin={[0, 0, 0, wp(2)]}>
               <Switch
                 value={item.status === 0 ? false : true}
-                onValueChange={() => onStatusChange(item)}
+                onValueChange={() =>
+                  onStatusChange(item.id, item.status, 'update')
+                }
                 circleSize={24}
                 barHeight={20}
                 circleBorderWidth={2}
@@ -306,12 +298,8 @@ const styles = StyleSheet.create({
 });
 const mapStateToProps = (state) => {
   return {
-    providerId: state.loginReducer.user.id,
-    language: state.languageReducer.language,
-    AvailabilityData: state.setAvailabilityReducer.getAvailability,
-    loader: state.setAvailabilityReducer.loading,
-    statusLoader: state.setAvailabilityReducer.statusloading,
-    setLoader: state.setAvailabilityReducer.setloading,
+    loader: state.planning.getPlanning.loading,
+    data: state.planning.getPlanning.data,
   };
 };
-export default connect(mapStateToProps, {})(Available);
+export default connect(mapStateToProps, {getPlanningRequest})(Available);

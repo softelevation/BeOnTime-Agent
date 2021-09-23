@@ -15,7 +15,12 @@ import {
   Block,
 } from '../../../components';
 import {light} from '../../../components/theme/colors';
-
+import {connect} from 'react-redux';
+import {addPlanningRequest} from '../../../redux/planning/action';
+import {
+  strictValidObject,
+  strictValidObjectWithKeys,
+} from '../../../utils/commonUtils';
 class Availabilityplus extends Component {
   constructor(props) {
     super(props);
@@ -35,7 +40,7 @@ class Availabilityplus extends Component {
           startTime: '',
           endTime: '',
         },
-        thur: {
+        thu: {
           startTime: '',
           endTime: '',
         },
@@ -59,7 +64,7 @@ class Availabilityplus extends Component {
         mon: false,
         tue: false,
         wed: false,
-        thur: false,
+        thu: false,
         fri: false,
         sat: false,
         sun: false,
@@ -70,43 +75,46 @@ class Availabilityplus extends Component {
       timeTapped: false,
     };
   }
-  // componentDidMount() {
-  //   const dateData = this.props.navigation.getParam('dateData')
-  //     ? this.props.navigation.getParam('dateData')
-  //     : '';
-  //   if (dateData) {
-  //     this.fetchData(dateData);
-  //   }
-  // }
-  // fetchData = async (dateData) => {
-  //   const totalDays = dateData && dateData.days;
-  //   this.setState({
-  //     fromDate: this.formatEditedDate(dateData.startDate),
-  //     toDate: this.formatEditedDate(dateData.endDate),
-  //   });
-  //   (await totalDays) &&
-  //     totalDays.forEach((item) => {
-  //       this.setState({
-  //         weekDays: {
-  //           ...this.state.weekDays,
-  //           [item.day]: {
-  //             startTime: this.formatEditedTime(
-  //               item.startTime,
-  //               dateData.startDate,
-  //             ),
-  //             endTime: this.formatEditedTime(item.endTime, dateData.endDate),
-  //           },
-  //         },
-  //         options: {
-  //           ...this.state.options,
-  //           [item.day]: true,
-  //         },
-  //       });
-  //     });
-  // };
+  componentDidMount() {
+    const dateData =
+      this.props.route.params && this.props.route.params.dateData
+        ? this.props.route.params.dateData
+        : '';
+    if (dateData) {
+      console.log(dateData, 'dateData');
+      this.fetchData(dateData);
+    }
+  }
+  fetchData = async (dateData) => {
+    const totalDays = dateData && dateData.schedule_time;
+    this.setState({
+      fromDate: this.formatEditedDate(dateData.start_date),
+      toDate: this.formatEditedDate(dateData.end_date),
+    });
+    (await totalDays) &&
+      totalDays.forEach((item) => {
+        this.setState({
+          weekDays: {
+            ...this.state.weekDays,
+            [item.schedule_day]: {
+              startTime: this.formatEditedTime(
+                item.available_from,
+                item.start_date,
+              ),
+              endTime: this.formatEditedTime(item.available_to, item.end_date),
+            },
+          },
+          options: {
+            ...this.state.options,
+            [item.schedule_day]: true,
+          },
+        });
+      });
+  };
   formatEditedTime = (time, d) => {
     let date = new Date(d);
     let timeArray = time.split(':');
+    console.log(timeArray, 'yfuyfvuvuyvyuschedule_day');
     date.setHours(timeArray[0]);
     date.setMinutes(timeArray[1]);
     date.setSeconds(timeArray[2]);
@@ -285,8 +293,8 @@ class Availabilityplus extends Component {
   ) => {
     return (
       <View key={index} style={styles.timeContainer}>
-        <Text semibold size={14} style={{width: wp(15)}}>
-          {weekDaysName.toUpperCase()}
+        <Text uppercase semibold size={14} style={{width: wp(15)}}>
+          {weekDaysName}
         </Text>
         <Checkbox
           checked={options}
@@ -360,12 +368,14 @@ class Availabilityplus extends Component {
     return moment(time).format('HH:mm:ss');
   };
   SaveData = async () => {
+    // this.props.navigation.goBack();
     const {options, fromDate, toDate} = this.state;
     const startDate = this.formatDateApi(fromDate);
     const endDate = this.formatDateApi(toDate);
-    // const id = this.props.navigation.getParam('id')
-    //   ? this.props.navigation.getParam('id')
-    //   : '';
+    const id =
+      this.props.route.params && this.props.route.params.id
+        ? this.props.route.params.id
+        : 0;
     var passingData = this.state.weekDays;
     const data = [];
     Object.keys(options).forEach((key) => {
@@ -389,19 +399,20 @@ class Availabilityplus extends Component {
       });
     } else if (fromDate !== '' && toDate !== '' && data.length > 0) {
       this.setState({DateError: ''});
-      // this.props.setAvailabilityRequest({
-      //   userId,
-      //   startDate,
-      //   endDate,
-      //   status: true,
-      //   data,
-      //   id,
-      // });
+      const sendingData = {
+        startDate: startDate,
+        endDate: endDate,
+        data: data,
+        id: id,
+      };
+      this.props.addPlanningRequest(sendingData);
     }
   };
   render() {
     const {options, toDate, startDate} = this.state;
     console.log(this.state, 'this.state');
+    const {loading} = this.props;
+    console.log(this.props);
     return (
       <>
         <Block safearea primary>
@@ -513,12 +524,12 @@ class Availabilityplus extends Component {
                   'Wed',
                 )}
                 {this.renderTimeSelector(
-                  'thur',
+                  'thu',
                   'startTime',
                   'endTime',
                   4,
-                  options.thur,
-                  'thur',
+                  options.thu,
+                  'thu',
                   'Thur',
                 )}
                 {this.renderTimeSelector(
@@ -554,6 +565,7 @@ class Availabilityplus extends Component {
         </Block>
         <View style={styles.plusContainer}>
           <Button
+            isLoading={loading}
             style={{width: wp(90)}}
             onPress={() => this.SaveData()}
             color="secondary">
@@ -635,4 +647,9 @@ const styles = StyleSheet.create({
   },
   checkboxStyle: {height: 30, width: 30},
 });
-export default Availabilityplus;
+const mapStateToProps = (state) => {
+  return {
+    loading: state.planning.savePlanning.loading,
+  };
+};
+export default connect(mapStateToProps, {addPlanningRequest})(Availabilityplus);
