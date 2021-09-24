@@ -114,6 +114,7 @@ class Available extends Component {
   };
 
   render() {
+    const {Planning, NoPlanningAvailable} = this.props.languageMode;
     return (
       <>
         <Block primary>
@@ -122,13 +123,13 @@ class Available extends Component {
             this.props.loader && <ActivityLoader />}
           <>
             {/* {(loader || statusLoader || setLoader) && <ActivityLoader />} */}
-            <Header centerText={'Planning'} icon={'ios-menu'} />
+            <Header centerText={Planning} icon={'ios-menu'} />
             {/* {strictValidArrayWithLength(this.props.data) ? ( */}
             <FlatList
               data={this.props.data}
               keyExtractor={(item) => item.id.toString()}
               contentContainerStyle={{flexGrow: 1}}
-              ListEmptyComponent={<EmptyFile text="No Planning Available" />}
+              ListEmptyComponent={<EmptyFile text={NoPlanningAvailable} />}
               refreshControl={
                 <RefreshControl
                   refreshing={this.state.refreshing}
@@ -141,6 +142,7 @@ class Available extends Component {
                   onStatusChange={this.handleChange}
                   deleteAvailability={this.showDeleteAlert}
                   navigation={this.props.navigation}
+                  language={this.props.languageMode}
                 />
               )}
             />
@@ -180,8 +182,15 @@ class AvailabilityListITem extends React.PureComponent {
   };
 
   render() {
-    const {item, onStatusChange, deleteAvailability, navigation} = this.props;
+    const {
+      item,
+      onStatusChange,
+      deleteAvailability,
+      navigation,
+      language,
+    } = this.props;
     const perWeekDays = [];
+    const {From, To, Mon, Tue, Wed, Thur, Fri, Sat, Sun} = language;
     return (
       <>
         <Block
@@ -202,11 +211,11 @@ class AvailabilityListITem extends React.PureComponent {
             <View>
               <View style={styles.dateContainer}>
                 <Text size={16}>
-                  {'From'} : {this.formatDate(item.start_date)}
+                  {From} : {this.formatDate(item.start_date)}
                 </Text>
                 <Text size={16}>
                   {' '}
-                  {'To'} :{this.formatDate(item.end_date)}
+                  {To} :{this.formatDate(item.end_date)}
                 </Text>
               </View>
               {item.schedule_time.forEach((r) => {
@@ -214,13 +223,13 @@ class AvailabilityListITem extends React.PureComponent {
               })}
 
               <View style={styles.weekContainer}>
-                {this.renderDays(perWeekDays.indexOf('mon'), 'Mon')}
-                {this.renderDays(perWeekDays.indexOf('tue'), 'Tue')}
-                {this.renderDays(perWeekDays.indexOf('wed'), 'Wed')}
-                {this.renderDays(perWeekDays.indexOf('thu'), 'Thur')}
-                {this.renderDays(perWeekDays.indexOf('fri'), 'Fri')}
-                {this.renderDays(perWeekDays.indexOf('sat'), 'Sat')}
-                {this.renderDays(perWeekDays.indexOf('sun'), 'Sun')}
+                {this.renderDays(perWeekDays.indexOf('mon'), Mon)}
+                {this.renderDays(perWeekDays.indexOf('tue'), Tue)}
+                {this.renderDays(perWeekDays.indexOf('wed'), Wed)}
+                {this.renderDays(perWeekDays.indexOf('thu'), Thur)}
+                {this.renderDays(perWeekDays.indexOf('fri'), Fri)}
+                {this.renderDays(perWeekDays.indexOf('sat'), Sat)}
+                {this.renderDays(perWeekDays.indexOf('sun'), Sun)}
               </View>
             </View>
           </TouchableOpacity>
@@ -300,6 +309,7 @@ const mapStateToProps = (state) => {
   return {
     loader: state.planning.getPlanning.loading,
     data: state.planning.getPlanning.data,
+    languageMode: state.languageReducer.language,
   };
 };
 export default connect(mapStateToProps, {getPlanningRequest})(Available);

@@ -17,10 +17,8 @@ import {
 import {light} from '../../../components/theme/colors';
 import {connect} from 'react-redux';
 import {addPlanningRequest} from '../../../redux/planning/action';
-import {
-  strictValidObject,
-  strictValidObjectWithKeys,
-} from '../../../utils/commonUtils';
+import {strictValidString} from '../../../utils/commonUtils';
+import {RobotoMedium, RobotoRegular} from '../../../components/theme/fontsize';
 class Availabilityplus extends Component {
   constructor(props) {
     super(props);
@@ -140,6 +138,7 @@ class Availabilityplus extends Component {
           this.state.weekDays[param].endTime.getHours();
       }
       this.setState({
+        unselectChkError: '',
         options: {
           ...this.state.options,
           [param]:
@@ -171,6 +170,7 @@ class Availabilityplus extends Component {
     return moment(date).format('HH:mm');
   };
   onConfirmTimePicker = (date, day, selectedType, index) => {
+    const {InvalidTime} = this.props.languageMode;
     const weekDays = {
       ...this.state.weekDays,
       [day]: {
@@ -213,7 +213,7 @@ class Availabilityplus extends Component {
         weekDays[day].startTime.getHours() > weekDays[day].endTime.getHours()
       ) {
         this.hideDateTimePicker(day + '-end');
-        return this.setState({TimeError: 'Invalid Time'});
+        return this.setState({TimeError: InvalidTime});
       }
 
       distanceTime =
@@ -223,7 +223,7 @@ class Availabilityplus extends Component {
         weekDays[day].startTime.getHours() - weekDays[day].endTime.getHours();
       if (distanceHour === 0 || distanceTime !== 0 || distanceTime < 0) {
         this.hideDateTimePicker(day + '-end');
-        return this.setState({TimeError: 'Invalid Time'});
+        return this.setState({TimeError: InvalidTime});
       }
     }
     this.hideDateTimePicker(day + '-end');
@@ -241,10 +241,16 @@ class Availabilityplus extends Component {
   handleDatePicked = (date) => {
     this.setState({fromDate: date});
     this.hideDateTimePicker();
+    this.setState({
+      DateError: '',
+    });
   };
   handleDatetoPicked = (date) => {
     this.setState({toDate: date});
     this.hideDateTimePicker();
+    this.setState({
+      DateError: '',
+    });
   };
   changeShowDateFormat = (date) => {
     const monthArray = [
@@ -368,8 +374,8 @@ class Availabilityplus extends Component {
     return moment(time).format('HH:mm:ss');
   };
   SaveData = async () => {
-    // this.props.navigation.goBack();
     const {options, fromDate, toDate} = this.state;
+    const {InvalidDate, SelectAnAtleast} = this.props.languageMode;
     const startDate = this.formatDateApi(fromDate);
     const endDate = this.formatDateApi(toDate);
     const id =
@@ -390,12 +396,15 @@ class Availabilityplus extends Component {
     console.log(startDate, endDate, data, 'start');
     if (!toDate) {
       this.setState({
-        DateError: 'Invalid Date Time',
+        DateError: InvalidDate,
       });
-    }
-    if (!fromDate) {
+    } else if (!fromDate) {
       this.setState({
-        DateError: 'Invalid Date Time',
+        DateError: InvalidDate,
+      });
+    } else if (!data.length > 0) {
+      this.setState({
+        unselectChkError: SelectAnAtleast,
       });
     } else if (fromDate !== '' && toDate !== '' && data.length > 0) {
       this.setState({DateError: ''});
@@ -409,22 +418,36 @@ class Availabilityplus extends Component {
     }
   };
   render() {
-    const {options, toDate, startDate} = this.state;
-    console.log(this.state, 'this.state');
+    const {options} = this.state;
     const {loading} = this.props;
-    console.log(this.props);
+    const {
+      NewPlanning,
+      DateRange,
+      HourlyInterval,
+      SavePlanning,
+      From,
+      To,
+      Mon,
+      Tue,
+      Wed,
+      Thur,
+      Fri,
+      Sat,
+      Sun,
+    } = this.props.languageMode;
+
     return (
       <>
         <Block safearea primary>
-          <HeaderTab centerText={'New Planning'} />
+          <HeaderTab centerText={NewPlanning} />
           <ScrollView>
             <View style={styles.container}>
               <Text semibold style={styles.dateRangeText}>
-                {'Date Range'}
+                {DateRange}
               </Text>
               <View style={styles.RangeSelector}>
                 <View>
-                  <Text style={styles.FromToText}>{'From'}</Text>
+                  <Text style={styles.FromToText}>{From}</Text>
                   <View style={styles.DateSelector}>
                     <ImageComponent
                       name="calendar_icon"
@@ -442,7 +465,7 @@ class Availabilityplus extends Component {
                   </View>
                 </View>
                 <View>
-                  <Text style={styles.FromToText}>{'To'}</Text>
+                  <Text style={styles.FromToText}>{To}</Text>
                   <View style={styles.DateSelector}>
                     <ImageComponent
                       name="calendar_icon"
@@ -475,25 +498,22 @@ class Availabilityplus extends Component {
                 />
               </View>
 
-              {(toDate === '' || startDate === '') && (
+              {(strictValidString(this.state.DateError) ||
+                strictValidString(this.state.DateError)) && (
                 <Text style={styles.errorStyle}>{this.state.DateError}</Text>
               )}
               <View style={styles.secondContainer}>
                 <Text
                   semibold
                   style={[styles.dateRangeText, {marginVertical: hp(1)}]}>
-                  {'Hourly Interval'}
+                  {HourlyInterval}
                 </Text>
-                {this.state.TimeError !== '' && (
-                  <Text style={styles.errorStyle}>
-                    {this.state.TimeError ? this.state.TimeError : ''}
-                  </Text>
+                {strictValidString(this.state.TimeError) && (
+                  <Text style={styles.errorStyle}>{this.state.TimeError}</Text>
                 )}
-                {this.state.unselectChkError !== '' && (
-                  <Text style={styles.errorStyle}>
-                    {this.state.unselectChkError
-                      ? this.state.unselectChkError
-                      : ''}
+                {strictValidString(this.state.unselectChkError) && (
+                  <Text style={[styles.errorStyle, {marginBottom: hp(1)}]}>
+                    {this.state.unselectChkError}
                   </Text>
                 )}
                 {this.renderTimeSelector(
@@ -503,7 +523,7 @@ class Availabilityplus extends Component {
                   1,
                   options.mon,
                   'mon',
-                  'Mon',
+                  Mon,
                 )}
                 {this.renderTimeSelector(
                   'tue',
@@ -512,7 +532,7 @@ class Availabilityplus extends Component {
                   2,
                   options.tue,
                   'tue',
-                  'Tue',
+                  Tue,
                 )}
                 {this.renderTimeSelector(
                   'wed',
@@ -521,7 +541,7 @@ class Availabilityplus extends Component {
                   3,
                   options.wed,
                   'wed',
-                  'Wed',
+                  Wed,
                 )}
                 {this.renderTimeSelector(
                   'thu',
@@ -530,7 +550,7 @@ class Availabilityplus extends Component {
                   4,
                   options.thu,
                   'thu',
-                  'Thur',
+                  Thur,
                 )}
                 {this.renderTimeSelector(
                   'fri',
@@ -539,7 +559,7 @@ class Availabilityplus extends Component {
                   5,
                   options.fri,
                   'fri',
-                  'Fri',
+                  Fri,
                 )}
                 {this.renderTimeSelector(
                   'sat',
@@ -548,7 +568,7 @@ class Availabilityplus extends Component {
                   6,
                   options.sat,
                   'sat',
-                  'Sat',
+                  Sat,
                 )}
                 {this.renderTimeSelector(
                   'sun',
@@ -557,7 +577,7 @@ class Availabilityplus extends Component {
                   7,
                   options.sun,
                   'sun',
-                  'Sun',
+                  Sun,
                 )}
               </View>
             </View>
@@ -565,11 +585,12 @@ class Availabilityplus extends Component {
         </Block>
         <View style={styles.plusContainer}>
           <Button
+            // disabled={!toDate || !fromDate || data.length}
             isLoading={loading}
             style={{width: wp(90)}}
             onPress={() => this.SaveData()}
             color="secondary">
-            Save Planning
+            {SavePlanning}
           </Button>
         </View>
       </>
@@ -585,12 +606,11 @@ const styles = StyleSheet.create({
     // color: '#00000061',
     color: light.subtitleColor,
     fontSize: 14,
-    // fontFamily: FontFamily.fontFamilyRegular,
+    fontFamily: RobotoMedium,
     marginBottom: hp(2),
   },
   dateRangeText: {
     fontSize: 18,
-    // fontFamily: FontFamily.fontFamilyRegular,
     marginTop: hp(1),
     marginBottom: hp(2),
   },
@@ -629,8 +649,8 @@ const styles = StyleSheet.create({
   },
   errorStyle: {
     width: wp(90),
-    fontSize: 9,
-    // fontFamily: FontFamily.fontFamilyRegular,
+    fontSize: 12,
+    fontFamily: RobotoRegular,
     color: '#B92D00',
     textAlign: 'center',
     marginTop: hp(1),
@@ -650,6 +670,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => {
   return {
     loading: state.planning.savePlanning.loading,
+    languageMode: state.languageReducer.language,
   };
 };
 export default connect(mapStateToProps, {addPlanningRequest})(Availabilityplus);
