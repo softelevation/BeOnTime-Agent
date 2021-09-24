@@ -3,9 +3,12 @@ import axios from 'axios';
 import {config} from '../../utils/config';
 export const chatApi = async () => {
   const token = await AsyncStorage.getItem('token');
+  const language = await AsyncStorage.getItem('language');
+
   const headers = {
     'Content-Type': 'application/json',
     Authorization: `${token}`,
+    language: language,
   };
   return axios({
     method: 'get',
@@ -15,9 +18,12 @@ export const chatApi = async () => {
 };
 export const chatApiById = async (id) => {
   const token = await AsyncStorage.getItem('token');
+  const language = await AsyncStorage.getItem('language');
+
   const headers = {
     'Content-Type': 'application/json',
     Authorization: `${token}`,
+    language: language,
   };
   return axios({
     method: 'get',
@@ -27,9 +33,12 @@ export const chatApiById = async (id) => {
 };
 export const operatorChatApiById = async (id) => {
   const token = await AsyncStorage.getItem('token');
+  const language = await AsyncStorage.getItem('language');
+
   const headers = {
     'Content-Type': 'application/json',
     Authorization: `${token}`,
+    language: language,
   };
   return axios({
     method: 'get',

@@ -34,9 +34,11 @@ const Language = () => {
   };
   const changeLanguageApi = async (val) => {
     const token = await AsyncStorage.getItem('token');
+
     const headers = {
       'Content-Type': 'application/json',
       Authorization: `${token}`,
+      language: language,
     };
     const res = await axios({
       method: 'post',

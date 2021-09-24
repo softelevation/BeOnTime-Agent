@@ -6,12 +6,13 @@ import {heightPercentageToDP} from 'react-native-responsive-screen';
 import {Block, Button, CustomButton, Input, Text} from '../../../components';
 import Header from '../../../components/common/header';
 import {light} from '../../../components/theme/colors';
-import {t1, t2, t4, w4} from '../../../components/theme/fontsize';
+import {t1, w4} from '../../../components/theme/fontsize';
 import {Alerts} from '../../../utils/commonUtils';
 import {config} from '../../../utils/config';
 import {Formik} from 'formik';
 import * as yup from 'yup';
 import {useSelector} from 'react-redux';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const Forgot = () => {
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
@@ -52,8 +53,11 @@ const Forgot = () => {
   const {goBack} = useNavigation();
   const onSubmit = async (values) => {
     setloader(true);
+    const language = await AsyncStorage.getItem('language');
+
     const headers = {
       'Content-Type': 'application/json',
+      language: language,
     };
     const response = await axios({
       method: 'post',

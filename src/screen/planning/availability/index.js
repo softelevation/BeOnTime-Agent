@@ -70,9 +70,11 @@ class Available extends Component {
       loading: true,
     });
     const token = await AsyncStorage.getItem('token');
+    const language = await AsyncStorage.getItem('language');
     const headers = {
       'Content-Type': 'application/json',
       Authorization: `${token}`,
+      language: language,
     };
     const res = await axios({
       method: 'post',

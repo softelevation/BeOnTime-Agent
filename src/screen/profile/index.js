@@ -48,9 +48,11 @@ const Profile = () => {
   const onLogout = async () => {
     setloading(true);
     const token = await AsyncStorage.getItem('token');
+    const language = await AsyncStorage.getItem('language');
     const headers = {
       'Content-Type': 'application/json',
       Authorization: token,
+      language: language,
     };
     await messaging().deleteToken(undefined, '*');
     const response = await axios({

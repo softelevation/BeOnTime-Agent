@@ -3,9 +3,12 @@ import axios from 'axios';
 import {config} from '../../utils/config';
 export const Api = async () => {
   const token = await AsyncStorage.getItem('token');
+  const language = await AsyncStorage.getItem('language');
+
   const headers = {
     'Content-Type': 'application/json',
     Authorization: `${token}`,
+    language: language,
   };
   return axios({
     method: 'get',
@@ -16,9 +19,12 @@ export const Api = async () => {
 
 export const missionReportApi = async (data) => {
   const token = await AsyncStorage.getItem('token');
+  const language = await AsyncStorage.getItem('language');
+
   const headers = {
     'Content-Type': 'application/json',
     Authorization: `${token}`,
+    language: language,
   };
   return axios({
     method: 'post',
@@ -31,9 +37,12 @@ export const missionReportApi = async (data) => {
 export const MissionAgentsApi = async (data) => {
   const {mission_id} = data;
   const token = await AsyncStorage.getItem('token');
+  const language = await AsyncStorage.getItem('language');
+
   const headers = {
     'Content-Type': 'application/json',
     Authorization: `${token}`,
+    language: language,
   };
   return axios({
     method: 'post',
@@ -47,9 +56,12 @@ export const MissionAgentsApi = async (data) => {
 export const BookAgentsApi = async (data) => {
   const {agent_id, mission_id} = data;
   const token = await AsyncStorage.getItem('token');
+  const language = await AsyncStorage.getItem('language');
+
   const headers = {
     'Content-Type': 'application/json',
     Authorization: `${token}`,
+    language: language,
   };
   return axios({
     method: 'post',

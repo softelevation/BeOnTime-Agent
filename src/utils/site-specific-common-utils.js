@@ -1,5 +1,3 @@
-import AsyncStorage from '@react-native-community/async-storage';
-import axios from 'axios';
 import moment from 'moment';
 import {images} from '../assets/index';
 import {strictValidNumber, strictValidObjectWithKeys} from './commonUtils';
