@@ -209,6 +209,10 @@ class Availabilityplus extends Component {
       },
     });
     if (weekDays[day].startTime !== '' && weekDays[day].endTime !== '') {
+      console.log(
+        weekDays[day].startTime.getHours(),
+        weekDays[day].endTime.getHours(),
+      );
       if (
         weekDays[day].startTime.getHours() > weekDays[day].endTime.getHours()
       ) {
